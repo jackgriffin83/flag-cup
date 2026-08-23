@@ -705,7 +705,7 @@ function lebanonFlag(){
   s += `<polygon points="150,64 130,92 170,92" fill="#007A3D"/>`;
   s += `<polygon points="150,78 124,108 176,108" fill="#007A3D"/>`;
   s += `<polygon points="150,92 118,124 182,124" fill="#007A3D"/>`;
-  s += rect(146.5,120,7,14,'#5A3A1E');
+  s += rect(146.5,120,7,14,'#007A3D');    // the cedar is entirely green on the real flag
   return s;
 }
 function malaysiaFlag(){
@@ -788,10 +788,10 @@ function drcFlag(){
 }
 function bosniaFlag(){
   let s = rect(0,0,W,H,'#002395');
-  s += `<polygon points="105,0 255,0 255,150" fill="#FECB00"/>`;
-  for(let i=0;i<9;i++){
-    const cx=84+i*21.5, cy=-14+i*21.5;
-    if(cy>-11 && cy<175) s += star(cx,cy,9.5,'#FFFFFF');
+  s += `<polygon points="55,0 255,0 255,200" fill="#FECB00"/>`;
+  for(let i=0;i<9;i++){                             // 7 full stars + a half star at each edge
+    const cy=i*25, cx=cy+44;
+    s += star(cx,cy,9.5,'#FFFFFF');
   }
   return s;
 }
@@ -829,9 +829,9 @@ function kazakhFlag(){
     const y=16+i*32;
     s += `<polygon points="14,${y} 26,${y+16} 14,${y+32} 2,${y+16}" fill="none" stroke="#FEC50C" stroke-width="3.5"/>`;
   }
-  for(let i=0;i<24;i++){
-    const a=i*Math.PI/12;
-    s += `<path d="M${(162+26*Math.cos(a)).toFixed(1)} ${(78+26*Math.sin(a)).toFixed(1)} L${(162+35*Math.cos(a)).toFixed(1)} ${(78+35*Math.sin(a)).toFixed(1)}" stroke="#FEC50C" stroke-width="4"/>`;
+  for(let i=0;i<32;i++){                            // the sun has exactly 32 rays
+    const a=i*Math.PI/16;
+    s += `<path d="M${(162+26*Math.cos(a)).toFixed(1)} ${(78+26*Math.sin(a)).toFixed(1)} L${(162+35*Math.cos(a)).toFixed(1)} ${(78+35*Math.sin(a)).toFixed(1)}" stroke="#FEC50C" stroke-width="3"/>`;
   }
   s += `<circle cx="162" cy="78" r="22" fill="#FEC50C"/>`;
   s += `<path d="M96 128 q30 -18 66 -6 q36 -12 66 6 q-28 8 -62 6 l-4 10 -4 -10 q-34 2 -62 -6 z" fill="#FEC50C"/>`;
@@ -864,15 +864,15 @@ function sloveniaFlag(){
   s += `<path d="M76 46 h38 v24 c0 15 -9.5 21 -19 21 c-9.5 0 -19 -6 -19 -21 z" fill="#005DA4" stroke="#FFFFFF" stroke-width="2.5"/>`;
   s += `<polygon points="95,58 104,76 99,76 95,68 91,76 86,76" fill="#FFFFFF"/>`;
   s += `<path d="M82 76 l6 -8 4 5 3 -8 5 8 4 -5 6 8 z" fill="#FFFFFF"/>`;
-  s += `<path d="M83 82 q6 4 12 0 q6 4 12 0 M83 87 q6 4 12 0 q6 4 12 0" stroke="#FFB915" stroke-width="2" fill="none"/>`;
-  [[89,52],[95,49],[101,52]].forEach(p=>{ s += star(p[0],p[1],3,'#FFB915',-90,6); });
+  s += rect(80,76,30,11,'#FFFFFF');
+  s += `<path d="M83 82 q6 4 12 0 q6 4 12 0 M83 87 q6 4 12 0 q6 4 12 0" stroke="#005DA4" stroke-width="2" fill="none"/>`;
+  [[90,49],[100,49],[95,55]].forEach(p=>{ s += star(p[0],p[1],3,'#FFB915',-90,6); });   // two over one
   return s;
 }
 function maltaFlag(){
   let s = rect(0,0,150,H,'#FFFFFF') + rect(150,0,150,H,'#CF142B');
-  s += rect(18,14,44,44,'#FFFFFF') + rect(18,14,44,44,'none');
-  s += `<rect x="18" y="14" width="44" height="44" fill="#FFFFFF" stroke="#CF142B" stroke-width="2.5"/>`;
-  s += rect(35,20,10,32,'#96877D') + rect(24,31,32,10,'#96877D');
+  s += rect(33,18,14,36,'#CF142B') + rect(22,29,36,14,'#CF142B');   // red edge straight on the white field
+  s += rect(35,20,10,32,'#96877D') + rect(24,31,32,10,'#96877D');   // the George Cross
   return s;
 }
 function montenegroFlag(){
@@ -887,7 +887,7 @@ function zimbabweFlag(){
   s += `<polygon points="0,0 0,200 120,100" fill="#000000"/>`;
   s += `<polygon points="0,6 0,194 112,100" fill="#FFFFFF"/>`;
   s += star(44,100,30,'#DE2010');
-  s += `<path d="M36 96 q6 -8 14 -4 q4 2 3 7 l-9 3 q-8 2 -8 -6 z" fill="#FFD200"/>`;
+  s += `<path d="M52 96 q-6 -8 -14 -4 q-4 2 -3 7 l9 3 q8 2 8 -6 z" fill="#FFD200"/>`;   // bird faces the hoist
   s += rect(34,104,20,3.5,'#FFD200');
   return s;
 }
@@ -900,12 +900,14 @@ function zambiaFlag(){
 function ugandaFlag(){
   let s = hs(['#000000','#FCDC04','#D90000','#000000','#FCDC04','#D90000']);
   s += `<circle cx="150" cy="100" r="31" fill="#FFFFFF"/>`;
+  s += `<g transform="translate(300 0) scale(-1 1)">`;   // the crane faces the hoist
   s += `<path d="M150 87 q-12 4 -12 16 q0 12 11 13 l8 -1 q7 -6 5 -16 q-2 -10 -12 -12 z" fill="#9B9B9B"/>`;
   s += `<path d="M152 88 q3 -6 8 -7" stroke="#9B9B9B" stroke-width="3.5" fill="none"/>`;
   s += `<circle cx="161" cy="80" r="4" fill="#9B9B9B"/>`;
   s += `<path d="M163 76 l5 -4 -1 5 z" fill="#D90000"/>`;
   s += `<path d="M164 82 l5 2 -5 1.6 z" fill="#000000"/>`;
   s += `<path d="M148 116 v9 M148 125 l-5 2" stroke="#000000" stroke-width="2.5" fill="none"/>`;
+  s += `</g>`;
   return s;
 }
 function albaniaFlag(){
@@ -926,12 +928,14 @@ function sriLankaFlag(){
   [[124,24],[276,24],[124,176],[276,176]].forEach((p,i)=>{
     s += `<path d="M${p[0]} ${p[1]} q${i%2===0?8:-8} ${i<2?10:-10} 0 ${i<2?16:-16} q${i%2===0?-8:8} ${i<2?-6:6} 0 ${i<2?-16:16} z" fill="${G}"/>`;
   });
+  s += `<g transform="translate(400 0) scale(-1 1)">`;   // the lion walks toward the hoist
   s += `<ellipse cx="196" cy="106" rx="26" ry="14" fill="${G}"/>`;                    // lion body
   s += `<path d="M168 104 q-10 -6 -8 -16 q8 2 12 10 z" fill="${G}"/>`;               // tail
   s += `<circle cx="224" cy="88" r="11" fill="${G}"/>`;                              // maned head
   s += `<path d="M233 86 l8 2 -8 3 z" fill="${G}"/>`;
   s += `<path d="M182 116 v14 M196 118 v13 M210 116 v14 M222 112 v14" stroke="${G}" stroke-width="6"/>`;
   s += `<path d="M232 78 L252 40" stroke="${G}" stroke-width="5"/><path d="M247 44 l10 -6" stroke="${G}" stroke-width="4"/>`; // sword
+  s += `</g>`;
   return s;
 }
 function bhutanFlag(){
@@ -954,9 +958,14 @@ function mongoliaFlag(){
   s += `<polygon points="${x},58 ${x-7},72 ${x+7},72" fill="${G}"/><circle cx="${x}" cy="60" r="3" fill="${G}"/>`;
   s += `<circle cx="${x}" cy="82" r="9" fill="${G}"/>`;
   s += crescent(x,95,11, x,89,9.5, G);
-  s += rect(x-14,108,28,5,G) + `<polygon points="${x-14},118 ${x+14},118 ${x},128" fill="${G}"/>`;
-  s += rect(x-14,132,28,5,G);
-  s += rect(x-26,58,6,80,G) + rect(x+20,58,6,80,G);
+  // below the crescent: triangle, bar, yin-yang, bar, triangle
+  s += `<polygon points="${x-14},106 ${x+14},106 ${x},114" fill="${G}"/>`;
+  s += rect(x-14,117,28,4,G);
+  s += `<circle cx="${x}" cy="128" r="7" fill="${G}"/>`;
+  s += `<circle cx="${x}" cy="124.5" r="1.6" fill="#C4272F"/><circle cx="${x}" cy="131.5" r="1.6" fill="#C4272F"/>`;
+  s += rect(x-14,138,28,4,G);
+  s += `<polygon points="${x-14},145 ${x+14},145 ${x},153" fill="${G}"/>`;
+  s += rect(x-26,58,6,95,G) + rect(x+20,58,6,95,G);
   return s;
 }
 function cambodiaFlag(){
@@ -1261,7 +1270,7 @@ const WC_LEGEND = [
   {q:'What was the score in the 2026 final?', a:'1–0 to Spain', wrong:['5–4 to Spain','0–0'], fact:'One goal in extra time won the cup.'},
   {q:'Diego Maradona led which country to win the 1986 World Cup?', a:'Argentina', wrong:['Portugal','USA','Wales'], flags:{Argentina:'ar',Portugal:'pt',USA:'us',Wales:'gb-wls'}, fact:'Many say it was the best World Cup ever played by one player.'},
   {q:'Which country won the Women’s World Cup in 2023?', a:'Spain', wrong:['Brazil','Japan','Norway'], flags:{Spain:'es',Brazil:'br',Japan:'jp',Norway:'no'}, fact:'Spain’s women AND men are both world champions!'},
-  {q:'Miroslav Klose has scored more World Cup goals than anyone. How many?', a:'16', wrong:['6','60','2'], fact:'He scored them for Germany over four World Cups.'},
+  {q:'No man has scored more World Cup goals than Miroslav Klose. How many did he score?', a:'16', wrong:['6','60','2'], fact:'He scored them for Germany over four World Cups.'},
   {q:'Just Fontaine of France scored HOW many goals at one World Cup in 1958?', a:'13', wrong:['3','30','1'], fact:'Thirteen goals in six games. Still the record!'},
   {q:'In 1950, little Uruguay shocked the whole world by beating which host country?', a:'Brazil', wrong:['Mexico','Argentina','Chile'], flags:{Brazil:'br',Mexico:'mx',Argentina:'ar',Chile:'cl'}, fact:'200,000 people went silent in the stadium!'},
   {q:'The 1954 final is called the Miracle of Bern. West Germany beat which amazing team?', a:'Hungary', wrong:['Brazil','England','Sweden'], flags:{Hungary:'hu',Brazil:'br',England:'gb-eng',Sweden:'se'}, fact:'Hungary’s magic team had won 31 games in a row!'},
@@ -1275,6 +1284,54 @@ const WC_LEGEND = [
   {q:'Zaire played the 1974 World Cup. What is Zaire called today?', a:'DR Congo', wrong:['Zambia','Morocco','Jamaica'], flags:{'DR Congo':'cd',Zambia:'zm',Morocco:'ma',Jamaica:'jm'}, fact:'They were the first team from the middle of Africa!'},
   {q:'Italy won the 2006 final against France. How was it decided?', a:'On penalties', wrong:['By coin flip','By golden goal','By dance-off'], fact:'Penalties are the most exciting, scary ending of all!'},
   {q:'The 2026 World Cup was the biggest ever. How many matches were played?', a:'104', wrong:['10','1000','64'], fact:'Nearly double the old number of 64!'},
+];
+const WC_STARS = [
+  {q:'Lionel Messi plays for which country?', a:'Argentina', wrong:['Brazil','Spain','Italy'], flags:{Argentina:'ar',Brazil:'br',Spain:'es',Italy:'it'}, fact:'Messi finally lifted the World Cup in 2022.'},
+  {q:'Cristiano Ronaldo plays for which country?', a:'Portugal', wrong:['Spain','Brazil','Mexico'], flags:{Portugal:'pt',Spain:'es',Brazil:'br',Mexico:'mx'}, fact:'Over 900 goals and counting!'},
+  {q:'What shirt number does Cristiano Ronaldo wear?', a:'7', wrong:['100','2','55'], fact:'That’s why they call him CR7!'},
+  {q:'Kylian Mbappé plays for which country?', a:'France', wrong:['Belgium','Brazil','Cameroon'], flags:{France:'fr',Belgium:'be',Brazil:'br',Cameroon:'cm'}, fact:'Golden Boot winner in 2022 AND 2026!'},
+  {q:'Erling Haaland plays for which country?', a:'Norway', wrong:['Sweden','Denmark','Iceland'], flags:{Norway:'no',Sweden:'se',Denmark:'dk',Iceland:'is'}, fact:'A goal robot from the land of fjords!'},
+  {q:'Neymar plays for which country?', a:'Brazil', wrong:['Argentina','Portugal','Colombia'], flags:{Brazil:'br',Argentina:'ar',Portugal:'pt',Colombia:'co'}, fact:'Famous for his magic skills and tricks.'},
+  {q:'Mo Salah, the Egyptian King, plays for which country?', a:'Egypt', wrong:['Morocco','Senegal','Ghana'], flags:{Egypt:'eg',Morocco:'ma',Senegal:'sn',Ghana:'gh'}, fact:'Liverpool fans sing his name!'},
+  {q:'Son Heung-min plays for which country?', a:'South Korea', wrong:['Japan','China','Vietnam'], flags:{'South Korea':'kr',Japan:'jp',China:'cn',Vietnam:'vn'}, fact:'Sonny is one of Asia’s greatest ever players.'},
+  {q:'Robert Lewandowski plays for which country?', a:'Poland', wrong:['Hungary','Czechia','Croatia'], flags:{Poland:'pl',Hungary:'hu',Czechia:'cz',Croatia:'hr'}, fact:'He once scored FIVE goals in nine minutes!'},
+  {q:'Luka Modrić plays for which country?', a:'Croatia', wrong:['Serbia','Slovenia','Slovakia'], flags:{Croatia:'hr',Serbia:'rs',Slovenia:'si',Slovakia:'sk'}, fact:'He took little Croatia all the way to the 2018 final.'},
+  {q:'Kevin De Bruyne plays for which country?', a:'Belgium', wrong:['Germany','Netherlands','France'], flags:{Belgium:'be',Germany:'de',Netherlands:'nl',France:'fr'}, fact:'One of the best passers ever.'},
+  {q:'Jude Bellingham plays for which country?', a:'England', wrong:['Scotland','Wales','Ireland'], flags:{England:'gb-eng',Scotland:'gb-sct',Wales:'gb-wls',Ireland:'ie'}, fact:'A midfield superstar for the Three Lions.'},
+  {q:'Vinícius Júnior plays for which country?', a:'Brazil', wrong:['Portugal','Argentina','Uruguay'], flags:{Brazil:'br',Portugal:'pt',Argentina:'ar',Uruguay:'uy'}, fact:'Lightning-fast down the wing!'},
+  {q:'Lamine Yamal plays for which country?', a:'Spain', wrong:['Morocco','France','Portugal'], flags:{Spain:'es',Morocco:'ma',France:'fr',Portugal:'pt'}, fact:'A world champion while still a teenager!'},
+  {q:'Zlatan Ibrahimović played for which country?', a:'Sweden', wrong:['Norway','Switzerland','Croatia'], flags:{Sweden:'se',Norway:'no',Switzerland:'ch',Croatia:'hr'}, fact:'Famous for impossible karate-kick goals!'},
+  {q:'Who has won the Ballon d’Or — the best player prize — the most times?', a:'Lionel Messi', wrong:['Cristiano Ronaldo','Erling Haaland','Harry Kane'], fact:'Eight times!'},
+  {q:'The great Pelé came from which country?', a:'Brazil', wrong:['Portugal','Argentina','Mexico'], flags:{Brazil:'br',Portugal:'pt',Argentina:'ar',Mexico:'mx'}, fact:'Many say he was the greatest of all.'},
+  {q:'Who is England’s record goal scorer?', a:'Harry Kane', wrong:['David Beckham','Jude Bellingham','Geoff Hurst'], fact:'He passed Wayne Rooney’s record in 2023.'},
+  {q:'Sam Kerr, the flying striker, plays for which country?', a:'Australia', wrong:['New Zealand','England','Canada'], flags:{Australia:'au','New Zealand':'nz',England:'gb-eng',Canada:'ca'}, fact:'She celebrates goals with a backflip!'},
+  {q:'Marta, the record scorer of the Women’s World Cup, played for which country?', a:'Brazil', wrong:['Spain','USA','Colombia'], flags:{Brazil:'br',Spain:'es',USA:'us',Colombia:'co'}, fact:'Seventeen World Cup goals — more than anyone!'},
+  {q:'Goalkeeper Gianluigi Donnarumma plays for which country?', a:'Italy', wrong:['Spain','France','Greece'], flags:{Italy:'it',Spain:'es',France:'fr',Greece:'gr'}, fact:'A giant wall in goal!'},
+  {q:'Virgil van Dijk plays for which country?', a:'Netherlands', wrong:['Belgium','Luxembourg','Denmark'], flags:{Netherlands:'nl',Belgium:'be',Luxembourg:'lu',Denmark:'dk'}, fact:'A colossus in defence.'},
+];
+const WC_CLUBS = [
+  {q:'Which club plays at Old Trafford?', a:'Manchester United', wrong:['Liverpool','Arsenal','Chelsea'], fact:'They call it the Theatre of Dreams!'},
+  {q:'Which club has won the Champions League the most times?', a:'Real Madrid', wrong:['Barcelona','Manchester United','Bayern Munich'], fact:'More than anyone else — by miles!'},
+  {q:'Liverpool fans sing which famous song?', a:'You’ll Never Walk Alone', wrong:['Twinkle Twinkle Little Star','Happy Birthday','Baby Shark'], fact:'The whole stadium sings it before kick-off.'},
+  {q:'Which club is called The Gunners?', a:'Arsenal', wrong:['Chelsea','Tottenham','Everton'], fact:'There’s a cannon on their badge!'},
+  {q:'When Barcelona play Real Madrid, the match is called…?', a:'El Clásico', wrong:['The Big Bash','El Grande','The Duel'], fact:'The most famous match in club football.'},
+  {q:'Bayern Munich play in which country?', a:'Germany', wrong:['Austria','Switzerland','Belgium'], flags:{Germany:'de',Austria:'at',Switzerland:'ch',Belgium:'be'}, fact:'They’ve won their league more than 30 times!'},
+  {q:'What colour do Chelsea play in?', a:'Blue', wrong:['Pink','Green','Orange'], fact:'Their nickname is simply The Blues.'},
+  {q:'Which seaside club is called The Seagulls?', a:'Brighton', wrong:['Newcastle','Fulham','Aston Villa'], fact:'They play by the sea at the Amex!'},
+  {q:'Which club is called The Bees?', a:'Brentford', wrong:['Watford','Arsenal','Wolves'], fact:'Buzzz! Careful — Watford are the Hornets!'},
+  {q:'Celtic and Rangers are famous rivals in which country?', a:'Scotland', wrong:['Ireland','Wales','England'], flags:{Scotland:'gb-sct',Ireland:'ie',Wales:'gb-wls',England:'gb-eng'}, fact:'Their match is called the Old Firm derby.'},
+  {q:'AC Milan and Inter share one stadium in which country?', a:'Italy', wrong:['Spain','France','Portugal'], flags:{Italy:'it',Spain:'es',France:'fr',Portugal:'pt'}, fact:'It’s called the San Siro, in Milan.'},
+  {q:'Boca Juniors and River Plate are giant rivals in which country?', a:'Argentina', wrong:['Brazil','Uruguay','Chile'], flags:{Argentina:'ar',Brazil:'br',Uruguay:'uy',Chile:'cl'}, fact:'Their derby makes the whole city shake!'},
+  {q:'Ajax play in which country?', a:'Netherlands', wrong:['Denmark','Germany','Greece'], flags:{Netherlands:'nl',Denmark:'dk',Germany:'de',Greece:'gr'}, fact:'From Amsterdam — famous for young stars.'},
+  {q:'Borussia Dortmund’s fans make a giant wall of which colour?', a:'Yellow', wrong:['Purple','Silver','Brown'], fact:'The Yellow Wall — 25,000 fans standing together!'},
+  {q:'Which club plays at the Camp Nou?', a:'Barcelona', wrong:['Real Madrid','Valencia','Porto'], fact:'One of the biggest stadiums in the world.'},
+  {q:'What is the oldest cup competition in the whole world?', a:'The FA Cup', wrong:['The Space Cup','The World Cup','The Egg Cup'], fact:'It started in 1871 — before cars existed!'},
+  {q:'Which famous London stadium has a giant arch over it?', a:'Wembley', wrong:['Old Trafford','Anfield','The Amex'], fact:'England play there — 90,000 seats!'},
+  {q:'What is the Champions League trophy’s funny nickname?', a:'Big Ears', wrong:['Big Nose','Big Toes','Big Tummy'], fact:'Look at its giant handles!'},
+  {q:'Newcastle United, in black and white stripes, are called…?', a:'The Magpies', wrong:['The Penguins','The Zebras','The Pandas'], fact:'Magpies are black and white birds!'},
+  {q:'Manchester City play in which colour?', a:'Sky blue', wrong:['Red','Yellow','Black'], fact:'Their rivals United play in red.'},
+  {q:'Real Madrid play in which colour?', a:'All white', wrong:['All black','Gold','Stripes'], fact:'Their nickname is Los Blancos — The Whites!'},
+  {q:'Paris Saint-Germain play in which city?', a:'Paris', wrong:['London','Madrid','Rome'], fact:'The Eiffel Tower is on their badge!'},
 ];
 
 /* ── saved progress (per player) ─────────────────────────────────────── */
@@ -1417,7 +1474,7 @@ function starRow(n, size, animate){
   return s+`</div>`;
 }
 function totalStars(){ return Object.values(P().best).reduce((a,b)=>a+(b.stars||0),0); }
-const MAX_STARS = (7+7+2)*3;
+const MAX_STARS = (7+7+4)*3;
 function bestFor(key){ return P().best[key] || {stars:0, score:0}; }
 
 /* ── screens ─────────────────────────────────────────────────────────── */
@@ -1430,7 +1487,7 @@ function goHome(){
     <div class="modes">
       ${modeBtn('flags','⚽','Flag Quiz','Which country is it?', 7)}
       ${modeBtn('find','🔍','Find the Flag','Tap the right flag!', 7)}
-      ${modeBtn('wc','🏆','World Cup Quiz','Winners, mascots &amp; more', 2)}
+      ${modeBtn('wc','🏆','Footy Quiz','World Cup, superstars &amp; clubs', 4)}
       <button class="mode-btn" data-go="book">
         <span class="mode-ico">📖</span>
         <span><span class="mode-name">Flag Book</span><br><span class="mode-sub">All 120 flags in one album</span></span>
@@ -1506,9 +1563,9 @@ function modeBtn(mode, ico, name, sub, nLevels){
 }
 
 function goLevels(mode){
-  const titles = {flags:'Flag Quiz', find:'Find the Flag', wc:'World Cup Quiz'};
+  const titles = {flags:'Flag Quiz', find:'Find the Flag', wc:'Footy Quiz'};
   const list = mode==='wc'
-    ? [{n:1,name:'Rookie',icon:'⚽'},{n:2,name:'Legend',icon:'🏆'}]
+    ? [{n:1,name:'Rookie',icon:'⚽'},{n:2,name:'Legend',icon:'🏆'},{n:3,name:'Superstars',icon:'⭐'},{n:4,name:'Clubs',icon:'🛡️'}]
     : LEVELS;
   stage.innerHTML = `
     <div class="topbar">
@@ -1545,7 +1602,7 @@ function pickDistractors(flag, pool, n){
 }
 function buildMatch(mode, level){
   if(mode==='wc'){
-    const bank = level===1 ? WC_ROOKIE : WC_LEGEND;
+    const bank = level===1 ? WC_ROOKIE : level===2 ? WC_LEGEND : level===3 ? WC_STARS : WC_CLUBS;
     return shuffle(bank).slice(0,10).map(item=>{
       const opts = shuffle([item.a].concat(item.wrong));
       return {kind:'wc', prompt:item.q, options:opts, answer:opts.indexOf(item.a), fact:item.fact, flags:item.flags||null};
@@ -1680,7 +1737,7 @@ function finishMatch(){
     stars===1 ? `Great match, ${who}! Keep playing and grab more stars!` :
                 `Good practice, ${who}! Every champion starts somewhere. Try again!`;
   const nextLevel = match.level + 1;
-  const maxLevel = match.mode==='wc' ? 2 : 7;
+  const maxLevel = match.mode==='wc' ? 4 : 7;
   stage.innerHTML = `
     <div class="card results">
       <h2>${stars>=2?'⚽ FULL TIME! ⚽':'Full time!'}</h2>
