@@ -1,0 +1,1288 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Flag Cup</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Baloo+2:wght@500;700;800&display=swap">
+<style>
+  /* ── The Flag Cup — single committed theme: bright matchday ───────── */
+  :root{
+    --pitch:#2EA35B; --pitch2:#279255;
+    --ink:#202A5C; --ink-soft:#4A548C;
+    --card:#FFFFFF; --card-dim:#F2F5FF;
+    --sun:#FFC626; --sun-deep:#D89E00;
+    --good:#05A357; --good-soft:#DFF7EA;
+    --oops:#FF6B6B; --oops-soft:#FFE9E9;
+    --sky:#8ED4FF;
+    --shadow:0 6px 0 rgba(18,58,35,.28);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html{height:100%}
+  body{
+    margin:0; min-height:100%;
+    background:repeating-linear-gradient(90deg, var(--pitch) 0 90px, var(--pitch2) 90px 180px);
+    font-family:"Baloo 2","Comic Sans MS",system-ui,sans-serif;
+    color:var(--ink);
+    touch-action:manipulation;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  #stage{width:100%; max-width:640px; padding:14px 14px 40px; margin:0 auto}
+  button{font-family:inherit; cursor:pointer}
+  button:focus-visible, a:focus-visible{outline:4px solid var(--sun); outline-offset:2px}
+
+  /* sticker headline */
+  .biglogo{
+    font-family:"Lilita One","Baloo 2",sans-serif;
+    text-align:center; color:#fff; margin:14px 0 4px;
+    font-size:clamp(38px,9vw,58px); line-height:1; letter-spacing:1px;
+    text-shadow:
+      3px 3px 0 var(--ink), -3px 3px 0 var(--ink), 3px -3px 0 var(--ink), -3px -3px 0 var(--ink),
+      3px 0 0 var(--ink), -3px 0 0 var(--ink), 0 3px 0 var(--ink), 0 -3px 0 var(--ink),
+      0 9px 0 rgba(18,58,35,.30);
+    text-wrap:balance;
+  }
+  .biglogo .sun{color:var(--sun)}
+  .tagline{text-align:center; color:#EAFFF2; font-weight:700; margin:0 0 18px; font-size:17px;
+    text-shadow:0 2px 0 rgba(18,58,35,.35)}
+
+  .card{
+    background:var(--card); color:var(--ink);
+    border:4px solid var(--ink); border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:16px;
+  }
+
+  /* mode menu */
+  .modes{display:grid; gap:14px; margin-top:6px}
+  .mode-btn{
+    display:flex; align-items:center; gap:14px; text-align:left;
+    background:var(--card); border:4px solid var(--ink); border-radius:22px;
+    box-shadow:var(--shadow); padding:14px 16px; width:100%;
+    transition:transform .08s ease;
+  }
+  .mode-btn:active{transform:translateY(4px); box-shadow:0 2px 0 rgba(18,58,35,.28)}
+  .mode-ico{font-size:40px; width:58px; height:58px; display:grid; place-items:center;
+    background:var(--card-dim); border:3px solid var(--ink); border-radius:16px; flex:none}
+  .mode-name{font-family:"Lilita One",sans-serif; font-size:24px; letter-spacing:.5px}
+  .mode-sub{font-weight:700; color:var(--ink-soft); font-size:15px; margin-top:2px}
+  .mode-stars{margin-left:auto; font-weight:800; color:var(--sun-deep); font-size:15px; white-space:nowrap}
+
+  .totals{display:flex; justify-content:center; gap:10px; margin:16px 0 2px; flex-wrap:wrap}
+  .pill{background:var(--card); border:3px solid var(--ink); border-radius:999px;
+    box-shadow:0 4px 0 rgba(18,58,35,.25);
+    padding:6px 14px; font-weight:800; font-size:15px; display:flex; align-items:center; gap:6px}
+  .pill button{border:0; background:none; font:inherit; font-weight:800; padding:0; color:var(--ink)}
+
+  /* level select */
+  .topbar{display:flex; align-items:center; gap:10px; margin:6px 0 14px}
+  .back-btn{width:52px; height:52px; flex:none; border-radius:16px; border:4px solid var(--ink);
+    background:var(--card); box-shadow:0 4px 0 rgba(18,58,35,.25); font-size:22px; font-weight:800; color:var(--ink)}
+  .screen-title{font-family:"Lilita One",sans-serif; color:#fff; font-size:clamp(26px,6vw,34px);
+    text-shadow:2px 2px 0 var(--ink), -2px 2px 0 var(--ink), 2px -2px 0 var(--ink), -2px -2px 0 var(--ink), 0 6px 0 rgba(18,58,35,.3);
+    margin:0; line-height:1.05}
+  .levels{display:grid; gap:14px}
+  .level-btn{display:flex; align-items:center; gap:12px; text-align:left; width:100%;
+    background:var(--card); border:4px solid var(--ink); border-radius:22px; box-shadow:var(--shadow);
+    padding:12px 16px; transition:transform .08s ease}
+  .level-btn:active{transform:translateY(4px); box-shadow:0 2px 0 rgba(18,58,35,.28)}
+  .level-num{font-family:"Lilita One",sans-serif; font-size:26px; width:54px; height:54px; flex:none;
+    display:grid; place-items:center; background:var(--sun); border:3px solid var(--ink); border-radius:50%;}
+  .level-name{font-family:"Lilita One",sans-serif; font-size:22px}
+  .level-flags{display:flex; gap:4px; margin-top:5px}
+  .level-flags .mini{width:34px; border:2px solid var(--ink); border-radius:5px; overflow:hidden; line-height:0; background:#fff}
+  .level-flags .mini.sq{border-color:transparent; background:transparent}
+  .level-stars{margin-left:auto; flex:none}
+
+  /* quiz */
+  .quizbar{display:flex; align-items:center; gap:10px; margin:6px 0 12px}
+  .dots{display:flex; gap:5px; flex-wrap:wrap; justify-content:center; flex:1}
+  .dot{width:17px; height:17px; border-radius:50%; border:3px solid var(--ink); background:var(--card)}
+  .dot.now{background:var(--sky)}
+  .dot.hit{background:var(--good)}
+  .dot.ok{background:var(--sun)}
+  .ballcount{font-weight:800; font-size:17px; background:var(--card); border:3px solid var(--ink);
+    border-radius:999px; padding:4px 12px; box-shadow:0 4px 0 rgba(18,58,35,.25); white-space:nowrap}
+
+  .qcard{background:var(--card); border:4px solid var(--ink); border-radius:24px; box-shadow:var(--shadow);
+    padding:18px; text-align:center; margin-bottom:14px; position:relative}
+  .qprompt{font-weight:800; font-size:clamp(19px,4.6vw,23px); margin:0 0 12px; text-wrap:balance}
+  .bigflag{width:min(78%,320px); margin:2px auto 6px; border:4px solid var(--ink); border-radius:14px;
+    overflow:hidden; line-height:0; background:#fff; box-shadow:0 5px 0 rgba(18,58,35,.18)}
+  .bigflag.sq{background:transparent; border-color:transparent; box-shadow:none}
+  .say-btn{position:absolute; top:10px; right:10px; width:52px; height:52px; border-radius:50%;
+    border:4px solid var(--ink); background:var(--sun); font-size:23px; box-shadow:0 4px 0 rgba(18,58,35,.25)}
+  .say-btn:active{transform:translateY(3px); box-shadow:0 1px 0 rgba(18,58,35,.25)}
+
+  .answers{display:grid; gap:12px}
+  .answers.flagrid{grid-template-columns:1fr 1fr}
+  .ans-btn{
+    background:var(--card); border:4px solid var(--ink); border-radius:20px; box-shadow:var(--shadow);
+    padding:14px 16px; font-size:clamp(19px,5vw,24px); font-weight:800; color:var(--ink);
+    min-height:64px; transition:transform .08s ease; display:flex; align-items:center; justify-content:center; gap:12px;
+  }
+  .ans-btn .optflag{width:52px; flex:none; border:2px solid var(--ink); border-radius:6px; overflow:hidden; line-height:0; background:#fff}
+  .ans-btn .optflag.sq{border-color:transparent; background:transparent}
+  .ans-btn:active{transform:translateY(4px); box-shadow:0 2px 0 rgba(18,58,35,.28)}
+  .ans-btn.flagopt{padding:10px}
+  .ans-btn.flagopt .optflag{width:100%; border-width:3px; border-radius:10px}
+  .ans-btn.right{background:var(--good-soft); border-color:var(--good)}
+  .ans-btn.nope{background:var(--oops-soft); opacity:.65; animation:wobble .45s ease}
+  .ans-btn:disabled{cursor:default}
+  @keyframes wobble{
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-9px)}
+    40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(4px)}
+  }
+
+  .feedback{margin-top:14px; border-radius:18px; border:4px solid var(--ink); padding:12px 14px;
+    font-weight:800; font-size:18px; text-align:center; text-wrap:balance}
+  .feedback.yay{background:var(--good-soft); border-color:var(--good); color:#03592F}
+  .feedback.try{background:var(--oops-soft); border-color:var(--oops); color:#8C2B2B}
+  .feedback .fact{display:block; font-weight:700; font-size:15.5px; margin-top:4px; color:var(--ink-soft)}
+
+  /* results */
+  .results{ text-align:center; padding:26px 18px }
+  .results h2{font-family:"Lilita One",sans-serif; font-size:clamp(30px,8vw,42px); margin:4px 0 8px}
+  .starrow{display:flex; justify-content:center; gap:8px; margin:10px 0}
+  .starrow svg{width:64px; height:64px}
+  .starrow .pop{animation:starpop .5s ease both}
+  @keyframes starpop{0%{transform:scale(0) rotate(-30deg)} 70%{transform:scale(1.25)} 100%{transform:scale(1)}}
+  .results .scoreline{font-weight:800; font-size:20px; margin:6px 0 16px}
+  .results .cheer{font-weight:700; color:var(--ink-soft); margin:0 0 18px; font-size:17px}
+  .btnrow{display:grid; gap:12px}
+  .go-btn{background:var(--sun); border:4px solid var(--ink); border-radius:20px; box-shadow:var(--shadow);
+    font-family:"Lilita One",sans-serif; font-size:23px; letter-spacing:.5px; color:var(--ink);
+    padding:14px; min-height:60px; transition:transform .08s ease}
+  .go-btn.quiet{background:var(--card); font-family:"Baloo 2",sans-serif; font-weight:800; font-size:19px}
+  .go-btn:active{transform:translateY(4px); box-shadow:0 2px 0 rgba(18,58,35,.28)}
+
+  /* flag book */
+  .bookgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px; margin-top:12px}
+  .sticker{background:var(--card); border:4px solid var(--ink); border-radius:16px; box-shadow:0 4px 0 rgba(18,58,35,.25);
+    padding:9px; text-align:center; transition:transform .08s ease; position:relative}
+  .sticker:active{transform:translateY(3px)}
+  .sticker .flg{border:2px solid var(--ink); border-radius:8px; overflow:hidden; line-height:0; background:#fff}
+  .sticker .flg.sq{border-color:transparent; background:transparent}
+  .sticker .nm{font-weight:800; font-size:14.5px; margin-top:7px; line-height:1.15}
+  .sticker .medal{position:absolute; top:-10px; right:-8px; font-size:21px; filter:drop-shadow(0 2px 0 rgba(18,58,35,.3))}
+  .booksec{font-family:"Lilita One",sans-serif; color:#fff; font-size:23px; margin:20px 0 2px;
+    text-shadow:2px 2px 0 var(--ink), -2px 2px 0 var(--ink), 2px -2px 0 var(--ink), -2px -2px 0 var(--ink)}
+
+  /* sticker detail */
+  .peek{position:fixed; inset:0; background:rgba(18,42,30,.55); display:grid; place-items:center; padding:20px; z-index:40}
+  .peek .card{max-width:380px; width:100%; text-align:center; padding:20px}
+  .peek .bigflag{width:min(84%,300px)}
+  .peek h3{font-family:"Lilita One",sans-serif; font-size:30px; margin:10px 0 4px}
+  .peek .fact{font-weight:700; color:var(--ink-soft); font-size:16.5px; margin:0 0 14px}
+  .peek .learn{font-weight:800; color:var(--sun-deep); font-size:15px; margin:0 0 14px}
+
+  #confetti{position:fixed; inset:0; pointer-events:none; z-index:60}
+  .hidden{display:none}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important}
+  }
+  @media (max-width:420px){
+    .answers.flagrid{grid-template-columns:1fr 1fr}
+    .mode-ico{width:50px;height:50px;font-size:34px}
+  }
+</style>
+
+<div id="stage" aria-live="polite"></div>
+<canvas id="confetti"></canvas>
+
+<script>
+'use strict';
+/* ════════════════════════════════════════════════════════════════════════
+   THE FLAG CUP — flags + World Cup trivia for a 6½-year-old.
+   Self-contained: SVG flags are generated below, sounds via WebAudio,
+   reading aloud via speechSynthesis, progress in localStorage.
+   ════════════════════════════════════════════════════════════════════════ */
+const PLAYER = 'Champ';
+
+/* ── SVG flag builders (300×200 viewBox) ─────────────────────────────── */
+const W = 300, H = 200;
+let svgUid = 0;   // unique ids per rendered copy, so defs (clipPaths) never collide
+const wrap = inner => `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img">${inner.split('__UID__').join(++svgUid)}</svg>`;
+const rect = (x,y,w,h,fill) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}"/>`;
+
+function hs(colors, weights){                       // horizontal stripes
+  weights = weights || colors.map(()=>1);
+  const total = weights.reduce((a,b)=>a+b,0);
+  let y = 0, s = '';
+  colors.forEach((c,i)=>{ const h = H*weights[i]/total; s += rect(0,y,W,h+0.5,c); y += h; });
+  return s;
+}
+function vs(colors, weights){                       // vertical stripes
+  weights = weights || colors.map(()=>1);
+  const total = weights.reduce((a,b)=>a+b,0);
+  let x = 0, s = '';
+  colors.forEach((c,i)=>{ const w = W*weights[i]/total; s += rect(x,0,w+0.5,H,c); x += w; });
+  return s;
+}
+function nordic(bg, cross, inner){                  // Nordic cross, hoist-shifted
+  let s = rect(0,0,W,H,bg);
+  s += rect(90,0,44,H,cross) + rect(0,78,W,44,cross);
+  if(inner){ s += rect(101,0,22,H,inner) + rect(0,89,W,22,inner); }
+  return s;
+}
+function starPts(cx, cy, r, rot=-90, points=5, innerRatio=0.382){
+  const pts = [];
+  for(let i=0;i<points*2;i++){
+    const rr = i%2===0 ? r : r*innerRatio;
+    const a = (Math.PI/points)*i + rot*Math.PI/180;
+    pts.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1));
+  }
+  return pts.join(' ');
+}
+const star = (cx,cy,r,fill,rot=-90,pts=5) =>
+  `<polygon points="${starPts(cx,cy,r,rot,pts, pts===5?0.382:0.5)}" fill="${fill}"/>`;
+
+function sunOfMay(cx, cy, r, color, rays=32){       // Sol de Mayo: straight + wavy rays alternate
+  let s = '';
+  const pol = (a,rr)=> (cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1);
+  const hw = 2.24/rays;                             // base half-width scales with ray count
+  for(let i=0;i<rays;i++){
+    const a = i*2*Math.PI/rays;
+    if(i%2===0){
+      s += `<polygon points="${pol(a+hw,r*0.92)} ${pol(a,r*2.1)} ${pol(a-hw,r*0.92)}" fill="${color}"/>`;
+    } else {                                        // wavy ray, all curling the same way
+      s += `<path d="M ${pol(a+hw*0.9,r*0.92)} Q ${pol(a+hw*3.2,r*1.45)} ${pol(a+hw*1.6,r*1.9)} Q ${pol(a-hw*0.6,r*1.35)} ${pol(a-hw*0.9,r*0.92)} Z" fill="${color}"/>`;
+    }
+  }
+  s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}"/>`;
+  s += `<circle cx="${cx-r*0.34}" cy="${cy-r*0.14}" r="${r*0.09}" fill="#85340A"/>`;
+  s += `<circle cx="${cx+r*0.34}" cy="${cy-r*0.14}" r="${r*0.09}" fill="#85340A"/>`;
+  s += `<path d="M ${cx-r*0.36} ${cy+r*0.3} Q ${cx} ${cy+r*0.62} ${cx+r*0.36} ${cy+r*0.3}" stroke="#85340A" stroke-width="${r*0.11}" fill="none" stroke-linecap="round"/>`;
+  return s;
+}
+
+function usaFlag(){
+  let s = '';
+  for(let i=0;i<13;i++) s += rect(0, i*H/13, W, H/13+0.4, i%2===0 ? '#B22234' : '#FFFFFF');
+  const ch = H*7/13;                                 // canton = 7 stripes tall
+  s += rect(0,0,124,ch,'#3C3B6E');
+  for(let row=0;row<9;row++){
+    const n  = row%2===0 ? 6 : 5;
+    const x0 = row%2===0 ? 10.5 : 20.8;
+    for(let i=0;i<n;i++) s += star(x0 + i*20.6, 6.4 + row*(ch-12.8)/8, 5.4, '#FFFFFF');
+  }
+  return s;
+}
+
+function brazilFlag(){
+  let s = rect(0,0,W,H,'#009B3A');
+  s += `<polygon points="150,17 283,100 150,183 17,100" fill="#FEDF00"/>`;
+  s += `<circle cx="150" cy="100" r="52" fill="#002776"/>`;
+  // banner with the motto, and the 27 stars in their coarse real constellations
+  s += `<path d="M 100 111 A 118 118 0 0 1 200 89" stroke="#FFFFFF" stroke-width="11" fill="none"/>`;
+  s += `<defs><path id="bzb__UID__" d="M 101 115.5 A 118 118 0 0 1 199 93.5"/></defs>`;
+  s += `<text font-size="6" fill="#009B3A" font-weight="bold" font-family="Helvetica,Arial,sans-serif" letter-spacing="0.4"><textPath href="#bzb__UID__" startOffset="8">ORDEM E PROGRESSO</textPath></text>`;
+  const stars = [
+    [168,76,1.8],                                                    // Spica, alone above the band
+    [135,111,1.8],[127,121,1.8],[135,131,2],[143,119,1.5],[139,124,1],   // Southern Cross
+    [172,104,2],[178,109,1.4],[183,115,1.4],[185,122,1.4],[183,129,1.4],[177,133,1.4],[170,131,1.4], // Scorpius
+    [150,138,1.3],[156,133,1.3],[146,133,1.3],                       // Triangulum Australe
+    [112,119,2],[118,124,1.4],[112,127,1.4],[106,123,1.4],[109,131,1.4], // Canis Major
+    [128,138,2],[108,122,1.6],[150,144,1.5],[162,120,1.3],[167,126,1.3],[121,133,1.3],
+  ];
+  stars.forEach(p=>{ s += `<circle cx="${p[0]}" cy="${p[1]}" r="${p[2]}" fill="#FFFFFF"/>`; });
+  return s;
+}
+
+function spainFlag(){
+  let s = hs(['#AA151B','#F1BF00','#AA151B'],[1,2,1]);
+  const G='#F1BF00', R='#AD1519';
+  // Pillars of Hercules, crowned, with the banner
+  for(const px of [53,100]){
+    s += `<ellipse cx="${px}" cy="120" rx="6" ry="2.5" fill="#B8B8B8"/>`;
+    s += rect(px-3.5,86,7,33,'#CFCFCF');
+    s += `<ellipse cx="${px}" cy="86" rx="5.5" ry="2.2" fill="#B8B8B8"/>`;
+    s += rect(px-3,80,6,4,G) + `<circle cx="${px}" cy="78.5" r="2" fill="${R}"/>`;
+    s += `<path d="M${px-7} 101 h14 v7 h-14 z" fill="${R}"/>`;
+  }
+  // quartered shield: Castile, Leon, Aragon, Navarre, Granada point, Bourbon oval
+  s += `<path d="M62 78 h29 v30 c0 10 -7 14 -14.5 14 c-7.5 0 -14.5 -4 -14.5 -14 z" fill="#FFFFFF" stroke="${G}" stroke-width="1.5"/>`;
+  s += rect(62,78,14.5,15,R) + rect(62,93,14.5,15,G);
+  s += rect(76.5,93,14.5,15,R);
+  s += rect(65.5,85,7.5,6,G) + rect(66.5,82,1.8,3,G) + rect(69.3,81,1.9,4,G) + rect(72.2,82,1.8,3,G); // castle
+  s += `<path d="M80 91.5 q-0.5 -5 2.5 -7.5 q-0.5 -2 1.5 -2.5 q2 -0.5 2.5 1.5 q2.5 1 2 4.5 l-1 4.5 h-1.7 l-0.3 -2 -1.7 0 -0.3 2 z" fill="#7A2F8E"/>`; // rampant lion
+  for(let i=0;i<4;i++) s += rect(63.8+i*3.3,93,1.7,15,R);                                             // Aragon pales
+  s += `<circle cx="83.7" cy="100.5" r="1.2" fill="${G}"/>`;                                          // Navarre chains
+  for(let i=0;i<8;i++){ const a=i*Math.PI/4;
+    s += `<circle cx="${(83.7+4.6*Math.cos(a)).toFixed(1)}" cy="${(100.5+4.6*Math.sin(a)).toFixed(1)}" r="1.1" fill="${G}"/>`; }
+  s += `<circle cx="76.5" cy="115" r="2.6" fill="#C8102E"/><path d="M75 112.6 l1.5 -1.8 1.5 1.8" stroke="#0B7A40" stroke-width="1.2" fill="none"/>`; // pomegranate
+  s += `<ellipse cx="76.5" cy="93" rx="4.2" ry="5.2" fill="#0039A6" stroke="${R}" stroke-width="1.2"/>`;
+  [[76.5,90],[74.7,94.5],[78.3,94.5]].forEach(p=>{ s += `<circle cx="${p[0]}" cy="${p[1]}" r="1.1" fill="${G}"/>`; }); // fleurs-de-lis
+  // royal crown
+  s += `<path d="M70 73.5 q6.5 -6.5 13 0 z" fill="${R}"/>`;
+  s += `<path d="M70 73.5 q6.5 -6.5 13 0" stroke="${G}" stroke-width="1.5" fill="none"/>`;
+  s += rect(69.5,73.5,14,3.5,G);
+  s += rect(75.9,64.8,1.2,3.4,G) + rect(74.7,65.8,3.6,1.2,G);
+  [[70.5,71],[76.5,68.4],[82.5,71]].forEach(p=>{ s += `<circle cx="${p[0]}" cy="${p[1]}" r="0.9" fill="${G}"/>`; });
+  return s;
+}
+
+function canadaFlag(){
+  let s = rect(0,0,75,H,'#D80621') + rect(75,0,150,H,'#FFFFFF') + rect(225,0,75,H,'#D80621');
+  // simplified 11-point maple leaf
+  const leaf = [
+    [150,40],[158,58],[172,52],[168,70],[184,66],[178,84],[196,82],[188,98],[204,102],
+    [162,118],[166,132],[153,128],[153,152],[147,152],[147,128],[134,132],[138,118],
+    [96,102],[112,98],[104,82],[122,84],[116,66],[132,70],[128,52],[142,58]
+  ];
+  s += `<polygon points="${leaf.map(p=>p.join(',')).join(' ')}" fill="#D80621"/>`;
+  return s;
+}
+
+function portugalFlag(){
+  let s = rect(0,0,120,H,'#046A38') + rect(120,0,180,H,'#DA291C');
+  const Y='#FFE900';
+  // armillary sphere
+  s += `<circle cx="120" cy="100" r="30" fill="none" stroke="${Y}" stroke-width="5"/>`;
+  s += `<ellipse cx="120" cy="100" rx="29" ry="10" fill="none" stroke="${Y}" stroke-width="3.5" transform="rotate(-22 120 100)"/>`;
+  s += `<ellipse cx="120" cy="100" rx="10" ry="29" fill="none" stroke="${Y}" stroke-width="3.5" transform="rotate(-22 120 100)"/>`;
+  // shield: red bordure carrying seven castles, white field with the five quinas
+  s += `<path d="M106 82 h28 v20 c0 11 -7 16 -14 16 c-7 0 -14 -5 -14 -16 z" fill="#DA291C"/>`;
+  s += `<path d="M110 86 h20 v15 c0 8 -5 11.5 -10 11.5 c-5 0 -10 -3.5 -10 -11.5 z" fill="#FFFFFF"/>`;
+  const castle=(x,y)=> rect(x-1.6,y,3.2,2.6,Y) + rect(x-1.6,y-1,0.9,1.2,Y) + rect(x-0.45,y-1.3,0.9,1.5,Y) + rect(x+0.7,y-1,0.9,1.2,Y);
+  [[110,83],[120,82.4],[130,83],[107.6,97],[132.4,97],[112.5,109.5],[127.5,109.5]].forEach(p=>{ s += castle(p[0],p[1]); });
+  const quina=(x,y)=>{
+    let q = `<path d="M${x-3} ${y-3.5} h6 v4.5 c0 2.4 -1.5 3.5 -3 3.5 c-1.5 0 -3 -1.1 -3 -3.5 z" fill="#003399"/>`;
+    [[x,y],[x-1.5,y-1.6],[x+1.5,y-1.6],[x-1.5,y+1.6],[x+1.5,y+1.6]].forEach(p=>{ q += `<circle cx="${p[0]}" cy="${p[1]}" r="0.65" fill="#FFFFFF"/>`; });
+    return q;
+  };
+  [[120,94],[120,88],[120,100],[114,94],[126,94]].forEach(p=>{ s += quina(p[0],p[1]); });
+  return s;
+}
+
+function mexicoFlag(){
+  let s = vs(['#006341','#FFFFFF','#C8102E']);
+  const BR='#6E4520', GD='#8A5A2B', GR='#1E8449';
+  // laurel and oak wreath tied with a ribbon
+  s += `<path d="M130 132 Q125 118 130 105 M170 132 Q175 118 170 105" stroke="#0B7A40" stroke-width="2.6" fill="none"/>`;
+  [[128.5,128],[126.6,120],[127.3,112],[130.5,106],[171.5,128],[173.4,120],[172.7,112],[169.5,106]].forEach((p,i)=>{
+    s += `<ellipse cx="${p[0]}" cy="${p[1]}" rx="1.7" ry="3" fill="#0B7A40" transform="rotate(${i<4?-38:38} ${p[0]} ${p[1]})"/>`;
+  });
+  s += `<path d="M145 135 l-6 5 M155 135 l6 5" stroke="#C8102E" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  s += rect(146,133,8,4,'#0B7A40');
+  // lake, rock and prickly-pear cactus
+  s += `<ellipse cx="150" cy="134" rx="13" ry="3" fill="#8FB8DE"/>`;
+  s += `<ellipse cx="150" cy="124" rx="5" ry="8" fill="${GR}" stroke="#0B6B3A" stroke-width="1"/>`;
+  s += `<ellipse cx="143" cy="127" rx="3.2" ry="5" fill="${GR}" stroke="#0B6B3A" stroke-width="1" transform="rotate(-35 143 127)"/>`;
+  s += `<ellipse cx="157" cy="127" rx="3.2" ry="5" fill="${GR}" stroke="#0B6B3A" stroke-width="1" transform="rotate(35 157 127)"/>`;
+  [[143,123],[150,116.5],[157,123]].forEach(p=>{ s += `<circle cx="${p[0]}" cy="${p[1]}" r="1.3" fill="#C8102E"/>`; });
+  // golden eagle, head to the hoist, wing raised, snake in its beak
+  s += `<path d="M147 118 l3 -5 3 5 z" fill="${GD}"/>`;
+  s += `<ellipse cx="150" cy="105" rx="7" ry="10" fill="${BR}"/>`;
+  s += `<path d="M155 111 q7 2 10 8 q-8 0 -11 -4 z" fill="${BR}"/>`;                 // tail
+  s += `<path d="M153 101 q10 -11 5 -23 q-5 3 -7 9 q-1 -7 2 -11 q-8 4 -9 13 q-3 6 0 13 z" fill="${GD}"/>`; // raised wing
+  s += `<path d="M147 98 q-2 -6 -5 -7.5" stroke="${BR}" stroke-width="4.4" fill="none" stroke-linecap="round"/>`;
+  s += `<circle cx="141" cy="88.5" r="3.6" fill="${BR}"/>`;
+  s += `<path d="M138 88 l-4.2 1.3 4.2 1.7 z" fill="#E8A33D"/>`;                     // beak
+  s += `<circle cx="141.6" cy="87.8" r="0.9" fill="#231303"/>`;
+  s += `<path d="M135.5 90 q-5.5 4 -2.5 8.5 q3 3.5 7.5 1.5" stroke="#2F6B2F" stroke-width="2.3" fill="none" stroke-linecap="round"/>`; // snake
+  s += `<circle cx="135.8" cy="90.2" r="1.4" fill="#2F6B2F"/>`;
+  return s;
+}
+
+function greeceFlag(){
+  let s = '';
+  for(let i=0;i<9;i++) s += rect(0, i*H/9, W, H/9+0.4, i%2===0 ? '#0D5EAF' : '#FFFFFF');
+  const c = H*5/9;
+  s += rect(0,0,c,c,'#0D5EAF');
+  s += rect(c/2-11,0,22,c,'#FFFFFF') + rect(0,c/2-11,c,22,'#FFFFFF');
+  return s;
+}
+
+function croatiaFlag(){
+  let s = hs(['#FF0000','#FFFFFF','#171796']);
+  // shield: 5x5 chequy starting red
+  const shieldPath = 'M115 58 h70 v48 c0 24 -17 36 -35 36 c-18 0 -35 -12 -35 -36 z';
+  s += `<defs><clipPath id="cro__UID__"><path d="${shieldPath}"/></clipPath></defs>`;
+  let ch = '';
+  for(let r=0;r<5;r++) for(let c=0;c<5;c++)
+    ch += rect(115+c*14, 58+r*17, 14.4, 17.4, (r+c)%2===0 ? '#FF0000' : '#FFFFFF');
+  s += `<g clip-path="url(#cro__UID__)">${ch}</g>`;
+  s += `<path d="${shieldPath}" fill="none" stroke="#FFFFFF" stroke-width="2"/>`;
+  // crown of five historic shields
+  const mini=(x,y,inner)=> `<path d="M${x-6.5} ${y} h13 v6.5 c0 3.6 -3.2 5.5 -6.5 5.5 c-3.3 0 -6.5 -1.9 -6.5 -5.5 z" fill="#171796" stroke="#FFFFFF" stroke-width="1"/>${inner}`;
+  s += mini(122,46, star(122,50.5,3,'#F1BF00',-90,6) + `<path d="M118.8 54.5 q3.2 3.6 6.4 0 q-3.2 5.2 -6.4 0 z" fill="#FFFFFF"/>`); // six-point star + crescent
+  s += mini(136,43, rect(130.5,45,11,2.2,'#C8102E') + rect(130.5,49.4,11,2.2,'#C8102E'));                                     // Dubrovnik bars
+  s += mini(150,42, [[146,46.5],[150,46.5],[154,46.5]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="1.7" fill="#F1BF00"/>`).join('')
+    + [[146,45],[150,45],[154,45]].map(p=>`<rect x="${p[0]-1.4}" y="${p[1]-1}" width="2.8" height="1" fill="#F1BF00"/>`).join('')); // Dalmatia lion heads
+  s += mini(164,43, `<ellipse cx="164" cy="48" rx="3.4" ry="2" fill="#F1BF00"/><path d="M161.2 46.4 l-2.2 -2.4 M162 46 l-1 -2.8" stroke="#F1BF00" stroke-width="0.9" fill="none"/><path d="M162 50 v2.2 M166 50 v2.2" stroke="#F1BF00" stroke-width="1"/>`); // Istrian goat, facing the hoist
+  s += mini(178,46, star(178,45.6,2.4,'#F1BF00',-90,6) + rect(171.5,48.2,13,2.6,'#FFFFFF') + `<ellipse cx="178" cy="49.5" rx="2.6" ry="1" fill="#6E4520"/>`); // Slavonia marten
+  return s;
+}
+
+function uruguayFlag(){
+  let s = '';
+  for(let i=0;i<9;i++) s += rect(0, i*H/9, W, H/9+0.4, i%2===0 ? '#FFFFFF' : '#0038A8');
+  const c = H*5/9;
+  s += rect(0,0,c,c,'#FFFFFF');
+  s += sunOfMay(c/2, c/2, 23, '#FCD116', 16);
+  return s;
+}
+
+function koreaFlag(){
+  let s = rect(0,0,W,H,'#FFFFFF');
+  const r = 46, cx = 150, cy = 100;
+  s += `<g transform="rotate(33.7 ${cx} ${cy})">`;
+  s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#0047A0"/>`;
+  s += `<path d="M ${cx-r} ${cy} A ${r} ${r} 0 0 1 ${cx+r} ${cy} A ${r/2} ${r/2} 0 0 0 ${cx} ${cy} A ${r/2} ${r/2} 0 0 1 ${cx-r} ${cy} Z" fill="#CD2E3A"/>`;
+  s += `</g>`;
+  const bar = (y,broken)=> broken
+    ? `<rect x="-21" y="${y}" width="18" height="8" fill="#000"/><rect x="3" y="${y}" width="18" height="8" fill="#000"/>`
+    : `<rect x="-21" y="${y}" width="42" height="8" fill="#000"/>`;
+  const trigram = (angle, pattern)=>{
+    let g = `<g transform="rotate(${angle} ${cx} ${cy}) translate(${cx} ${cy})">`;
+    pattern.forEach((broken,i)=>{ g += bar(-88 + i*12, broken); });
+    return g + `</g>`;
+  };
+  s += trigram(-56.3, [0,0,0]);        // ☰ top-left
+  s += trigram( 56.3, [1,0,1]);        // ☵ top-right
+  s += trigram(-123.7, [0,1,0]);       // ☲ bottom-left
+  s += trigram( 123.7, [1,1,1]);       // ☷ bottom-right
+  return s;
+}
+
+function turkeyFlag(){
+  let s = rect(0,0,W,H,'#E30A17');
+  s += `<circle cx="120" cy="100" r="50" fill="#FFFFFF"/>`;
+  s += `<circle cx="133" cy="100" r="40" fill="#E30A17"/>`;
+  s += star(185, 100, 21, '#FFFFFF', 180);
+  return s;
+}
+
+function chileFlag(){
+  let s = rect(0,0,W,100,'#FFFFFF') + rect(0,100,W,100,'#DA291C');
+  s += rect(0,0,100,100,'#0032A0');
+  s += star(50,50,26,'#FFFFFF');
+  return s;
+}
+
+function southAfricaFlag(){
+  let s = rect(0,0,W,100,'#E03C31') + rect(0,100,W,100,'#001489');
+  s += `<path d="M -10 0 L 130 100 L -10 200 M 130 100 H 310" fill="none" stroke="#FFFFFF" stroke-width="68"/>`;
+  s += `<path d="M -10 0 L 130 100 L -10 200 M 130 100 H 310" fill="none" stroke="#007749" stroke-width="40"/>`;
+  s += `<path d="M -6 22 L 104 100 L -6 178 Z" fill="#FFB81C"/>`;
+  s += `<path d="M -6 42 L 76 100 L -6 158 Z" fill="#000000"/>`;
+  return s;
+}
+
+function qatarFlag(){
+  let s = rect(0,0,W,H,'#8A1538');
+  let d = `M 0 0 H 92`;
+  const n = 9, seg = H/n;
+  for(let i=0;i<n;i++) d += ` L 122 ${seg*(i+0.5)} L 92 ${seg*(i+1)}`;
+  d += ` H 0 Z`;
+  s += `<path d="${d}" fill="#FFFFFF"/>`;
+  return s;
+}
+
+function walesFlag(){
+  let s = rect(0,0,W,100,'#FFFFFF') + rect(0,100,W,100,'#00AB39');
+  const red = '#D30731';
+  s += `<path d="M200 114 Q234 110 240 92" stroke="${red}" stroke-width="10" fill="none" stroke-linecap="round"/>`; // tail
+  s += `<polygon points="232,80 252,86 238,100" fill="${red}"/>`;                               // tail arrow tip
+  s += `<polygon points="150,98 140,54 158,76 166,48 178,74 192,60 194,98" fill="${red}"/>`;    // spiky wing
+  s += `<ellipse cx="165" cy="112" rx="38" ry="20" fill="${red}"/>`;                            // body
+  s += `<path d="M138 108 L112 82" stroke="${red}" stroke-width="16" stroke-linecap="round"/>`; // neck
+  s += `<ellipse cx="108" cy="78" rx="13" ry="10" fill="${red}"/>`;                             // head
+  s += `<polygon points="100,72 78,68 100,80" fill="${red}"/>`;                                 // upper jaw
+  s += `<polygon points="99,84 84,94 102,88" fill="${red}"/>`;                                  // lower jaw
+  s += `<polygon points="104,66 110,52 116,68" fill="${red}"/>`;                                // horn
+  s += `<path d="M78 68 q-7 -1 -10 -5 q2 6 7 8 z" fill="${red}"/>`;                             // curled tongue
+  s += `<path d="M156 76 L153 96 M170 72 L166 96" stroke="#A50021" stroke-width="2"/>`;         // wing membrane
+  s += `<path d="M146 92 l4 -7 4 7 M164 90 l4 -7 4 7" stroke="${red}" stroke-width="3" fill="none"/>`; // back spines
+  s += `<circle cx="109" cy="75" r="2.6" fill="#FFFFFF"/>`;                                     // eye
+  s += `<path d="M140 124 L134 150 M156 128 L154 152 M176 128 L180 152 M194 120 L202 146" stroke="${red}" stroke-width="10" stroke-linecap="round"/>`; // legs
+  s += `<path d="M134 150 L123 152 M154 152 L143 154 M180 152 L191 154 M202 146 L212 149" stroke="${red}" stroke-width="7" stroke-linecap="round"/>`;  // feet
+  return s;
+}
+
+function scotlandFlag(){
+  let s = rect(0,0,W,H,'#005EB8');
+  s += `<path d="M0 0 L300 200 M300 0 L0 200" stroke="#FFFFFF" stroke-width="40"/>`;
+  return s;
+}
+
+function moroccoFlag(){
+  let s = rect(0,0,W,H,'#C1272D');
+  s += `<polygon points="${starPts(150,105,42,-90,5,0.5)}" fill="none" stroke="#006233" stroke-width="7"/>`;
+  return s;
+}
+
+function switzerlandFlag(){
+  let s = rect(50,0,200,200,'#DA291C');
+  s += rect(130,44,40,112,'#FFFFFF') + rect(94,80,112,40,'#FFFFFF');
+  return s;
+}
+
+function unionJack(w,h){                            // canton at 0,0 with counterchanged St Patrick's saltire
+  let s = rect(0,0,w,h,'#00247D');
+  s += `<path d="M0 0 L${w} ${h} M${w} 0 L0 ${h}" stroke="#FFFFFF" stroke-width="${(h*0.2).toFixed(1)}"/>`;
+  const cx=w/2, cy=h/2, rw=(h*0.067).toFixed(1), o=h*0.045;
+  [[0,0],[w,0],[0,h],[w,h]].forEach(c=>{
+    const dx=c[0]-cx, dy=c[1]-cy, L=Math.hypot(dx,dy);
+    const px=(dy/L)*o, py=(-dx/L)*o;                // counterclockwise side of each half-diagonal
+    s += `<path d="M${(c[0]+px).toFixed(1)} ${(c[1]+py).toFixed(1)} L${(cx+px).toFixed(1)} ${(cy+py).toFixed(1)}" stroke="#CF142B" stroke-width="${rw}"/>`;
+  });
+  s += `<path d="M${cx} 0 V${h} M0 ${cy} H${w}" stroke="#FFFFFF" stroke-width="${(h*0.33).toFixed(1)}"/>`;
+  s += `<path d="M${cx} 0 V${h} M0 ${cy} H${w}" stroke="#CF142B" stroke-width="${(h*0.2).toFixed(1)}"/>`;
+  return s;
+}
+function australiaFlag(){
+  let s = rect(0,0,W,H,'#00247D') + unionJack(150,100);
+  s += star(75,150,17,'#FFFFFF',-90,7);             // Commonwealth Star
+  s += star(225,42,9,'#FFFFFF',-90,7) + star(225,158,9,'#FFFFFF',-90,7);
+  s += star(187,100,9,'#FFFFFF',-90,7) + star(258,84,9,'#FFFFFF',-90,7);
+  s += star(237,118,5,'#FFFFFF');                   // the small fifth star
+  return s;
+}
+function nzFlag(){
+  let s = rect(0,0,W,H,'#00247D') + unionJack(150,100);
+  [[225,45,9],[225,150,10],[190,102,9],[255,88,9]].forEach(p=>{
+    s += star(p[0],p[1],p[2]+3,'#FFFFFF') + star(p[0],p[1],p[2],'#CC142B');
+  });
+  return s;
+}
+function chinaFlag(){
+  let s = rect(0,0,W,H,'#EE1C25') + star(50,50,30,'#FFDE00');
+  [[100,20],[120,40],[120,70],[100,90]].forEach(p=>{
+    const a = Math.atan2(50-p[1], 50-p[0])*180/Math.PI;
+    s += star(p[0],p[1],10,'#FFDE00',a);            // each points toward the big star
+  });
+  return s;
+}
+function indiaFlag(){
+  let s = hs(['#FF9933','#FFFFFF','#138808']);
+  s += `<circle cx="150" cy="100" r="22" fill="none" stroke="#000080" stroke-width="2.5"/>`;
+  s += `<circle cx="150" cy="100" r="3" fill="#000080"/>`;
+  for(let i=0;i<24;i++){
+    const a=i*Math.PI/12;
+    s += `<path d="M150 100 L${(150+21*Math.cos(a)).toFixed(1)} ${(100+21*Math.sin(a)).toFixed(1)}" stroke="#000080" stroke-width="1.4"/>`;
+  }
+  return s;
+}
+function egyptFlag(){
+  let s = hs(['#CE1126','#FFFFFF','#000000']);
+  const G='#C09300';                                // Eagle of Saladin
+  s += `<path d="M139 84 q-6 15 1 28 l4 -3 q-4 -11 -0.5 -21 z" fill="${G}"/>`;
+  s += `<path d="M161 84 q6 15 -1 28 l-4 -3 q4 -11 0.5 -21 z" fill="${G}"/>`;
+  s += `<ellipse cx="150" cy="100" rx="7" ry="12" fill="${G}"/>`;
+  s += `<circle cx="150" cy="84" r="4" fill="${G}"/>`;
+  s += `<path d="M146.5 83.5 l-4 1.4 4 1.8 z" fill="${G}"/>`;
+  s += rect(146,95,8,10,'#FFFFFF') + rect(146,95,2.7,10,'#CE1126') + rect(151.3,95,2.7,10,'#3B3B3B');
+  s += `<path d="M146 112 l-3 6 h14 l-3 -6 z" fill="${G}"/>`;
+  s += rect(139,120,22,4,G);
+  return s;
+}
+function algeriaFlag(){
+  let s = rect(0,0,150,H,'#006233') + rect(150,0,150,H,'#FFFFFF');
+  s += `<path d="M157.6 67.1 A 36 36 0 1 0 157.6 132.9 A 33 33 0 0 1 157.6 67.1 Z" fill="#D21034"/>`;
+  s += star(167,100,11,'#D21034',0);
+  return s;
+}
+function ecuadorFlag(){
+  let s = hs(['#FCD116','#003893','#CE1126'],[2,1,1]);
+  s += `<path d="M128 79 q10 -8 22 -6 q12 -2 22 6 q-10 2.5 -16.5 1 l-5.5 5 l-5.5 -5 q-6.5 1.5 -16.5 -1 z" fill="#2B2B2B"/>`; // condor
+  s += `<circle cx="150" cy="74.5" r="3" fill="#2B2B2B"/><circle cx="150" cy="72.8" r="1.5" fill="#FFFFFF"/>`;
+  s += `<ellipse cx="150" cy="102" rx="17" ry="20" fill="#9CC7E8" stroke="#C49102" stroke-width="2.5"/>`;
+  s += `<circle cx="150" cy="90" r="3.2" fill="#FCD116"/>`;                          // sun
+  s += `<path d="M137 113 l8.5 -15 4.5 5.5 4 -8.5 8 18 z" fill="#F5F5F5"/>`;         // Chimborazo
+  s += `<ellipse cx="150" cy="116.5" rx="13" ry="5" fill="#2E6FB7"/>`;               // river
+  s += `<path d="M145.5 114.5 h9 l-2 2.5 h-5 z" fill="#2B2B2B"/><path d="M150 110.5 v4" stroke="#2B2B2B" stroke-width="1"/>`; // steamboat
+  s += `<path d="M134.5 114 q-4 6 -2.5 11 M165.5 114 q4 6 2.5 11" stroke="#FCD116" stroke-width="3" fill="none"/>`;
+  s += `<path d="M136.5 115 q-3.5 5 -2.3 9 M163.5 115 q3.5 5 2.3 9" stroke="#CE1126" stroke-width="1.6" fill="none"/>`; // draped flags
+  return s;
+}
+function paraguayFlag(){
+  let s = hs(['#D52B1E','#FFFFFF','#0038A8']);
+  s += `<circle cx="150" cy="100" r="21" fill="none" stroke="#8C8C8C" stroke-width="1.5"/>`;
+  s += `<circle cx="150" cy="100" r="17.5" fill="none" stroke="#8C8C8C" stroke-width="0.8"/>`;
+  s += `<path d="M142 110 q-6 -9 -2 -19 M158 110 q6 -9 2 -19" stroke="#1E8449" stroke-width="1.8" fill="none"/>`;
+  [[141,106],[139.2,100],[139.8,94],[159,106],[160.8,100],[160.2,94]].forEach((p,i)=>{
+    s += `<ellipse cx="${p[0]}" cy="${p[1]}" rx="1.2" ry="2.4" fill="#1E8449" transform="rotate(${i<3?-35:35} ${p[0]} ${p[1]})"/>`;
+  });
+  s += star(150,99.5,7.5,'#FCD116');
+  return s;
+}
+function slovakiaFlag(){
+  let s = hs(['#FFFFFF','#0B4EA2','#EE1C25']);
+  const shieldPath = 'M92 62 h44 v30 c0 20 -10 28 -22 33 c-12 -5 -22 -13 -22 -33 z';
+  s += `<path d="${shieldPath}" fill="#EE1C25" stroke="#FFFFFF" stroke-width="3.5"/>`;
+  s += `<defs><clipPath id="svk__UID__"><path d="${shieldPath}"/></clipPath></defs>`;
+  s += `<g clip-path="url(#svk__UID__)"><circle cx="103" cy="120" r="8" fill="#0B4EA2"/><circle cx="125" cy="120" r="8" fill="#0B4EA2"/><circle cx="114" cy="118" r="10" fill="#0B4EA2"/></g>`;
+  s += rect(111.5,72,5,40,'#FFFFFF');                                                // patriarchal double cross
+  s += rect(106,78,16,5,'#FFFFFF') + rect(103,88,22,5,'#FFFFFF');
+  return s;
+}
+function serbiaFlag(){
+  let s = hs(['#C6363C','#0C4076','#FFFFFF']);
+  const G='#F1BF00';
+  s += rect(99.5,68,15,4.5,G);                                                       // crown
+  s += `<path d="M100 68 q7 -5.5 14 0 z" fill="#C6363C"/><path d="M100 68 q7 -5.5 14 0" stroke="${G}" stroke-width="1.4" fill="none"/>`;
+  s += `<path d="M93 76 h28 v22 c0 14 -7 20 -14 20 c-7 0 -14 -6 -14 -20 z" fill="#C6363C" stroke="#EDEDED" stroke-width="1.6"/>`;
+  s += `<path d="M100 86 l-7 2.5 6 1.5 -7 3 6 1.5 -6 4 8 0.5 z" fill="#FFFFFF"/>`;   // left wing
+  s += `<path d="M114 86 l7 2.5 -6 1.5 7 3 -6 1.5 6 4 -8 0.5 z" fill="#FFFFFF"/>`;   // right wing
+  s += `<ellipse cx="107" cy="96" rx="4.2" ry="7.5" fill="#FFFFFF"/>`;
+  s += `<circle cx="103.5" cy="84.5" r="2.7" fill="#FFFFFF"/><circle cx="110.5" cy="84.5" r="2.7" fill="#FFFFFF"/>`; // two heads
+  s += `<path d="M101.2 84 l-2.6 1 2.6 1.2 z" fill="${G}"/><path d="M112.8 84 l2.6 1 -2.6 1.2 z" fill="${G}"/>`;
+  s += `<path d="M104 104 l-2 5 M107 105 l0 5 M110 104 l2 5" stroke="#FFFFFF" stroke-width="2"/>`; // tail
+  s += rect(103.8,92,6.4,7.5,'#C6363C');                                             // chest shield: cross + four firesteels
+  s += `<path d="M107 92 v7.5 M103.8 95.7 h6.4" stroke="#FFFFFF" stroke-width="1.1"/>`;
+  [[105.2,94],[108.8,94],[105.2,97.6],[108.8,97.6]].forEach(p=>{ s += `<circle cx="${p[0]}" cy="${p[1]}" r="0.7" fill="#FFFFFF"/>`; });
+  return s;
+}
+function czechFlag(){
+  return rect(0,0,W,100,'#FFFFFF') + rect(0,100,W,100,'#D7141A')
+       + `<polygon points="0,0 150,100 0,200" fill="#11457E"/>`;
+}
+function venezuelaFlag(){
+  let s = hs(['#FFCC00','#00247D','#CF142B']);
+  for(let i=0;i<8;i++){
+    const a = Math.PI*(1 - i/7);                    // arc of eight stars
+    s += star(150+32*Math.cos(a), 124-30*Math.sin(a), 5.5, '#FFFFFF');
+  }
+  return s;
+}
+function panamaFlag(){
+  return rect(0,0,150,100,'#FFFFFF') + rect(150,0,150,100,'#D21034')
+       + rect(0,100,150,100,'#005293') + rect(150,100,150,100,'#FFFFFF')
+       + star(75,50,20,'#005293') + star(225,150,20,'#D21034');
+}
+function jamaicaFlag(){
+  let s = `<polygon points="0,0 300,0 150,100" fill="#009B3A"/><polygon points="0,200 300,200 150,100" fill="#009B3A"/>`;
+  s += `<polygon points="0,0 0,200 150,100" fill="#000000"/><polygon points="300,0 300,200 150,100" fill="#000000"/>`;
+  s += `<path d="M0 0 L300 200 M300 0 L0 200" stroke="#FED100" stroke-width="26"/>`;
+  return s;
+}
+
+/* ── The 60 flags, in 6 levels ───────────────────────────────────────── */
+const FLAGS = [
+  // Level 1 — Kick-Off
+  {id:'fr', name:'France',        level:1, fact:'Blue, white and red — the famous Tricolore.', svg: vs(['#0055A4','#FFFFFF','#EF4135'])},
+  {id:'it', name:'Italy',         level:1, fact:'Green, white and red, like a tasty pizza margherita!', svg: vs(['#008C45','#FFFFFF','#CD212A'])},
+  {id:'jp', name:'Japan',         level:1, fact:'The big red circle is the rising sun.', svg: rect(0,0,W,H,'#FFFFFF') + `<circle cx="150" cy="100" r="60" fill="#BC002D"/>`},
+  {id:'de', name:'Germany',       level:1, fact:'Black, red and gold stripes.', svg: hs(['#000000','#DD0000','#FFCE00'])},
+  {id:'gb-eng', name:'England',   level:1, fact:'The red cross is called St George’s Cross.', svg: rect(0,0,W,H,'#FFFFFF') + rect(130,0,40,H,'#CE1124') + rect(0,80,W,40,'#CE1124')},
+  {id:'br', name:'Brazil',        level:1, fact:'The blue circle shows the starry night sky.', svg: brazilFlag()},
+  {id:'es', name:'Spain',         level:1, fact:'Spain won the World Cup in 2026!', svg: spainFlag()},
+  {id:'us', name:'USA',           level:1, fact:'50 stars — one for every state!', svg: usaFlag()},
+  {id:'ar', name:'Argentina',     level:1, fact:'The smiling sun is called the Sun of May.', svg: hs(['#74ACDF','#FFFFFF','#74ACDF']) + sunOfMay(150,100,15,'#F6B40E')},
+  {id:'ca', name:'Canada',        level:1, fact:'That leaf is a maple leaf.', svg: canadaFlag()},
+  // Level 2 — Group Stage
+  {id:'pt', name:'Portugal',      level:2, fact:'Home of Cristiano Ronaldo!', svg: portugalFlag()},
+  {id:'nl', name:'Netherlands',   level:2, fact:'Dutch fans wear orange, but the flag is red, white and blue.', svg: hs(['#AE1C28','#FFFFFF','#21468B'])},
+  {id:'be', name:'Belgium',       level:2, fact:'Black, yellow and red, standing up tall.', svg: vs(['#000000','#FDDA24','#EF3340'])},
+  {id:'mx', name:'Mexico',        level:2, fact:'The eagle sits on a cactus!', svg: mexicoFlag()},
+  {id:'pl', name:'Poland',        level:2, fact:'Just two stripes: white on top, red below.', svg: hs(['#FFFFFF','#DC143C'])},
+  {id:'se', name:'Sweden',        level:2, fact:'A yellow cross on blue.', svg: nordic('#006AA7','#FECC02')},
+  {id:'ch', name:'Switzerland',   level:2, fact:'A square flag — one of only two in the world!', svg: switzerlandFlag(), square:true},
+  {id:'ie', name:'Ireland',       level:2, fact:'Green, white and orange.', svg: vs(['#169B62','#FFFFFF','#FF883E'])},
+  {id:'dk', name:'Denmark',       level:2, fact:'One of the oldest flags in the world.', svg: nordic('#C8102E','#FFFFFF')},
+  {id:'gr', name:'Greece',        level:2, fact:'Blue and white like the sea and the waves.', svg: greeceFlag()},
+  // Level 3 — Knockouts
+  {id:'hr', name:'Croatia',       level:3, fact:'The red and white squares are famous!', svg: croatiaFlag()},
+  {id:'uy', name:'Uruguay',       level:3, fact:'Uruguay won the very first World Cup in 1930.', svg: uruguayFlag()},
+  {id:'co', name:'Colombia',      level:3, fact:'The yellow stripe is extra big.', svg: hs(['#FCD116','#003893','#CE1126'],[2,1,1])},
+  {id:'ma', name:'Morocco',       level:3, fact:'A green star on red.', svg: moroccoFlag()},
+  {id:'sn', name:'Senegal',       level:3, fact:'Green, yellow and red with a green star.', svg: vs(['#00853F','#FDEF42','#E31B23']) + star(150,100,26,'#00853F')},
+  {id:'ng', name:'Nigeria',       level:3, fact:'Green for forests, white for peace.', svg: vs(['#008751','#FFFFFF','#008751'])},
+  {id:'gh', name:'Ghana',         level:3, fact:'The black star gives the team its name: the Black Stars.', svg: hs(['#CE1126','#FCD116','#006B3F']) + star(150,100,28,'#000000')},
+  {id:'kr', name:'South Korea',   level:3, fact:'The red and blue circle means balance.', svg: koreaFlag()},
+  {id:'tr', name:'Turkey',        level:3, fact:'A white moon and star on red.', svg: turkeyFlag()},
+  {id:'ua', name:'Ukraine',       level:3, fact:'Blue sky over a golden wheat field.', svg: hs(['#0057B7','#FFD700'])},
+  // Level 4 — The Final
+  {id:'gb-sct', name:'Scotland',  level:4, fact:'The white X is called a saltire.', svg: scotlandFlag()},
+  {id:'gb-wls', name:'Wales',     level:4, fact:'A real red dragon! Its name is Y Ddraig Goch.', svg: walesFlag()},
+  {id:'no', name:'Norway',        level:4, fact:'A blue cross inside a white cross.', svg: nordic('#BA0C2F','#FFFFFF','#00205B')},
+  {id:'is', name:'Iceland',       level:4, fact:'Red cross on blue — like Norway swapped around!', svg: nordic('#02529C','#FFFFFF','#DC1E35')},
+  {id:'fi', name:'Finland',       level:4, fact:'A blue cross on snowy white.', svg: nordic('#FFFFFF','#002F6C')},
+  {id:'at', name:'Austria',       level:4, fact:'Red, white, red — lying down.', svg: hs(['#EF3340','#FFFFFF','#EF3340'])},
+  {id:'cl', name:'Chile',         level:4, fact:'One white star in a blue square.', svg: chileFlag()},
+  {id:'pe', name:'Peru',          level:4, fact:'Red, white, red — standing up.', svg: vs(['#D91023','#FFFFFF','#D91023'])},
+  {id:'za', name:'South Africa',  level:4, fact:'Six colours — more than almost any flag!', svg: southAfricaFlag()},
+  {id:'qa', name:'Qatar',         level:4, fact:'Qatar hosted the World Cup in 2022. That zigzag has nine points!', svg: qatarFlag()},
+  // Level 5 — Extra Time
+  {id:'au', name:'Australia',     level:5, fact:'Can you find the tiny Union Jack? Those stars are the Southern Cross.', svg: australiaFlag()},
+  {id:'cn', name:'China',         level:5, fact:'One big star with four little stars beside it.', svg: chinaFlag()},
+  {id:'in', name:'India',         level:5, fact:'The blue wheel has 24 spokes. Try counting!', svg: indiaFlag()},
+  {id:'eg', name:'Egypt',         level:5, fact:'The golden bird is the Eagle of Saladin.', svg: egyptFlag()},
+  {id:'ci', name:'Ivory Coast',   level:5, fact:'Ireland’s flag flipped! Orange first here.', svg: vs(['#F77F00','#FFFFFF','#009A44'])},
+  {id:'cm', name:'Cameroon',      level:5, fact:'Cameroon’s team is called the Indomitable Lions!', svg: vs(['#007A5E','#CE1126','#FCD116']) + star(150,100,20,'#FCD116')},
+  {id:'dz', name:'Algeria',       level:5, fact:'A red moon and star, on green and white.', svg: algeriaFlag()},
+  {id:'ec', name:'Ecuador',       level:5, fact:'A giant condor guards the mountain.', svg: ecuadorFlag()},
+  {id:'py', name:'Paraguay',      level:5, fact:'A gold star inside a leafy wreath.', svg: paraguayFlag()},
+  {id:'cr', name:'Costa Rica',    level:5, fact:'The big red stripe is double size.', svg: hs(['#002B7F','#FFFFFF','#CE1126','#FFFFFF','#002B7F'],[1,1,2,1,1])},
+  // Level 6 — Penalties
+  {id:'nz', name:'New Zealand',   level:6, fact:'Like Australia’s — but New Zealand’s stars are red!', svg: nzFlag()},
+  {id:'cz', name:'Czechia',       level:6, fact:'A blue triangle points to the middle.', svg: czechFlag()},
+  {id:'sk', name:'Slovakia',      level:6, fact:'A double cross stands on three blue hills.', svg: slovakiaFlag()},
+  {id:'rs', name:'Serbia',        level:6, fact:'Look closely — the white eagle has TWO heads!', svg: serbiaFlag()},
+  {id:'ro', name:'Romania',       level:6, fact:'Blue, yellow and red, standing tall.', svg: vs(['#002B7F','#FCD116','#CE1126'])},
+  {id:'lu', name:'Luxembourg',    level:6, fact:'Like the Netherlands — but the blue is lighter!', svg: hs(['#EA141D','#FFFFFF','#00A2E1'])},
+  {id:'id', name:'Indonesia',     level:6, fact:'Poland flipped upside down! Red on top here.', svg: hs(['#E70011','#FFFFFF'])},
+  {id:'ve', name:'Venezuela',     level:6, fact:'Count the stars in the curve — eight!', svg: venezuelaFlag()},
+  {id:'pa', name:'Panama',        level:6, fact:'Four squares and two stars.', svg: panamaFlag()},
+  {id:'jm', name:'Jamaica',       level:6, fact:'A golden X — and no red, white or blue at all!', svg: jamaicaFlag()},
+];
+const flagById = Object.fromEntries(FLAGS.map(f=>[f.id,f]));
+
+// visually confusable neighbours — used to pick sneaky wrong answers
+const CONFUSABLE = {
+  'ie':['ci','it'], 'it':['ie','mx'], 'mx':['it'], 'fr':['nl','ie'], 'nl':['fr','lu'],
+  'de':['be'], 'be':['de'], 'no':['is','dk'], 'is':['no','fi'], 'fi':['is','se'],
+  'se':['fi','dk'], 'dk':['no','se'], 'ar':['uy'], 'uy':['ar','gr'], 'gr':['uy'],
+  'at':['pe','pl'], 'pe':['at','cl'], 'cl':['pe'], 'pl':['at','id'],
+  'sn':['gh','ma'], 'gh':['sn'], 'ma':['tr'], 'tr':['ma'], 'us':['cl'],
+  'ci':['ie','it'], 'au':['nz'], 'nz':['au'], 'lu':['nl'], 'id':['pl'],
+  'co':['ec','ve'], 'ec':['co','ve'], 've':['co','ec'], 'rs':['sk','hr'], 'sk':['rs','hr'],
+  'dz':['tr','ma'], 'cm':['sn','gh'], 'cr':['nl'], 'ro':['co'],
+};
+
+const LEVELS = [
+  {n:1, name:'Kick-Off',    icon:'⚽'},
+  {n:2, name:'Group Stage', icon:'🌍'},
+  {n:3, name:'Knockouts',   icon:'🔥'},
+  {n:4, name:'The Final',   icon:'🏆'},
+  {n:5, name:'Extra Time',  icon:'⏱️'},
+  {n:6, name:'Penalties',   icon:'🥅'},
+];
+
+/* ── World Cup trivia ────────────────────────────────────────────────── */
+const WC_ROOKIE = [
+  {q:'Who won the World Cup in 2026?', a:'Spain', wrong:['Brazil','England'], flags:{Spain:'es',Brazil:'br',England:'gb-eng'}, fact:'Ferran Torres scored the winning goal!'},
+  {q:'The 2026 World Cup was played in the USA, Canada and one more country. Which one?', a:'Mexico', wrong:['France','Japan'], flags:{Mexico:'mx',France:'fr',Japan:'jp'}, fact:'Three countries shared it — the first time ever!'},
+  {q:'Who did Spain beat in the 2026 final?', a:'Argentina', wrong:['Germany','Portugal'], flags:{Argentina:'ar',Germany:'de',Portugal:'pt'}, fact:'Spain won 1–0 after extra time.'},
+  {q:'Which animal is Maple, the mascot from Canada?', a:'A moose', wrong:['A penguin','A shark'], fact:'Maple the moose played in goal!'},
+  {q:'Which animal is Zayu, the mascot from Mexico?', a:'A jaguar', wrong:['A lion','A kangaroo'], fact:'Zayu the jaguar was the striker.'},
+  {q:'Which bird is Clutch, the mascot from the USA?', a:'A bald eagle', wrong:['A parrot','A penguin'], fact:'Clutch played in midfield.'},
+  {q:'Who scored the most goals at the 2026 World Cup?', a:'Kylian Mbappé', wrong:['Lionel Messi','Harry Kane'], fact:'Mbappé scored 10 goals and won the Golden Boot!'},
+  {q:'Who won the World Cup in 2022?', a:'Argentina', wrong:['France','Brazil'], flags:{Argentina:'ar',France:'fr',Brazil:'br'}, fact:'Lionel Messi finally lifted the trophy!'},
+  {q:'Which country hosted the World Cup in 2022?', a:'Qatar', wrong:['England','Spain'], flags:{Qatar:'qa',England:'gb-eng',Spain:'es'}, fact:'It was the first World Cup in the Middle East.'},
+  {q:'How often is the World Cup played?', a:'Every 4 years', wrong:['Every year','Every 10 years'], fact:'That’s why winning it is so special!'},
+  {q:'What colour is the World Cup trophy?', a:'Gold', wrong:['Silver','Green'], fact:'It’s made of real gold and weighs as much as a cat!'},
+  {q:'How many teams played at the 2026 World Cup?', a:'48', wrong:['10','100'], fact:'The biggest World Cup ever!'},
+];
+const WC_LEGEND = [
+  {q:'Which country has won the most World Cups?', a:'Brazil', wrong:['Germany','England','Argentina'], flags:{Brazil:'br',Germany:'de',England:'gb-eng',Argentina:'ar'}, fact:'Brazil have won it 5 times!'},
+  {q:'England won the World Cup in 1966. Where was the final played?', a:'Wembley, London', wrong:['Paris','New York','Rome'], fact:'England beat West Germany 4–2.'},
+  {q:'Who won the very first World Cup, in 1930?', a:'Uruguay', wrong:['Brazil','Italy','France'], flags:{Uruguay:'uy',Brazil:'br',Italy:'it',France:'fr'}, fact:'Uruguay were the hosts AND the champions!'},
+  {q:'How many times did the great Pelé win the World Cup?', a:'3 times', wrong:['1 time','7 times','Never'], fact:'Pelé is the only player with three wins.'},
+  {q:'Who won the World Cup in 2018?', a:'France', wrong:['Croatia','Spain','Brazil'], flags:{France:'fr',Croatia:'hr',Spain:'es',Brazil:'br'}, fact:'A young Kylian Mbappé scored in the final.'},
+  {q:'Spain’s first World Cup win was in 2010. Which country hosted it?', a:'South Africa', wrong:['Italy','Mexico','Japan'], flags:{'South Africa':'za',Italy:'it',Mexico:'mx',Japan:'jp'}, fact:'The first World Cup ever held in Africa.'},
+  {q:'Who did Argentina beat in the amazing 2022 final?', a:'France', wrong:['Netherlands','Wales','Ghana'], flags:{France:'fr',Netherlands:'nl',Wales:'gb-wls',Ghana:'gh'}, fact:'It finished 3–3, then Argentina won on penalties!'},
+  {q:'How many times have Germany won the World Cup?', a:'4 times', wrong:['1 time','9 times','Never'], fact:'1954, 1974, 1990 and 2014.'},
+  {q:'How many times have Italy won the World Cup?', a:'4 times', wrong:['2 times','Never','8 times'], fact:'Same as Germany — 4 wins each!'},
+  {q:'One of these countries has never won the World Cup. Which one?', a:'Netherlands', wrong:['Italy','Uruguay','Spain'], flags:{Netherlands:'nl',Italy:'it',Uruguay:'uy',Spain:'es'}, fact:'The Netherlands lost three finals. So close!'},
+  {q:'Which three countries will host the World Cup’s 100th birthday party in 2030?', a:'Spain, Portugal & Morocco', wrong:['Australia','China','Iceland'], fact:'Plus special games in South America, where it all began!'},
+  {q:'What was the score in the 2026 final?', a:'1–0 to Spain', wrong:['5–4 to Spain','0–0'], fact:'One goal in extra time won the cup.'},
+  {q:'Diego Maradona led which country to win the 1986 World Cup?', a:'Argentina', wrong:['Portugal','USA','Wales'], flags:{Argentina:'ar',Portugal:'pt',USA:'us',Wales:'gb-wls'}, fact:'Many say it was the best World Cup ever played by one player.'},
+  {q:'Which country won the Women’s World Cup in 2023?', a:'Spain', wrong:['Brazil','Japan','Norway'], flags:{Spain:'es',Brazil:'br',Japan:'jp',Norway:'no'}, fact:'Spain’s women AND men are both world champions!'},
+];
+
+/* ── saved progress (per player) ─────────────────────────────────────── */
+function loadState(){
+  try{
+    const raw = JSON.parse(localStorage.getItem('flag-cup')||'{}');
+    if(raw.players) return Object.assign({sound:true, current:PLAYER}, raw);
+    // migrate the old single-player save shape
+    return { sound: raw.sound!==false, current: PLAYER,
+             players: {[PLAYER]: {best: raw.best||{}, mastery: raw.mastery||{}}} };
+  }catch(e){ return {sound:true, current:PLAYER, players:{[PLAYER]:{best:{}, mastery:{}}}}; }
+}
+function saveState(){
+  try{
+    // merge with what's on disk first, so a second open tab never erases earned progress;
+    // a corrupt stored blob must never block saving — parse defensively and overwrite it
+    let disk = {};
+    try{ disk = JSON.parse(localStorage.getItem('flag-cup')||'{}'); }catch(e){}
+    if(!disk || typeof disk!=='object') disk = {};
+    const diskPlayers = disk.players ||
+      ((disk.best||disk.mastery) ? {[PLAYER]:{best:disk.best||{}, mastery:disk.mastery||{}}} : {});
+    for(const name in diskPlayers){
+      const d = diskPlayers[name];
+      const mine = hasOwn(state.players, name) ? state.players[name] : (state.players[name] = {best:{}, mastery:{}});
+      for(const k in (d.best||{})){
+        const db = d.best[k], mb = mine.best[k];
+        if(!mb || db.stars>mb.stars || (db.stars===mb.stars && db.score>mb.score)) mine.best[k] = db;
+      }
+      // max-merge: two tabs answering the same flag at once may drop one mastery count — accepted
+      for(const k in (d.mastery||{})) mine.mastery[k] = Math.max(mine.mastery[k]||0, d.mastery[k]);
+    }
+    localStorage.setItem('flag-cup', JSON.stringify(state));
+  }catch(e){}
+}
+let state = loadState();
+const hasOwn = (obj,k)=> Object.prototype.hasOwnProperty.call(obj,k);   // never trust inherited keys ('constructor'…)
+function P(){                                       // the current player's progress
+  if(!hasOwn(state.players, state.current)) state.players[state.current] = {best:{}, mastery:{}};
+  return state.players[state.current];
+}
+
+/* ── little sound engine ─────────────────────────────────────────────── */
+let actx = null;
+function audio(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(actx && actx.state==='suspended') actx.resume(); return actx; }
+function tone(freq, dur, type, at, vol, glideTo){
+  const ctx = audio(); if(!ctx || !state.sound) return;
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  const t0 = ctx.currentTime + (at||0);
+  o.type = type||'sine'; o.frequency.setValueAtTime(freq, t0);
+  if(glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t0+dur);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(vol||0.16, t0+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+  o.connect(g).connect(ctx.destination);
+  o.start(t0); o.stop(t0+dur+0.05);
+}
+const sfx = {
+  tap:    ()=> tone(620, .06, 'square', 0, .05),
+  correct:()=>{ tone(659, .12, 'triangle', 0, .18); tone(880, .22, 'triangle', .09, .18); },
+  wrong:  ()=> tone(240, .3, 'sine', 0, .12, 170),
+  pop:    ()=> tone(520, .1, 'triangle', 0, .2, 900),
+  fanfare:()=>{
+    [523,659,784,1047].forEach((f,i)=> tone(f, .18, 'triangle', i*0.13, .18));
+    tone(1047, .5, 'triangle', .55, .2);
+    const ctx = audio();
+    if(ctx && state.sound){                                      // little crowd roar
+      const len = ctx.sampleRate * 1.4, buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<len;i++) d[i] = (Math.random()*2-1) * Math.pow(Math.sin(Math.PI*i/len), 2);
+      const src = ctx.createBufferSource(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+      f.type='bandpass'; f.frequency.value=900; f.Q.value=0.6;
+      g.gain.value = 0.10; src.buffer = buf;
+      src.connect(f).connect(g).connect(ctx.destination); src.start();
+    }
+  },
+};
+
+/* ── read-aloud ──────────────────────────────────────────────────────── */
+let voice = null;
+function pickVoice(){
+  if(!('speechSynthesis' in window)) return;
+  const vs = speechSynthesis.getVoices();
+  voice = vs.find(v=>/en[-_]GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || vs[0] || null;
+}
+if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function hushVoice(){
+  if('speechSynthesis' in window){ try{ speechSynthesis.cancel(); }catch(e){} }
+}
+function say(text){
+  if(!state.sound || !('speechSynthesis' in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    if(voice) u.voice = voice;
+    u.rate = 0.92; u.pitch = 1.05;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ── confetti ────────────────────────────────────────────────────────── */
+const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function confetti(big){
+  if(reduceMotion) return;
+  const cv = document.getElementById('confetti');
+  const ctx = cv.getContext('2d');
+  cv.width = innerWidth; cv.height = innerHeight;
+  const colors = ['#FFC626','#FF6B6B','#2EA35B','#4AA8FF','#FFFFFF','#B07CFF'];
+  const bits = Array.from({length: big?160:80}, ()=>({
+    x: Math.random()*cv.width, y: -20 - Math.random()*cv.height*0.5,
+    w: 7+Math.random()*7, h: 10+Math.random()*8,
+    c: colors[Math.floor(Math.random()*colors.length)],
+    vy: 2.3+Math.random()*3.2, vx: -1.4+Math.random()*2.8,
+    r: Math.random()*Math.PI, vr: -0.14+Math.random()*0.28,
+  }));
+  const t0 = performance.now();
+  (function frame(t){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    bits.forEach(b=>{
+      b.x += b.vx; b.y += b.vy; b.r += b.vr;
+      ctx.save(); ctx.translate(b.x,b.y); ctx.rotate(b.r);
+      ctx.fillStyle = b.c; ctx.fillRect(-b.w/2,-b.h/2,b.w,b.h); ctx.restore();
+    });
+    if(t - t0 < (big?3400:2200)) requestAnimationFrame(frame);
+    else ctx.clearRect(0,0,cv.width,cv.height);
+  })(t0);
+}
+
+/* ── helpers ─────────────────────────────────────────────────────────── */
+const stage = document.getElementById('stage');
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+function starSvg(fill){
+  return `<svg viewBox="0 0 40 40"><polygon points="${starPts(20,22,17,-90)}" fill="${fill}" stroke="#202A5C" stroke-width="2.5"/></svg>`;
+}
+function starRow(n, size, animate){
+  let s = `<div class="starrow" style="--s:${size||64}px">`;
+  for(let i=0;i<3;i++){
+    s += `<span class="${animate&&i<n?'pop':''}" style="animation-delay:${0.25+i*0.35}s; width:${size||64}px; height:${size||64}px; display:inline-block">${starSvg(i<n?'#FFC626':'#E4E8F4')}</span>`;
+  }
+  return s+`</div>`;
+}
+function totalStars(){ return Object.values(P().best).reduce((a,b)=>a+(b.stars||0),0); }
+const MAX_STARS = (6+6+2)*3;
+function bestFor(key){ return P().best[key] || {stars:0, score:0}; }
+
+/* ── screens ─────────────────────────────────────────────────────────── */
+function goHome(){
+  document.title = state.current + "'s Flag Cup";
+  const st = totalStars();
+  stage.innerHTML = `
+    <h1 class="biglogo">${esc(state.current)}’s<br><span class="sun">Flag Cup</span></h1>
+    <p class="tagline">Flags and World Cup fun — let’s play!</p>
+    <div class="modes">
+      ${modeBtn('flags','⚽','Flag Quiz','Which country is it?', 6)}
+      ${modeBtn('find','🔍','Find the Flag','Tap the right flag!', 6)}
+      ${modeBtn('wc','🏆','World Cup Quiz','Winners, mascots &amp; more', 2)}
+      <button class="mode-btn" data-go="book">
+        <span class="mode-ico">📖</span>
+        <span><span class="mode-name">Flag Book</span><br><span class="mode-sub">All 60 flags in one album</span></span>
+      </button>
+    </div>
+    <div class="totals">
+      <span class="pill">⭐ ${st} / ${MAX_STARS} stars</span>
+      <span class="pill"><button data-act="players">👥 Swap player</button></span>
+      <span class="pill"><button data-act="sound">${state.sound?'🔊 Sound on':'🔇 Sound off'}</button></span>
+    </div>`;
+  wire();
+}
+
+function goPlayers(){
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Who’s playing?</h1>
+    </div>
+    <div class="levels">
+      ${Object.keys(state.players).map(n=>{
+        const stars = Object.values(state.players[n].best).reduce((a,b)=>a+(b.stars||0),0);
+        return `<button class="level-btn" data-player="${esc(n)}">
+          <span class="level-num">${n===state.current?'⚽':'🙂'}</span>
+          <span><span class="level-name">${esc(n)}</span><br><span class="mode-sub">⭐ ${stars} stars</span></span>
+        </button>`;
+      }).join('')}
+      <button class="level-btn" data-act="newplayer">
+        <span class="level-num">➕</span>
+        <span class="level-name">New player</span>
+      </button>
+    </div>`;
+  wire();
+}
+function goNewPlayer(){
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-act="players" aria-label="Back">←</button>
+      <h1 class="screen-title">New player</h1>
+    </div>
+    <div class="card" style="text-align:center">
+      <p class="qprompt">Type your name:</p>
+      <input id="pname" maxlength="14" autocomplete="off" aria-label="Your name"
+        style="width:100%; font:800 26px 'Baloo 2',sans-serif; text-align:center; padding:12px;
+               border:4px solid var(--ink); border-radius:16px; color:var(--ink); background:var(--card-dim)">
+      <div class="btnrow" style="margin-top:14px">
+        <button class="go-btn" data-act="saveplayer">Let’s play! ▶</button>
+      </div>
+    </div>`;
+  wire();
+  const inp = document.getElementById('pname');
+  inp.focus();
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter') savePlayer(); });
+}
+function savePlayer(){
+  const inp = document.getElementById('pname');
+  const name = ((inp && inp.value) || '').trim().slice(0,14);
+  if(!name){ if(inp) inp.focus(); return; }
+  if(!hasOwn(state.players, name)) state.players[name] = {best:{}, mastery:{}};
+  state.current = name; saveState();
+  sfx.fanfare();
+  say('Welcome, ' + name + '!');
+  goHome();
+}
+function modeBtn(mode, ico, name, sub, nLevels){
+  let got = 0;
+  for(let l=1;l<=nLevels;l++) got += bestFor(mode+'-'+l).stars;
+  return `<button class="mode-btn" data-go="levels" data-mode="${mode}">
+    <span class="mode-ico">${ico}</span>
+    <span><span class="mode-name">${name}</span><br><span class="mode-sub">${sub}</span></span>
+    <span class="mode-stars">⭐ ${got}/${nLevels*3}</span>
+  </button>`;
+}
+
+function goLevels(mode){
+  const titles = {flags:'Flag Quiz', find:'Find the Flag', wc:'World Cup Quiz'};
+  const list = mode==='wc'
+    ? [{n:1,name:'Rookie',icon:'⚽'},{n:2,name:'Legend',icon:'🏆'}]
+    : LEVELS;
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">${titles[mode]}</h1>
+    </div>
+    <div class="levels">
+      ${list.map(l=>{
+        const best = bestFor(mode+'-'+l.n);
+        const mini = mode==='wc' ? '' :
+          `<span class="level-flags">${shuffle(FLAGS.filter(f=>f.level===l.n)).slice(0,4)
+            .map(f=>`<span class="mini ${f.square?'sq':''}">${wrap(f.svg)}</span>`).join('')}</span>`;
+        return `<button class="level-btn" data-play="${mode}" data-level="${l.n}">
+          <span class="level-num">${l.icon}</span>
+          <span><span class="level-name">Level ${l.n}: ${l.name}</span>${mini}</span>
+          <span class="level-stars">${starRowSmall(best.stars)}</span>
+        </button>`;
+      }).join('')}
+    </div>`;
+  wire();
+}
+function starRowSmall(n){
+  let s = '<span style="display:inline-flex;gap:2px">';
+  for(let i=0;i<3;i++) s += `<span style="width:22px;height:22px;display:inline-block">${starSvg(i<n?'#FFC626':'#E4E8F4')}</span>`;
+  return s+'</span>';
+}
+
+/* ── building a match ────────────────────────────────────────────────── */
+function pickDistractors(flag, pool, n){
+  const confus = (CONFUSABLE[flag.id]||[]).map(id=>flagById[id]).filter(Boolean);
+  const rest = shuffle(pool.filter(f=>f.id!==flag.id && !confus.includes(f)));
+  const sneaky = shuffle(confus).slice(0, Math.min(confus.length, Math.random()<0.7?1:2));
+  return shuffle(sneaky.concat(rest)).slice(0,n);
+}
+function buildMatch(mode, level){
+  if(mode==='wc'){
+    const bank = level===1 ? WC_ROOKIE : WC_LEGEND;
+    return shuffle(bank).slice(0,10).map(item=>{
+      const opts = shuffle([item.a].concat(item.wrong));
+      return {kind:'wc', prompt:item.q, options:opts, answer:opts.indexOf(item.a), fact:item.fact, flags:item.flags||null};
+    });
+  }
+  const pool = FLAGS.filter(f=>f.level===level);
+  const nOpts = (mode==='flags' && level===1) ? 3 : 4;
+  return shuffle(pool).map(flag=>{
+    const ds = pickDistractors(flag, pool, nOpts-1);
+    const opts = shuffle([flag].concat(ds));
+    return {
+      kind: mode,        // 'flags': see flag, pick name — 'find': hear name, pick flag
+      flag, options:opts, answer:opts.indexOf(flag),
+      prompt: mode==='flags' ? 'Which country’s flag is this?' : `Tap the flag of ${flag.name}!`,
+      fact: flag.fact,
+    };
+  });
+}
+
+/* ── playing a match ─────────────────────────────────────────────────── */
+let match = null, advanceTimer = null;
+function startMatch(mode, level){
+  clearTimeout(advanceTimer);
+  match = {mode, level, qs: buildMatch(mode, level), i:0, firstTry:0, laterTry:0, tries:0, done:[]};
+  renderQuestion();
+}
+function renderQuestion(){
+  const q = match.qs[match.i];
+  match.tries = 0;
+  match.renderedAt = performance.now();   // grace period against tap-through from the previous screen
+  const dots = match.qs.map((_,i)=>{
+    const cls = i===match.i ? 'now' : (match.done[i]==='hit' ? 'hit' : match.done[i]==='ok' ? 'ok' : '');
+    return `<span class="dot ${cls}"></span>`;
+  }).join('');
+  let card = '', answers = '';
+  if(q.kind==='find'){
+    answers = `<div class="answers flagrid">` + q.options.map((f,i)=>
+      `<button class="ans-btn flagopt" data-ans="${i}" aria-label="${esc(f.name)} flag choice">
+         <span class="optflag ${f.square?'sq':''}">${wrap(f.svg)}</span></button>`).join('') + `</div>`;
+  } else if(q.kind==='flags'){
+    answers = `<div class="answers">` + q.options.map((f,i)=>
+      `<button class="ans-btn" data-ans="${i}">${esc(f.name)}</button>`).join('') + `</div>`;
+  } else {
+    answers = `<div class="answers">` + q.options.map((t,i)=>{
+      const fid = q.flags && q.flags[t];
+      const mini = fid ? `<span class="optflag">${wrap(flagById[fid].svg)}</span>` : '';
+      return `<button class="ans-btn" data-ans="${i}">${mini}${esc(t)}</button>`;
+    }).join('') + `</div>`;
+  }
+  if(q.kind==='flags'){
+    card = `<div class="bigflag ${q.flag.square?'sq':''}">${wrap(q.flag.svg)}</div>`;
+  }
+  stage.innerHTML = `
+    <div class="quizbar">
+      <button class="back-btn" data-go="levels" data-mode="${match.mode}" aria-label="Quit match">✕</button>
+      <div class="dots">${dots}</div>
+      <span class="ballcount">⚽ ${match.firstTry}</span>
+    </div>
+    <div class="qcard">
+      <button class="say-btn" data-act="say" aria-label="Read aloud">🔊</button>
+      <p class="qprompt">${esc(q.prompt)}</p>
+      ${card}
+    </div>
+    ${answers}
+    <div id="fb"></div>`;
+  wire();
+  if(q.kind==='find') say(q.prompt);
+}
+function sayCurrent(){
+  const q = match && match.qs[match.i];
+  if(!q) return;
+  if(q.kind==='flags') say(q.prompt);
+  else if(q.kind==='find') say(q.prompt);
+  else say(q.prompt + '. ' + q.options.join('. Or, '));
+}
+function answer(i, btn){
+  if(!match || performance.now() - (match.renderedAt||0) < 350) return;  // ignore taps meant for the previous screen
+  const q = match.qs[match.i];
+  match.tries++;
+  if(i===q.answer){
+    const first = match.tries===1;
+    if(first){ match.firstTry++; match.done[match.i]='hit'; }
+    else { match.laterTry++; match.done[match.i]='ok'; }
+    if(q.flag && first){
+      P().mastery[q.flag.id] = (P().mastery[q.flag.id]||0)+1;
+      saveState();
+    }
+    sfx.correct();
+    btn.classList.add('right');
+    document.querySelectorAll('.ans-btn').forEach(b=>b.disabled=true);
+    const name = q.flag ? q.flag.name : q.options[q.answer];
+    const cheers = ['Goal!','Brilliant!','Super save!','What a shot!','Top corner!','You’re on fire!'];
+    const cheer = first ? cheers[Math.floor(Math.random()*cheers.length)] : 'You got it!';
+    document.getElementById('fb').innerHTML =
+      `<div class="feedback yay">${cheer} ${q.kind!=='wc' ? 'It’s '+esc(name)+'!' : ''}
+       <span class="fact">${esc(q.fact||'')}</span></div>`;
+    if(q.kind==='flags' && first) say(cheer + ' ' + name + '!');
+    const wait = q.kind==='wc' ? 2600 : 1800;
+    advanceTimer = setTimeout(nextQuestion, wait);
+  } else {
+    sfx.wrong();
+    btn.classList.add('nope');
+    btn.disabled = true;
+    const nudges = ['Good try! Have another go!','Almost! Try again!','So close! One more try!'];
+    document.getElementById('fb').innerHTML =
+      `<div class="feedback try">${nudges[Math.floor(Math.random()*nudges.length)]}</div>`;
+  }
+}
+function nextQuestion(){
+  if(!match) return;
+  match.i++;
+  if(match.i < match.qs.length) renderQuestion();
+  else finishMatch();
+}
+function finishMatch(){
+  const score = match.firstTry, n = match.qs.length;
+  const stars = score>=9 ? 3 : score>=7 ? 2 : score>=5 ? 1 : 0;
+  const key = match.mode+'-'+match.level;
+  const prev = bestFor(key);
+  if(stars>prev.stars || (stars===prev.stars && score>prev.score)){
+    P().best[key] = {stars, score};
+    saveState();
+  }
+  const who = state.current;
+  const cheer =
+    stars===3 && score===n ? `PERFECT, ${who}! Ten out of ten — what a superstar!` :
+    stars===3 ? `INCREDIBLE, ${who}! What a superstar — you’re a world champion!` :
+    stars===2 ? `Amazing work, ${who}! One more star to go — you can do it!` :
+    stars===1 ? `Great match, ${who}! Keep playing and grab more stars!` :
+                `Good practice, ${who}! Every champion starts somewhere. Try again!`;
+  const nextLevel = match.level + 1;
+  const maxLevel = match.mode==='wc' ? 2 : 6;
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>${stars>=2?'⚽ FULL TIME! ⚽':'Full time!'}</h2>
+      ${starRow(stars, 64, true)}
+      <p class="scoreline">You scored ${score} out of ${n}!</p>
+      <p class="cheer">${esc(cheer)}</p>
+      <div class="btnrow">
+        ${nextLevel<=maxLevel ? `<button class="go-btn" data-play="${match.mode}" data-level="${nextLevel}">Next level ▶</button>` : ''}
+        <button class="go-btn ${nextLevel<=maxLevel?'quiet':''}" data-play="${match.mode}" data-level="${match.level}">Play again ↻</button>
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  wire();
+  sfx.fanfare();
+  confetti(stars>=3);
+  say(cheer);
+}
+
+/* ── flag book ───────────────────────────────────────────────────────── */
+function goBook(){
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Flag Book</h1>
+    </div>
+    ${LEVELS.map(l=>`
+      <h2 class="booksec">${l.icon} ${l.name}</h2>
+      <div class="bookgrid">
+        ${FLAGS.filter(f=>f.level===l.n).map(f=>{
+          const m = P().mastery[f.id]||0;
+          const medal = m>=3 ? '🌟' : m>=1 ? '⭐' : '';
+          return `<button class="sticker" data-peek="${f.id}">
+            ${medal?`<span class="medal">${medal}</span>`:''}
+            <span class="flg ${f.square?'sq':''}">${wrap(f.svg)}</span>
+            <span class="nm">${esc(f.name)}</span>
+          </button>`;
+        }).join('')}
+      </div>`).join('')}
+    <p style="text-align:center; color:#EAFFF2; font-weight:700; margin-top:20px; text-shadow:0 2px 0 rgba(18,58,35,.35)">
+      ⭐ = answered right &nbsp; 🌟 = flag master!</p>`;
+  wire();
+}
+function peekFlag(id){
+  const f = flagById[id];
+  const m = P().mastery[id]||0;
+  const div = document.createElement('div');
+  div.className = 'peek';
+  div.innerHTML = `
+    <div class="card">
+      <div class="bigflag ${f.square?'sq':''}" style="margin:0 auto">${wrap(f.svg)}</div>
+      <h3>${esc(f.name)}</h3>
+      ${m>0?`<p class="learn">${m>=3?'🌟 Flag master!':'⭐ You know this one!'}</p>`:''}
+      <p class="fact">${esc(f.fact)}</p>
+      <div class="btnrow">
+        <button class="go-btn" data-act="peeksay">Hear it 🔊</button>
+        <button class="go-btn quiet" data-act="peekclose">Close ✕</button>
+      </div>
+    </div>`;
+  div.addEventListener('click', e=>{
+    if(e.target===div || e.target.closest('[data-act="peekclose"]')) div.remove();
+    else if(e.target.closest('[data-act="peeksay"]')){ sfx.tap(); say(f.name + '. ' + f.fact); }
+  });
+  document.body.appendChild(div);
+  say(f.name);
+}
+
+/* ── event wiring ────────────────────────────────────────────────────── */
+function wire(){
+  stage.querySelectorAll('[data-go]').forEach(b=> b.addEventListener('click', ()=>{
+    sfx.tap();
+    match = null; clearTimeout(advanceTimer);   // leaving a match cancels its pending advance
+    hushVoice();
+    const go = b.dataset.go;
+    if(go==='home') goHome();
+    else if(go==='book') goBook();
+    else if(go==='levels') goLevels(b.dataset.mode);
+  }));
+  stage.querySelectorAll('[data-play]').forEach(b=> b.addEventListener('click', ()=>{
+    sfx.tap(); hushVoice(); startMatch(b.dataset.play, parseInt(b.dataset.level,10));
+  }));
+  stage.querySelectorAll('[data-ans]').forEach(b=> b.addEventListener('click', ()=> answer(parseInt(b.dataset.ans,10), b)));
+  stage.querySelectorAll('[data-act="say"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); sayCurrent(); }));
+  stage.querySelectorAll('[data-act="sound"]').forEach(b=> b.addEventListener('click', ()=>{
+    state.sound = !state.sound; saveState();
+    if(!state.sound && 'speechSynthesis' in window){ try{ speechSynthesis.cancel(); }catch(e){} }
+    goHome();
+  }));
+  stage.querySelectorAll('[data-peek]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); peekFlag(b.dataset.peek); }));
+  stage.querySelectorAll('[data-player]').forEach(b=> b.addEventListener('click', ()=>{
+    sfx.tap(); state.current = b.dataset.player; saveState(); goHome();
+  }));
+  stage.querySelectorAll('[data-act="players"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); goPlayers(); }));
+  stage.querySelectorAll('[data-act="newplayer"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); goNewPlayer(); }));
+  stage.querySelectorAll('[data-act="saveplayer"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); savePlayer(); }));
+}
+
+document.addEventListener('pointerdown', ()=>audio(), {once:true});
+window.__game = {startMatch, goHome, goBook, goPlayers, savePlayer, FLAGS, CONFUSABLE, state:()=>state, match:()=>match, answer, buildMatch, P};
+
+const params = new URLSearchParams(location.search);
+if(params.has('book')) goBook();
+else goHome();
+</script>
