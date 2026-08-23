@@ -666,7 +666,7 @@ function crescent(ox,oy,orr, ix,iy,irr, fill){     // outer circle minus inner c
   const mx = ox + a*ux, my = oy + a*uy;
   const p1 = [(mx - h*uy).toFixed(1), (my + h*ux).toFixed(1)];
   const p2 = [(mx + h*uy).toFixed(1), (my - h*ux).toFixed(1)];
-  return `<path d="M ${p1} A ${orr} ${orr} 0 1 0 ${p2} A ${irr} ${irr} 0 0 1 ${p1} Z" fill="${fill}"/>`;
+  return `<path d="M ${p1} A ${orr} ${orr} 0 1 1 ${p2} A ${irr} ${irr} 0 1 0 ${p1} Z" fill="${fill}"/>`;
 }
 function israelFlag(){
   let s = rect(0,0,W,H,'#FFFFFF') + rect(0,24,W,22,'#0038B8') + rect(0,154,W,22,'#0038B8');
@@ -984,10 +984,10 @@ function ussrFlag(){
   let s = rect(0,0,W,H,'#CC0000');
   const G='#FFD700';
   s += `<polygon points="${starPts(62,34,9)}" fill="none" stroke="${G}" stroke-width="3"/>`;
-  s += crescent(62,74,24, 70,66,20, G);                                              // sickle blade
-  s += `<path d="M45 92 L57 80" stroke="${G}" stroke-width="6" stroke-linecap="round"/>`;   // sickle handle
-  s += `<path d="M44 56 L76 88" stroke="${G}" stroke-width="6" stroke-linecap="round"/>`;   // hammer handle
-  s += `<path d="M38 60 l14 -14 8 8 -7 7 z" fill="${G}"/>`;                          // hammer head
+  s += crescent(62,66,26, 56,74,21, G);                                              // sickle blade arcs over the top
+  s += `<path d="M84 92 L73 79" stroke="${G}" stroke-width="6" stroke-linecap="round"/>`;   // sickle handle, lower right
+  s += `<path d="M46 92 L72 64" stroke="${G}" stroke-width="6" stroke-linecap="round"/>`;   // hammer handle, lower left
+  s += `<path d="M60 50 l10 -6 14 14 -6 10 z" fill="${G}"/>`;                        // hammer head
   return s;
 }
 function yugoslaviaFlag(){
@@ -999,9 +999,10 @@ function ddrFlag(){
   let s = hs(['#000000','#DD0000','#FFCE00']);
   s += `<path d="M128 122 a30 30 0 0 1 44 0" stroke="#C8A100" stroke-width="7" fill="none"/>`;
   s += `<path d="M126 118 q-6 -26 12 -38 M174 118 q6 -26 -12 -38" stroke="#C8A100" stroke-width="5" fill="none"/>`;
-  s += `<circle cx="150" cy="96" r="17" fill="#FFFFFF" stroke="#C8A100" stroke-width="3"/>`;
+  s += `<circle cx="150" cy="96" r="17" fill="none" stroke="#C8A100" stroke-width="3"/>`;   // red stripe shows through
   s += `<path d="M150 84 l-9 22 M150 84 l9 22 M147 92 a8 8 0 0 0 6 0" stroke="#C8A100" stroke-width="3.5" fill="none"/>`; // compass
-  s += `<path d="M141 100 l12 -10 M153 90 l4 -4 -3 -3" stroke="#8B0000" stroke-width="3.5" fill="none"/>`;                 // hammer
+  s += `<path d="M141 100 l12 -10 M153 90 l4 -4 -3 -3" stroke="#C8A100" stroke-width="3.5" fill="none"/>`;                // hammer, gold
+  s += rect(138,120,8,4,'#000000') + rect(146,120,8,4,'#DD0000') + rect(154,120,8,4,'#FFCE00');                            // ribbon
   return s;
 }
 function kingdomItalyFlag(){
@@ -1049,8 +1050,8 @@ function zaireFlag(){
   return s;
 }
 function granColombiaFlag(){
-  let s = hs(['#FCD116','#003893','#CE1126']);
-  [[128,100],[150,94],[172,100]].forEach(p=>{ s += star(p[0],p[1],9,'#FFFFFF'); });
+  let s = hs(['#FCD116','#003893','#CE1126'],[2,1,1]);   // the double yellow that Colombia and Ecuador kept
+  [[126,125],[150,125],[174,125]].forEach(p=>{ s += star(p[0],p[1],9,'#FFFFFF'); });
   return s;
 }
 function siamFlag(){
@@ -1186,7 +1187,7 @@ const FLAGS = [
   {id:'tg', name:'Togo',          level:6, fact:'Five stripes and one corner star.', svg: (()=>{ let t=''; for(let i=0;i<5;i++) t += rect(0,i*40,W,40.5, i%2===0?'#006A4E':'#FFCE00'); return t + rect(0,0,110,120,'#D21034') + star(55,60,32,'#FFFFFF'); })()},
   // BONUS — old flags of former countries
   {id:'su',  name:'The USSR',        level:7, fact:'The USSR split into 15 countries — Russia is the biggest.', svg: ussrFlag()},
-  {id:'yu',  name:'Yugoslavia',      level:7, fact:'Yugoslavia became 7 countries, like Croatia and Serbia!', svg: yugoslaviaFlag()},
+  {id:'yu',  name:'Yugoslavia',      level:7, fact:'Yugoslavia became 6 countries, like Croatia and Serbia!', svg: yugoslaviaFlag()},
   {id:'ddr', name:'East Germany',    level:7, fact:'East and West Germany joined into one Germany in 1990.', svg: ddrFlag()},
   {id:'csk', name:'Czechoslovakia',  level:7, fact:'It split into Czechia and Slovakia — Czechia kept the flag!', svg: czechFlag()},
   {id:'kit', name:'Kingdom of Italy',level:7, fact:'Italy’s old flag had a royal shield. They won two World Cups with it!', svg: kingdomItalyFlag()},
@@ -1270,10 +1271,10 @@ const WC_LEGEND = [
   {q:'What was the score in the 2026 final?', a:'1–0 to Spain', wrong:['5–4 to Spain','0–0'], fact:'One goal in extra time won the cup.'},
   {q:'Diego Maradona led which country to win the 1986 World Cup?', a:'Argentina', wrong:['Portugal','USA','Wales'], flags:{Argentina:'ar',Portugal:'pt',USA:'us',Wales:'gb-wls'}, fact:'Many say it was the best World Cup ever played by one player.'},
   {q:'Which country won the Women’s World Cup in 2023?', a:'Spain', wrong:['Brazil','Japan','Norway'], flags:{Spain:'es',Brazil:'br',Japan:'jp',Norway:'no'}, fact:'Spain’s women AND men are both world champions!'},
-  {q:'No man has scored more World Cup goals than Miroslav Klose. How many did he score?', a:'16', wrong:['6','60','2'], fact:'He scored them for Germany over four World Cups.'},
+  {q:'Germany’s Miroslav Klose held the World Cup goals record for 12 years. How many did he score?', a:'16', wrong:['6','60','2'], fact:'Then Mbappé zoomed past him with 22 goals in 2026!'},
   {q:'Just Fontaine of France scored HOW many goals at one World Cup in 1958?', a:'13', wrong:['3','30','1'], fact:'Thirteen goals in six games. Still the record!'},
   {q:'In 1950, little Uruguay shocked the whole world by beating which host country?', a:'Brazil', wrong:['Mexico','Argentina','Chile'], flags:{Brazil:'br',Mexico:'mx',Argentina:'ar',Chile:'cl'}, fact:'200,000 people went silent in the stadium!'},
-  {q:'The 1954 final is called the Miracle of Bern. West Germany beat which amazing team?', a:'Hungary', wrong:['Brazil','England','Sweden'], flags:{Hungary:'hu',Brazil:'br',England:'gb-eng',Sweden:'se'}, fact:'Hungary’s magic team had won 31 games in a row!'},
+  {q:'The 1954 final is called the Miracle of Bern. West Germany beat which amazing team?', a:'Hungary', wrong:['Brazil','England','Sweden'], flags:{Hungary:'hu',Brazil:'br',England:'gb-eng',Sweden:'se'}, fact:'Hungary’s magic team hadn’t lost a single game in 31 matches!'},
   {q:'Who scored THREE goals in the 1966 final for England?', a:'Geoff Hurst', wrong:['Bobby Charlton','David Beckham','Harry Kane'], fact:'The first ever hat-trick in a World Cup final!'},
   {q:'Maradona’s sneaky 1986 goal, scored with his fist, is called…?', a:'The Hand of God', wrong:['The Foot of Gold','The Magic Glove','The Big Punch'], fact:'Four minutes later he scored the greatest goal ever!'},
   {q:'Roger Milla danced by the corner flag for Cameroon. How old was he when he scored in 1994?', a:'42', wrong:['12','19','25'], fact:'The oldest World Cup scorer ever!'},
@@ -1283,7 +1284,7 @@ const WC_LEGEND = [
   {q:'Lev Yashin, the greatest goalkeeper ever, played for which country that no longer exists?', a:'The USSR', wrong:['Yugoslavia','East Germany','Zaire'], flags:{'The USSR':'su',Yugoslavia:'yu','East Germany':'ddr',Zaire:'zr'}, fact:'He wore all black — they called him the Black Spider!'},
   {q:'Zaire played the 1974 World Cup. What is Zaire called today?', a:'DR Congo', wrong:['Zambia','Morocco','Jamaica'], flags:{'DR Congo':'cd',Zambia:'zm',Morocco:'ma',Jamaica:'jm'}, fact:'They were the first team from the middle of Africa!'},
   {q:'Italy won the 2006 final against France. How was it decided?', a:'On penalties', wrong:['By coin flip','By golden goal','By dance-off'], fact:'Penalties are the most exciting, scary ending of all!'},
-  {q:'The 2026 World Cup was the biggest ever. How many matches were played?', a:'104', wrong:['10','1000','64'], fact:'Nearly double the old number of 64!'},
+  {q:'The 2026 World Cup was the biggest ever. How many matches were played?', a:'104', wrong:['10','1000','64'], fact:'That’s 40 more games than the old 64!'},
 ];
 const WC_STARS = [
   {q:'Lionel Messi plays for which country?', a:'Argentina', wrong:['Brazil','Spain','Italy'], flags:{Argentina:'ar',Brazil:'br',Spain:'es',Italy:'it'}, fact:'Messi finally lifted the World Cup in 2022.'},
@@ -1305,7 +1306,7 @@ const WC_STARS = [
   {q:'The great Pelé came from which country?', a:'Brazil', wrong:['Portugal','Argentina','Mexico'], flags:{Brazil:'br',Portugal:'pt',Argentina:'ar',Mexico:'mx'}, fact:'Many say he was the greatest of all.'},
   {q:'Who is England’s record goal scorer?', a:'Harry Kane', wrong:['David Beckham','Jude Bellingham','Geoff Hurst'], fact:'He passed Wayne Rooney’s record in 2023.'},
   {q:'Sam Kerr, the flying striker, plays for which country?', a:'Australia', wrong:['New Zealand','England','Canada'], flags:{Australia:'au','New Zealand':'nz',England:'gb-eng',Canada:'ca'}, fact:'She celebrates goals with a backflip!'},
-  {q:'Marta, the record scorer of the Women’s World Cup, played for which country?', a:'Brazil', wrong:['Spain','USA','Colombia'], flags:{Brazil:'br',Spain:'es',USA:'us',Colombia:'co'}, fact:'Seventeen World Cup goals — more than anyone!'},
+  {q:'Marta, the record scorer of the Women’s World Cup, played for which country?', a:'Brazil', wrong:['Spain','USA','Colombia'], flags:{Brazil:'br',Spain:'es',USA:'us',Colombia:'co'}, fact:'Seventeen goals — more than anyone in the Women’s World Cup!'},
   {q:'Goalkeeper Gianluigi Donnarumma plays for which country?', a:'Italy', wrong:['Spain','France','Greece'], flags:{Italy:'it',Spain:'es',France:'fr',Greece:'gr'}, fact:'A giant wall in goal!'},
   {q:'Virgil van Dijk plays for which country?', a:'Netherlands', wrong:['Belgium','Luxembourg','Denmark'], flags:{Netherlands:'nl',Belgium:'be',Luxembourg:'lu',Denmark:'dk'}, fact:'A colossus in defence.'},
 ];
@@ -1596,9 +1597,10 @@ function starRowSmall(n){
 /* ── building a match ────────────────────────────────────────────────── */
 function pickDistractors(flag, pool, n){
   const confus = (CONFUSABLE[flag.id]||[]).map(id=>flagById[id]).filter(Boolean);
-  const rest = shuffle(pool.filter(f=>f.id!==flag.id && !confus.includes(f)));
-  const sneaky = shuffle(confus).slice(0, Math.min(confus.length, Math.random()<0.7?1:2));
-  return shuffle(sneaky.concat(rest)).slice(0,n);
+  // sneaky lookalikes get guaranteed slots; the rest fill up from the level pool
+  const sneaky = shuffle(confus).slice(0, Math.min(confus.length, Math.random()<0.7?1:2, n));
+  const rest = shuffle(pool.filter(f=>f.id!==flag.id && !sneaky.includes(f)));
+  return shuffle(sneaky.concat(rest.slice(0, Math.max(0, n - sneaky.length))));
 }
 function buildMatch(mode, level){
   if(mode==='wc'){
@@ -1650,8 +1652,8 @@ function renderQuestion(){
       `<button class="ans-btn" data-ans="${i}">${esc(f.name)}</button>`).join('') + `</div>`;
   } else {
     answers = `<div class="answers">` + q.options.map((t,i)=>{
-      const fid = q.flags && q.flags[t];
-      const mini = fid ? `<span class="optflag">${wrap(flagById[fid].svg)}</span>` : '';
+      const ff = q.flags && q.flags[t] ? flagById[q.flags[t]] : null;
+      const mini = ff ? `<span class="optflag ${ff.square?'sq':''}">${wrap(ff.svg)}</span>` : '';
       return `<button class="ans-btn" data-ans="${i}">${mini}${esc(t)}</button>`;
     }).join('') + `</div>`;
   }
