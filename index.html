@@ -658,7 +658,406 @@ function jamaicaFlag(){
   return s;
 }
 
-/* ── The 60 flags, in 6 levels ───────────────────────────────────────── */
+function crescent(ox,oy,orr, ix,iy,irr, fill){     // outer circle minus inner circle, as a path
+  const d = Math.hypot(ix-ox, iy-oy);
+  const a = (d*d + orr*orr - irr*irr) / (2*d);
+  const h = Math.sqrt(Math.max(orr*orr - a*a, 0.01));
+  const ux = (ix-ox)/d, uy = (iy-oy)/d;
+  const mx = ox + a*ux, my = oy + a*uy;
+  const p1 = [(mx - h*uy).toFixed(1), (my + h*ux).toFixed(1)];
+  const p2 = [(mx + h*uy).toFixed(1), (my - h*ux).toFixed(1)];
+  return `<path d="M ${p1} A ${orr} ${orr} 0 1 0 ${p2} A ${irr} ${irr} 0 0 1 ${p1} Z" fill="${fill}"/>`;
+}
+function israelFlag(){
+  let s = rect(0,0,W,H,'#FFFFFF') + rect(0,24,W,22,'#0038B8') + rect(0,154,W,22,'#0038B8');
+  const tri = rot => `<polygon points="${[0,1,2].map(i=>{
+    const a=(rot+i*120)*Math.PI/180; return (150+30*Math.cos(a)).toFixed(1)+','+(100+30*Math.sin(a)).toFixed(1);
+  }).join(' ')}" fill="none" stroke="#0038B8" stroke-width="5.5"/>`;
+  return s + tri(-90) + tri(90);
+}
+function tunisiaFlag(){
+  let s = rect(0,0,W,H,'#E70013') + `<circle cx="150" cy="100" r="50" fill="#FFFFFF"/>`;
+  s += crescent(144,100,38, 154,100,31, '#E70013');
+  s += star(164,100,15,'#E70013',180);
+  return s;
+}
+function pakistanFlag(){
+  let s = rect(0,0,W,H,'#01411C') + rect(0,0,75,H,'#FFFFFF');
+  s += `<g transform="rotate(-45 185 98)">` + crescent(185,98,40, 198,98,36, '#FFFFFF') + `</g>`;
+  s += star(233,50,13,'#FFFFFF',-45);
+  return s;
+}
+function cubaFlag(){
+  let s = '';
+  for(let i=0;i<5;i++) s += rect(0,i*40,W,40.5, i%2===0 ? '#002A8F' : '#FFFFFF');
+  s += `<polygon points="0,0 0,200 173,100" fill="#CF142B"/>`;
+  s += star(58,100,24,'#FFFFFF');
+  return s;
+}
+function jordanFlag(){
+  let s = hs(['#000000','#FFFFFF','#007A3D']);
+  s += `<polygon points="0,0 0,200 150,100" fill="#CE1126"/>`;
+  s += star(50,100,12,'#FFFFFF',-90,7);
+  return s;
+}
+function lebanonFlag(){
+  let s = hs(['#EE161F','#FFFFFF','#EE161F'],[1,2,1]);
+  s += `<polygon points="150,64 130,92 170,92" fill="#007A3D"/>`;
+  s += `<polygon points="150,78 124,108 176,108" fill="#007A3D"/>`;
+  s += `<polygon points="150,92 118,124 182,124" fill="#007A3D"/>`;
+  s += rect(146.5,120,7,14,'#5A3A1E');
+  return s;
+}
+function malaysiaFlag(){
+  let s = '';
+  for(let i=0;i<14;i++) s += rect(0,i*H/14,W,H/14+0.4, i%2===0 ? '#CC0001' : '#FFFFFF');
+  s += rect(0,0,150,H*8/14,'#010066');
+  s += crescent(64,57,28, 72,57,23, '#FFCC00');
+  s += star(103,57,21,'#FFCC00',-90,14);
+  return s;
+}
+function singaporeFlag(){
+  let s = rect(0,0,W,100,'#EF3340') + rect(0,100,W,100,'#FFFFFF');
+  s += crescent(58,50,27, 71,49,24, '#FFFFFF');
+  for(let i=0;i<5;i++){
+    const a=(-90+i*72)*Math.PI/180;
+    s += star(95+14*Math.cos(a), 50+14*Math.sin(a), 5.5, '#FFFFFF');
+  }
+  return s;
+}
+function philippinesFlag(){
+  let s = rect(0,0,W,100,'#0038A8') + rect(0,100,W,100,'#CE1126');
+  s += `<polygon points="0,0 0,200 150,100" fill="#FFFFFF"/>`;
+  s += `<circle cx="62" cy="100" r="14" fill="#FCD116"/>`;
+  for(let i=0;i<8;i++){
+    const a=i*Math.PI/4;
+    s += `<polygon points="${(62+17*Math.cos(a-0.1)).toFixed(1)},${(100+17*Math.sin(a-0.1)).toFixed(1)} ${(62+30*Math.cos(a)).toFixed(1)},${(100+30*Math.sin(a)).toFixed(1)} ${(62+17*Math.cos(a+0.1)).toFixed(1)},${(100+17*Math.sin(a+0.1)).toFixed(1)}" fill="#FCD116"/>`;
+  }
+  [[24,28],[24,172],[126,100]].forEach(p=>{ s += star(p[0],p[1],9,'#FCD116'); });
+  return s;
+}
+function hondurasFlag(){
+  let s = hs(['#0073CF','#FFFFFF','#0073CF']);
+  [[150,100],[118,84],[182,84],[118,116],[182,116]].forEach(p=>{ s += star(p[0],p[1],8,'#0073CF'); });
+  return s;
+}
+function ttFlag(){
+  let s = rect(0,0,W,H,'#DA1A35');
+  s += `<path d="M-20 -20 L320 220" stroke="#FFFFFF" stroke-width="52"/>`;
+  s += `<path d="M-20 -20 L320 220" stroke="#000000" stroke-width="36"/>`;
+  return s;
+}
+function georgiaFlag(){
+  let s = rect(0,0,W,H,'#FFFFFF');
+  s += rect(133,0,34,H,'#FF0000') + rect(0,83,W,34,'#FF0000');
+  [[66,42],[234,42],[66,158],[234,158]].forEach(p=>{
+    s += rect(p[0]-11,p[1]-3.5,22,7,'#FF0000') + rect(p[0]-3.5,p[1]-11,7,22,'#FF0000');
+  });
+  return s;
+}
+function ethiopiaFlag(){
+  let s = hs(['#078930','#FCDD09','#DA121A']);
+  s += `<circle cx="150" cy="100" r="44" fill="#0F47AF"/>`;
+  s += `<polygon points="${starPts(150,100,30,-90,5,0.5)}" fill="none" stroke="#FCDD09" stroke-width="6"/>`;
+  for(let i=0;i<5;i++){
+    const a=(-54+i*72)*Math.PI/180;
+    s += `<path d="M${(150+33*Math.cos(a)).toFixed(1)} ${(100+33*Math.sin(a)).toFixed(1)} L${(150+42*Math.cos(a)).toFixed(1)} ${(100+42*Math.sin(a)).toFixed(1)}" stroke="#FCDD09" stroke-width="5"/>`;
+  }
+  return s;
+}
+function kenyaFlag(){
+  let s = hs(['#000000','#FFFFFF','#BB0000','#FFFFFF','#006600'],[6,1,6,1,6]);
+  s += `<path d="M118 62 L182 138 M182 62 L118 138" stroke="#FFFFFF" stroke-width="5"/>`;
+  s += `<ellipse cx="150" cy="100" rx="24" ry="46" fill="#BB0000" stroke="#FFFFFF" stroke-width="5"/>`;
+  s += `<ellipse cx="150" cy="100" rx="24" ry="46" fill="none" stroke="#000000" stroke-width="3" stroke-dasharray="10 7"/>`;
+  s += `<ellipse cx="150" cy="100" rx="5" ry="16" fill="#FFFFFF"/>`;
+  return s;
+}
+function tanzaniaFlag(){
+  let s = `<polygon points="0,0 300,0 0,200" fill="#1EB53A"/><polygon points="300,0 300,200 0,200" fill="#00A3DD"/>`;
+  s += `<path d="M-10 207 L310 -7" stroke="#FCD116" stroke-width="48"/>`;
+  s += `<path d="M-10 207 L310 -7" stroke="#000000" stroke-width="30"/>`;
+  return s;
+}
+function drcFlag(){
+  let s = rect(0,0,W,H,'#007FFF');
+  s += `<path d="M-16 212 L316 -12" stroke="#F7D618" stroke-width="58"/>`;
+  s += `<path d="M-16 212 L316 -12" stroke="#CE1021" stroke-width="40"/>`;
+  s += star(52,44,26,'#F7D618');
+  return s;
+}
+function bosniaFlag(){
+  let s = rect(0,0,W,H,'#002395');
+  s += `<polygon points="105,0 255,0 255,150" fill="#FECB00"/>`;
+  for(let i=0;i<9;i++){
+    const cx=84+i*21.5, cy=-14+i*21.5;
+    if(cy>-11 && cy<175) s += star(cx,cy,9.5,'#FFFFFF');
+  }
+  return s;
+}
+function azerbaijanFlag(){
+  let s = hs(['#00B5E2','#EF3340','#509E2F']);
+  s += crescent(138,100,26, 150,100,23, '#FFFFFF');
+  s += star(169,100,12,'#FFFFFF',-90,8);
+  return s;
+}
+function nkoreaFlag(){
+  let s = hs(['#024FA2','#FFFFFF','#ED1C27','#FFFFFF','#024FA2'],[6,1,11,1,6]);
+  s += `<circle cx="112" cy="100" r="32" fill="#FFFFFF"/>`;
+  s += star(112,100,27,'#ED1C27');
+  return s;
+}
+function domRepFlag(){
+  let s = rect(0,0,W,H,'#FFFFFF');
+  s += rect(0,0,130,80,'#002D62') + rect(170,0,130,80,'#CE1126');
+  s += rect(0,120,130,80,'#CE1126') + rect(170,120,130,80,'#002D62');
+  s += `<circle cx="150" cy="100" r="11" fill="none" stroke="#007A3D" stroke-width="2.5"/>`;
+  s += rect(146,94,8,10,'#002D62') + `<path d="M150 94 v10 M146 99 h8" stroke="#FFFFFF" stroke-width="1.4"/>`;
+  return s;
+}
+function iranFlag(){
+  let s = hs(['#239F40','#FFFFFF','#DA0000']);
+  s += `<path d="M150 82 v24" stroke="#DA0000" stroke-width="4" stroke-linecap="round"/>`;
+  s += `<path d="M143 86 q-9 8 -1 20 M157 86 q9 8 1 20" stroke="#DA0000" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  s += `<path d="M134 90 q-7 12 4 21 M166 90 q7 12 -4 21" stroke="#DA0000" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  s += `<path d="M147 79 q3 -4 6 0" stroke="#DA0000" stroke-width="3" fill="none"/>`;
+  return s;
+}
+function kazakhFlag(){
+  let s = rect(0,0,W,H,'#00AFCA');
+  for(let i=0;i<6;i++){
+    const y=16+i*32;
+    s += `<polygon points="14,${y} 26,${y+16} 14,${y+32} 2,${y+16}" fill="none" stroke="#FEC50C" stroke-width="3.5"/>`;
+  }
+  for(let i=0;i<24;i++){
+    const a=i*Math.PI/12;
+    s += `<path d="M${(162+26*Math.cos(a)).toFixed(1)} ${(78+26*Math.sin(a)).toFixed(1)} L${(162+35*Math.cos(a)).toFixed(1)} ${(78+35*Math.sin(a)).toFixed(1)}" stroke="#FEC50C" stroke-width="4"/>`;
+  }
+  s += `<circle cx="162" cy="78" r="22" fill="#FEC50C"/>`;
+  s += `<path d="M96 128 q30 -18 66 -6 q36 -12 66 6 q-28 8 -62 6 l-4 10 -4 -10 q-34 2 -62 -6 z" fill="#FEC50C"/>`;
+  return s;
+}
+function macedoniaFlag(){
+  let s = rect(0,0,W,H,'#D20000');
+  const rays = [
+    [137,82, 163,82, 172,0, 128,0],   [137,118, 163,118, 172,200, 128,200],
+    [132,91, 132,109, 0,120, 0,80],   [168,91, 168,109, 300,120, 300,80],
+    [134,86, 141,79, 22,0, 0,16],     [159,79, 166,86, 300,16, 278,0],
+    [134,114, 141,121, 22,200, 0,184],[159,121, 166,114, 300,184 ,278,200],
+  ];
+  rays.forEach(p=>{ s += `<polygon points="${p[0]},${p[1]} ${p[2]},${p[3]} ${p[4]},${p[5]} ${p[6]},${p[7]}" fill="#FFE600"/>`; });
+  s += `<circle cx="150" cy="100" r="26" fill="#FFE600" stroke="#D20000" stroke-width="4"/>`;
+  return s;
+}
+function doubleEagle(cx,cy,sc,color){               // two-headed heraldic eagle, wings spread
+  let g = `<g transform="translate(${cx} ${cy}) scale(${sc})">`;
+  g += `<path d="M-7 -10 l-16 5 13 4 -15 6 13 4 -13 8 17 2 z" fill="${color}"/>`;
+  g += `<path d="M7 -10 l16 5 -13 4 15 6 -13 4 13 8 -17 2 z" fill="${color}"/>`;
+  g += `<ellipse cx="0" cy="4" rx="6.5" ry="12" fill="${color}"/>`;
+  g += `<circle cx="-5" cy="-14" r="4" fill="${color}"/><circle cx="5" cy="-14" r="4" fill="${color}"/>`;
+  g += `<path d="M-8.5 -15 l-4 1.6 4 1.8 z" fill="${color}"/><path d="M8.5 -15 l4 1.6 -4 1.8 z" fill="${color}"/>`;
+  g += `<path d="M-5 16 l-3.5 8 M0 17 v8 M5 16 l3.5 8" stroke="${color}" stroke-width="3.4"/>`;
+  return g + `</g>`;
+}
+function sloveniaFlag(){
+  let s = hs(['#FFFFFF','#005DA4','#ED1C24']);
+  s += `<path d="M76 46 h38 v24 c0 15 -9.5 21 -19 21 c-9.5 0 -19 -6 -19 -21 z" fill="#005DA4" stroke="#FFFFFF" stroke-width="2.5"/>`;
+  s += `<polygon points="95,58 104,76 99,76 95,68 91,76 86,76" fill="#FFFFFF"/>`;
+  s += `<path d="M82 76 l6 -8 4 5 3 -8 5 8 4 -5 6 8 z" fill="#FFFFFF"/>`;
+  s += `<path d="M83 82 q6 4 12 0 q6 4 12 0 M83 87 q6 4 12 0 q6 4 12 0" stroke="#FFB915" stroke-width="2" fill="none"/>`;
+  [[89,52],[95,49],[101,52]].forEach(p=>{ s += star(p[0],p[1],3,'#FFB915',-90,6); });
+  return s;
+}
+function maltaFlag(){
+  let s = rect(0,0,150,H,'#FFFFFF') + rect(150,0,150,H,'#CF142B');
+  s += rect(18,14,44,44,'#FFFFFF') + rect(18,14,44,44,'none');
+  s += `<rect x="18" y="14" width="44" height="44" fill="#FFFFFF" stroke="#CF142B" stroke-width="2.5"/>`;
+  s += rect(35,20,10,32,'#96877D') + rect(24,31,32,10,'#96877D');
+  return s;
+}
+function montenegroFlag(){
+  let s = rect(0,0,W,H,'#C40308') + `<rect x="6" y="6" width="288" height="188" fill="none" stroke="#D3AE3B" stroke-width="12"/>`;
+  s += doubleEagle(150,95,1.5,'#D3AE3B');
+  s += rect(139,63,22,5,'#D3AE3B');
+  s += rect(143,96,14,16,'#1D5E91') + `<path d="M143 104 q7 5 14 0" stroke="#6B8F2E" stroke-width="5" fill="none"/>`;
+  return s;
+}
+function zimbabweFlag(){
+  let s = hs(['#319208','#FFD200','#DE2010','#000000','#DE2010','#FFD200','#319208']);
+  s += `<polygon points="0,0 0,200 120,100" fill="#000000"/>`;
+  s += `<polygon points="0,6 0,194 112,100" fill="#FFFFFF"/>`;
+  s += star(44,100,30,'#DE2010');
+  s += `<path d="M36 96 q6 -8 14 -4 q4 2 3 7 l-9 3 q-8 2 -8 -6 z" fill="#FFD200"/>`;
+  s += rect(34,104,20,3.5,'#FFD200');
+  return s;
+}
+function zambiaFlag(){
+  let s = rect(0,0,W,H,'#198A00');
+  s += rect(207,95,31,105,'#DE2010') + rect(238,95,31,105,'#000000') + rect(269,95,31,105,'#EF7D00');
+  s += `<path d="M222 62 q18 -14 32 -2 q14 -12 32 2 q-14 6 -28 4 l-4 8 -4 -8 q-14 2 -28 -4 z" fill="#EF7D00"/>`;
+  return s;
+}
+function ugandaFlag(){
+  let s = hs(['#000000','#FCDC04','#D90000','#000000','#FCDC04','#D90000']);
+  s += `<circle cx="150" cy="100" r="31" fill="#FFFFFF"/>`;
+  s += `<path d="M150 87 q-12 4 -12 16 q0 12 11 13 l8 -1 q7 -6 5 -16 q-2 -10 -12 -12 z" fill="#9B9B9B"/>`;
+  s += `<path d="M152 88 q3 -6 8 -7" stroke="#9B9B9B" stroke-width="3.5" fill="none"/>`;
+  s += `<circle cx="161" cy="80" r="4" fill="#9B9B9B"/>`;
+  s += `<path d="M163 76 l5 -4 -1 5 z" fill="#D90000"/>`;
+  s += `<path d="M164 82 l5 2 -5 1.6 z" fill="#000000"/>`;
+  s += `<path d="M148 116 v9 M148 125 l-5 2" stroke="#000000" stroke-width="2.5" fill="none"/>`;
+  return s;
+}
+function albaniaFlag(){
+  return rect(0,0,W,H,'#E41E20') + doubleEagle(150,100,2.6,'#000000');
+}
+function nepalFlag(){
+  let s = `<path d="M92 14 L198 71 L124 71 L214 152 L92 152 Z" fill="#DC143C" stroke="#003893" stroke-width="9"/>`;
+  s += crescent(133,52,12, 133,45,10, '#FFFFFF');
+  s += `<circle cx="133" cy="55" r="6.5" fill="#FFFFFF"/>`;
+  s += `<polygon points="${starPts(133,116,15,-90,12,0.55)}" fill="#FFFFFF"/>`;
+  return s;
+}
+function sriLankaFlag(){
+  let s = rect(0,0,W,H,'#FFB700');
+  s += rect(12,12,44,176,'#00534E') + rect(56,12,44,176,'#EB7400');
+  s += rect(112,12,176,176,'#8D153A');
+  const G='#FFB700';
+  [[124,24],[276,24],[124,176],[276,176]].forEach((p,i)=>{
+    s += `<path d="M${p[0]} ${p[1]} q${i%2===0?8:-8} ${i<2?10:-10} 0 ${i<2?16:-16} q${i%2===0?-8:8} ${i<2?-6:6} 0 ${i<2?-16:16} z" fill="${G}"/>`;
+  });
+  s += `<ellipse cx="196" cy="106" rx="26" ry="14" fill="${G}"/>`;                    // lion body
+  s += `<path d="M168 104 q-10 -6 -8 -16 q8 2 12 10 z" fill="${G}"/>`;               // tail
+  s += `<circle cx="224" cy="88" r="11" fill="${G}"/>`;                              // maned head
+  s += `<path d="M233 86 l8 2 -8 3 z" fill="${G}"/>`;
+  s += `<path d="M182 116 v14 M196 118 v13 M210 116 v14 M222 112 v14" stroke="${G}" stroke-width="6"/>`;
+  s += `<path d="M232 78 L252 40" stroke="${G}" stroke-width="5"/><path d="M247 44 l10 -6" stroke="${G}" stroke-width="4"/>`; // sword
+  return s;
+}
+function bhutanFlag(){
+  let s = `<polygon points="0,0 300,0 0,200" fill="#FFD520"/><polygon points="300,0 300,200 0,200" fill="#FF4E12"/>`;
+  const wt='#FFFFFF';
+  s += `<path d="M78 170 q-16 4 -12 16 q12 4 16 -8" stroke="${wt}" stroke-width="7" fill="none" stroke-linecap="round"/>`;   // tail curl
+  s += `<path d="M78 170 C 112 178 138 152 150 128 C 162 104 176 96 196 78" stroke="${wt}" stroke-width="13" fill="none" stroke-linecap="round"/>`; // body
+  s += `<path d="M118 158 l8 -12 M144 132 l9 -11 M164 106 l9 -10" stroke="${wt}" stroke-width="5" stroke-linecap="round"/>`; // back frill
+  const claw=(x,y)=> `<path d="M${x} ${y} l-4 12 M${x} ${y} l2 13 M${x} ${y} l8 9" stroke="${wt}" stroke-width="4" stroke-linecap="round"/>`;
+  s += claw(104,176) + claw(140,148) + claw(158,124) + claw(184,96);
+  s += `<ellipse cx="202" cy="72" rx="13" ry="11" fill="${wt}"/>`;                   // head
+  s += `<path d="M212 66 l20 -10 -10 15 z" fill="${wt}"/>`;                          // open jaw
+  s += `<path d="M196 62 l-4 -13 8 10 z M206 60 l3 -13 5 11 z" fill="${wt}"/>`;     // horns
+  s += `<circle cx="200" cy="70" r="2" fill="#FF4E12"/>`;                            // eye
+  return s;
+}
+function mongoliaFlag(){
+  let s = vs(['#C4272F','#015197','#C4272F']);
+  const G='#F9CF02', x=50;
+  s += `<polygon points="${x},58 ${x-7},72 ${x+7},72" fill="${G}"/><circle cx="${x}" cy="60" r="3" fill="${G}"/>`;
+  s += `<circle cx="${x}" cy="82" r="9" fill="${G}"/>`;
+  s += crescent(x,95,11, x,89,9.5, G);
+  s += rect(x-14,108,28,5,G) + `<polygon points="${x-14},118 ${x+14},118 ${x},128" fill="${G}"/>`;
+  s += rect(x-14,132,28,5,G);
+  s += rect(x-26,58,6,80,G) + rect(x+20,58,6,80,G);
+  return s;
+}
+function cambodiaFlag(){
+  let s = hs(['#032EA1','#E00025','#032EA1'],[1,2,1]);
+  const wt='#FFFFFF';
+  s += rect(112,116,76,8,wt);
+  s += rect(120,102,14,16,wt) + rect(143,94,14,24,wt) + rect(166,102,14,16,wt);
+  s += `<polygon points="120,102 127,86 134,102" fill="${wt}"/>`;
+  s += `<polygon points="143,94 150,74 157,94" fill="${wt}"/>`;
+  s += `<polygon points="166,102 173,86 180,102" fill="${wt}"/>`;
+  s += `<path d="M120 112 h60 M124 107 h52" stroke="#E00025" stroke-width="1.6"/>`;
+  return s;
+}
+/* ── bonus level: flags of former countries ── */
+function ussrFlag(){
+  let s = rect(0,0,W,H,'#CC0000');
+  const G='#FFD700';
+  s += `<polygon points="${starPts(62,34,9)}" fill="none" stroke="${G}" stroke-width="3"/>`;
+  s += crescent(62,74,24, 70,66,20, G);                                              // sickle blade
+  s += `<path d="M45 92 L57 80" stroke="${G}" stroke-width="6" stroke-linecap="round"/>`;   // sickle handle
+  s += `<path d="M44 56 L76 88" stroke="${G}" stroke-width="6" stroke-linecap="round"/>`;   // hammer handle
+  s += `<path d="M38 60 l14 -14 8 8 -7 7 z" fill="${G}"/>`;                          // hammer head
+  return s;
+}
+function yugoslaviaFlag(){
+  let s = hs(['#0C4076','#FFFFFF','#C6363C']);
+  s += star(150,100,32,'#FCD400') + star(150,100,26,'#E32118');
+  return s;
+}
+function ddrFlag(){
+  let s = hs(['#000000','#DD0000','#FFCE00']);
+  s += `<path d="M128 122 a30 30 0 0 1 44 0" stroke="#C8A100" stroke-width="7" fill="none"/>`;
+  s += `<path d="M126 118 q-6 -26 12 -38 M174 118 q6 -26 -12 -38" stroke="#C8A100" stroke-width="5" fill="none"/>`;
+  s += `<circle cx="150" cy="96" r="17" fill="#FFFFFF" stroke="#C8A100" stroke-width="3"/>`;
+  s += `<path d="M150 84 l-9 22 M150 84 l9 22 M147 92 a8 8 0 0 0 6 0" stroke="#C8A100" stroke-width="3.5" fill="none"/>`; // compass
+  s += `<path d="M141 100 l12 -10 M153 90 l4 -4 -3 -3" stroke="#8B0000" stroke-width="3.5" fill="none"/>`;                 // hammer
+  return s;
+}
+function kingdomItalyFlag(){
+  let s = vs(['#008C45','#FFFFFF','#CD212A']);
+  s += `<rect x="133" y="76" width="34" height="44" fill="#CD212A" stroke="#3F6FB5" stroke-width="5"/>`;
+  s += rect(146.5,76,7,44,'#FFFFFF') + rect(133,94,34,7,'#FFFFFF');
+  s += rect(139,66,22,6,'#C8A100') + `<path d="M140 66 q10 -8 20 0 z" fill="#C8A100"/>`;
+  return s;
+}
+function hungary54Flag(){
+  let s = hs(['#CD2A3E','#FFFFFF','#436F4D']);
+  s += `<path d="M132 120 q-8 -22 6 -36 M168 120 q8 -22 -6 -36" stroke="#C8A100" stroke-width="5" fill="none"/>`;
+  s += `<circle cx="150" cy="98" r="16" fill="#9CC7E8"/>`;
+  s += `<path d="M143 106 L158 90 M158 90 l3 -3 -3 -3" stroke="#8B5A2B" stroke-width="3.5" fill="none"/>`;
+  s += `<path d="M156 106 q-10 -8 -8 -18" stroke="#C8A100" stroke-width="3.5" fill="none"/>`;
+  s += `<polygon points="${starPts(150,74,7)}" fill="#E32118"/>`;
+  s += `<path d="M132 122 l-6 8 M168 122 l6 8" stroke="#CD2A3E" stroke-width="4"/>`;
+  s += `<path d="M136 124 l-4 8 M164 124 l4 8" stroke="#436F4D" stroke-width="4"/>`;
+  return s;
+}
+function persiaFlag(){
+  let s = hs(['#239F40','#FFFFFF','#DA0000']);
+  const G='#C8A100';
+  for(let i=0;i<12;i++){                            // sun, risen clear of the lion's back
+    const a=i*Math.PI/6;
+    s += `<path d="M${(165+15*Math.cos(a)).toFixed(1)} ${(77+15*Math.sin(a)).toFixed(1)} L${(165+21*Math.cos(a)).toFixed(1)} ${(77+21*Math.sin(a)).toFixed(1)}" stroke="${G}" stroke-width="2.5"/>`;
+  }
+  s += `<circle cx="165" cy="77" r="12" fill="${G}"/>`;
+  s += `<ellipse cx="152" cy="113" rx="22" ry="10" fill="${G}"/>`;                  // lion body
+  s += `<circle cx="128" cy="102" r="9" fill="${G}"/>`;                            // maned head
+  s += `<path d="M121 101 l-6 1.8 6 2.2 z" fill="${G}"/>`;
+  s += `<circle cx="130" cy="100" r="1.6" fill="#8B0000"/>`;
+  s += `<path d="M172 110 q9 -4 9 -13" stroke="${G}" stroke-width="4" fill="none"/>`; // tail
+  s += `<path d="M138 121 v11 M148 123 v10 M158 123 v10 M168 119 v11" stroke="${G}" stroke-width="4.5"/>`;
+  s += `<path d="M136 95 L130 64" stroke="${G}" stroke-width="4"/><path d="M125 68 l10 -3" stroke="${G}" stroke-width="3.5"/>`; // raised sword
+  return s;
+}
+function zaireFlag(){
+  let s = rect(0,0,W,H,'#007F41');
+  s += `<circle cx="150" cy="100" r="62" fill="#F7D618"/>`;
+  s += `<path d="M128 138 L156 106" stroke="#7B4B2A" stroke-width="15" stroke-linecap="round"/>`; // forearm
+  s += `<circle cx="158" cy="103" r="9" fill="#7B4B2A"/>`;                                        // fist
+  s += `<path d="M158 103 L170 88" stroke="#7B4B2A" stroke-width="6"/>`;                          // torch
+  s += `<path d="M170 88 q-8 -14 2 -24 q2 10 8 12 q6 -6 4 -14 q10 10 2 24 q-6 8 -16 2 z" fill="#CE1021"/>`; // flame
+  return s;
+}
+function granColombiaFlag(){
+  let s = hs(['#FCD116','#003893','#CE1126']);
+  [[128,100],[150,94],[172,100]].forEach(p=>{ s += star(p[0],p[1],9,'#FFFFFF'); });
+  return s;
+}
+function siamFlag(){
+  let s = rect(0,0,W,H,'#A51931');
+  const wt='#FFFFFF';
+  s += `<ellipse cx="158" cy="104" rx="46" ry="30" fill="${wt}"/>`;                  // body
+  s += `<circle cx="106" cy="86" r="17" fill="${wt}"/>`;                            // head
+  s += `<path d="M96 74 q-14 2 -16 16 q10 4 18 -2 z" fill="${wt}"/>`;               // ear
+  s += `<path d="M95 96 q-12 8 -8 26 q-2 8 4 10 q6 -2 4 -10 q0 -14 8 -20 z" fill="${wt}"/>`; // trunk
+  s += `<path d="M104 100 l-8 6 8 2 z" fill="${wt}"/>`;                              // tusk
+  s += `<path d="M126 128 v18 M148 132 v16 M170 132 v16 M190 126 v18" stroke="${wt}" stroke-width="11"/>`;
+  s += `<path d="M202 96 q12 4 8 18" stroke="${wt}" stroke-width="4" fill="none"/>`;  // tail
+  return s;
+}
+
+/* ── The 120 flags: 6 levels + the bonus time machine ────────────────── */
 const FLAGS = [
   // Level 1 — Kick-Off
   {id:'fr', name:'France',        level:1, fact:'Blue, white and red — the famous Tricolore.', svg: vs(['#0055A4','#FFFFFF','#EF4135'])},
@@ -671,6 +1070,14 @@ const FLAGS = [
   {id:'us', name:'USA',           level:1, fact:'50 stars — one for every state!', svg: usaFlag()},
   {id:'ar', name:'Argentina',     level:1, fact:'The smiling sun is called the Sun of May.', svg: hs(['#74ACDF','#FFFFFF','#74ACDF']) + sunOfMay(150,100,15,'#F6B40E')},
   {id:'ca', name:'Canada',        level:1, fact:'That leaf is a maple leaf.', svg: canadaFlag()},
+  {id:'vn', name:'Vietnam',       level:1, fact:'One giant gold star on red.', svg: rect(0,0,W,H,'#DA251D') + star(150,100,55,'#FFFF00')},
+  {id:'cu', name:'Cuba',          level:1, fact:'One star in a red triangle.', svg: cubaFlag()},
+  {id:'il', name:'Israel',        level:1, fact:'The Star of David has six points.', svg: israelFlag()},
+  {id:'ru', name:'Russia',        level:1, fact:'White, blue and red — the biggest country in the world.', svg: hs(['#FFFFFF','#0039A6','#D52B1E'])},
+  {id:'hu', name:'Hungary',       level:1, fact:'Red, white and green, lying down.', svg: hs(['#CD2A3E','#FFFFFF','#436F4D'])},
+  {id:'tn', name:'Tunisia',       level:1, fact:'A moon and star inside a white circle.', svg: tunisiaFlag()},
+  {id:'pk', name:'Pakistan',      level:1, fact:'A big moon and star on green.', svg: pakistanFlag()},
+  {id:'bd', name:'Bangladesh',    level:1, fact:'Like Japan, but green with a red sun!', svg: rect(0,0,W,H,'#006A4E') + `<circle cx="135" cy="100" r="53" fill="#F42A41"/>`},
   // Level 2 — Group Stage
   {id:'pt', name:'Portugal',      level:2, fact:'Home of Cristiano Ronaldo!', svg: portugalFlag()},
   {id:'nl', name:'Netherlands',   level:2, fact:'Dutch fans wear orange, but the flag is red, white and blue.', svg: hs(['#AE1C28','#FFFFFF','#21468B'])},
@@ -682,6 +1089,14 @@ const FLAGS = [
   {id:'ie', name:'Ireland',       level:2, fact:'Green, white and orange.', svg: vs(['#169B62','#FFFFFF','#FF883E'])},
   {id:'dk', name:'Denmark',       level:2, fact:'One of the oldest flags in the world.', svg: nordic('#C8102E','#FFFFFF')},
   {id:'gr', name:'Greece',        level:2, fact:'Blue and white like the sea and the waves.', svg: greeceFlag()},
+  {id:'ae', name:'UAE',           level:2, fact:'A red stripe standing up, three lying down.', svg: rect(0,0,W,H,'#FFFFFF') + rect(75,0,225,66.7,'#00843D') + rect(75,133.3,225,66.7,'#000000') + rect(0,0,75,H,'#FF0000')},
+  {id:'jo', name:'Jordan',        level:2, fact:'The tiny star has seven points.', svg: jordanFlag()},
+  {id:'lb', name:'Lebanon',       level:2, fact:'That tree is a cedar tree.', svg: lebanonFlag()},
+  {id:'my', name:'Malaysia',      level:2, fact:'Like the USA flag, but with a moon and sun-star!', svg: malaysiaFlag()},
+  {id:'sg', name:'Singapore',     level:2, fact:'A moon with five little stars.', svg: singaporeFlag()},
+  {id:'ph', name:'Philippines',   level:2, fact:'A golden sun with eight rays.', svg: philippinesFlag()},
+  {id:'hn', name:'Honduras',      level:2, fact:'Count the blue stars — five!', svg: hondurasFlag()},
+  {id:'tt', name:'Trinidad & Tobago', level:2, fact:'One bold black stripe, corner to corner.', svg: ttFlag()},
   // Level 3 — Knockouts
   {id:'hr', name:'Croatia',       level:3, fact:'The red and white squares are famous!', svg: croatiaFlag()},
   {id:'uy', name:'Uruguay',       level:3, fact:'Uruguay won the very first World Cup in 1930.', svg: uruguayFlag()},
@@ -693,6 +1108,16 @@ const FLAGS = [
   {id:'kr', name:'South Korea',   level:3, fact:'The red and blue circle means balance.', svg: koreaFlag()},
   {id:'tr', name:'Turkey',        level:3, fact:'A white moon and star on red.', svg: turkeyFlag()},
   {id:'ua', name:'Ukraine',       level:3, fact:'Blue sky over a golden wheat field.', svg: hs(['#0057B7','#FFD700'])},
+  {id:'ml', name:'Mali',          level:3, fact:'Green first — Guinea is the same flag flipped!', svg: vs(['#14B53A','#FCD116','#CE1126'])},
+  {id:'gn', name:'Guinea',        level:3, fact:'Red first — Mali is the same flag flipped!', svg: vs(['#CE1126','#FCD116','#009460'])},
+  {id:'bg', name:'Bulgaria',      level:3, fact:'White, green and red, lying down.', svg: hs(['#FFFFFF','#00966E','#D62612'])},
+  {id:'lt', name:'Lithuania',     level:3, fact:'Yellow, green and red.', svg: hs(['#FDB913','#006A44','#C1272D'])},
+  {id:'lv', name:'Latvia',        level:3, fact:'The red is extra dark, like berry juice.', svg: hs(['#9E3039','#FFFFFF','#9E3039'],[2,1,2])},
+  {id:'ge', name:'Georgia',       level:3, fact:'One big cross and four little ones.', svg: georgiaFlag()},
+  {id:'et', name:'Ethiopia',      level:3, fact:'A glowing star inside a blue circle.', svg: ethiopiaFlag()},
+  {id:'ke', name:'Kenya',         level:3, fact:'A warrior’s shield with two spears.', svg: kenyaFlag()},
+  {id:'tz', name:'Tanzania',      level:3, fact:'A black stripe from corner to corner.', svg: tanzaniaFlag()},
+  {id:'bo', name:'Bolivia',       level:3, fact:'Red, yellow and green, lying down.', svg: hs(['#D52B1E','#F9E300','#007934'])},
   // Level 4 — The Final
   {id:'gb-sct', name:'Scotland',  level:4, fact:'The white X is called a saltire.', svg: scotlandFlag()},
   {id:'gb-wls', name:'Wales',     level:4, fact:'A real red dragon! Its name is Y Ddraig Goch.', svg: walesFlag()},
@@ -704,6 +1129,16 @@ const FLAGS = [
   {id:'pe', name:'Peru',          level:4, fact:'Red, white, red — standing up.', svg: vs(['#D91023','#FFFFFF','#D91023'])},
   {id:'za', name:'South Africa',  level:4, fact:'Six colours — more than almost any flag!', svg: southAfricaFlag()},
   {id:'qa', name:'Qatar',         level:4, fact:'Qatar hosted the World Cup in 2022. That zigzag has nine points!', svg: qatarFlag()},
+  {id:'th', name:'Thailand',      level:4, fact:'The blue stripe in the middle is double size.', svg: hs(['#A51931','#F4F5F8','#2D2A4A','#F4F5F8','#A51931'],[1,1,2,1,1])},
+  {id:'ee', name:'Estonia',       level:4, fact:'Blue sky, black earth, white snow.', svg: hs(['#0072CE','#000000','#FFFFFF'])},
+  {id:'cd', name:'DR Congo',      level:4, fact:'A star and a red racing stripe.', svg: drcFlag()},
+  {id:'ba', name:'Bosnia',        level:4, fact:'Stars marching along a triangle.', svg: bosniaFlag()},
+  {id:'az', name:'Azerbaijan',    level:4, fact:'The star has eight points — count them!', svg: azerbaijanFlag()},
+  {id:'kp', name:'North Korea',   level:4, fact:'A red star in a white circle.', svg: nkoreaFlag()},
+  {id:'do', name:'Dominican Republic', level:4, fact:'A white cross splits it into four squares.', svg: domRepFlag()},
+  {id:'ir', name:'Iran',          level:4, fact:'The middle sign is shaped like a tulip flower.', svg: iranFlag()},
+  {id:'kz', name:'Kazakhstan',    level:4, fact:'A golden sun above a soaring eagle.', svg: kazakhFlag()},
+  {id:'mk', name:'North Macedonia', level:4, fact:'A sunshine flag — rays to every corner!', svg: macedoniaFlag()},
   // Level 5 — Extra Time
   {id:'au', name:'Australia',     level:5, fact:'Can you find the tiny Union Jack? Those stars are the Southern Cross.', svg: australiaFlag()},
   {id:'cn', name:'China',         level:5, fact:'One big star with four little stars beside it.', svg: chinaFlag()},
@@ -715,6 +1150,14 @@ const FLAGS = [
   {id:'ec', name:'Ecuador',       level:5, fact:'A giant condor guards the mountain.', svg: ecuadorFlag()},
   {id:'py', name:'Paraguay',      level:5, fact:'A gold star inside a leafy wreath.', svg: paraguayFlag()},
   {id:'cr', name:'Costa Rica',    level:5, fact:'The big red stripe is double size.', svg: hs(['#002B7F','#FFFFFF','#CE1126','#FFFFFF','#002B7F'],[1,1,2,1,1])},
+  {id:'si', name:'Slovenia',      level:5, fact:'The shield shows Triglav, their favourite mountain.', svg: sloveniaFlag()},
+  {id:'md', name:'Moldova',       level:5, fact:'Like Romania, but with an eagle in the middle!', svg: vs(['#003DA5','#FFD200','#CC092F']) + `<circle cx="150" cy="96" r="10" fill="#8B5A2B"/><path d="M138 92 q-8 -6 -6 -14 q8 2 10 10 z M162 92 q8 -6 6 -14 q-8 2 -10 10 z" fill="#8B5A2B"/>` + rect(144,92,12,14,'#CC092F') + `<path d="M150 92 v14 M144 98 h12" stroke="#FFD200" stroke-width="2"/>`},
+  {id:'mt', name:'Malta',         level:5, fact:'The George Cross medal lives in the corner.', svg: maltaFlag()},
+  {id:'me', name:'Montenegro',    level:5, fact:'A golden eagle in a golden frame.', svg: montenegroFlag()},
+  {id:'zw', name:'Zimbabwe',      level:5, fact:'The gold bird is a famous stone statue.', svg: zimbabweFlag()},
+  {id:'zm', name:'Zambia',        level:5, fact:'The eagle flies in the corner, not the middle!', svg: zambiaFlag()},
+  {id:'ug', name:'Uganda',        level:5, fact:'The grey bird is a crested crane.', svg: ugandaFlag()},
+  {id:'al', name:'Albania',       level:5, fact:'A big black eagle with two heads!', svg: albaniaFlag()},
   // Level 6 — Penalties
   {id:'nz', name:'New Zealand',   level:6, fact:'Like Australia’s — but New Zealand’s stars are red!', svg: nzFlag()},
   {id:'cz', name:'Czechia',       level:6, fact:'A blue triangle points to the middle.', svg: czechFlag()},
@@ -726,6 +1169,23 @@ const FLAGS = [
   {id:'ve', name:'Venezuela',     level:6, fact:'Count the stars in the curve — eight!', svg: venezuelaFlag()},
   {id:'pa', name:'Panama',        level:6, fact:'Four squares and two stars.', svg: panamaFlag()},
   {id:'jm', name:'Jamaica',       level:6, fact:'A golden X — and no red, white or blue at all!', svg: jamaicaFlag()},
+  {id:'np', name:'Nepal',         level:6, fact:'The only flag in the world that is not a rectangle!', svg: nepalFlag(), square:true},
+  {id:'lk', name:'Sri Lanka',     level:6, fact:'A golden lion holding a sword.', svg: sriLankaFlag()},
+  {id:'bt', name:'Bhutan',        level:6, fact:'A white thunder dragon — like Wales, but white!', svg: bhutanFlag()},
+  {id:'mn', name:'Mongolia',      level:6, fact:'The gold column of signs is called the Soyombo.', svg: mongoliaFlag()},
+  {id:'kh', name:'Cambodia',      level:6, fact:'That building is a real temple: Angkor Wat.', svg: cambodiaFlag()},
+  {id:'tg', name:'Togo',          level:6, fact:'Five stripes and one corner star.', svg: (()=>{ let t=''; for(let i=0;i<5;i++) t += rect(0,i*40,W,40.5, i%2===0?'#006A4E':'#FFCE00'); return t + rect(0,0,110,120,'#D21034') + star(55,60,32,'#FFFFFF'); })()},
+  // BONUS — old flags of former countries
+  {id:'su',  name:'The USSR',        level:7, fact:'The USSR split into 15 countries — Russia is the biggest.', svg: ussrFlag()},
+  {id:'yu',  name:'Yugoslavia',      level:7, fact:'Yugoslavia became 7 countries, like Croatia and Serbia!', svg: yugoslaviaFlag()},
+  {id:'ddr', name:'East Germany',    level:7, fact:'East and West Germany joined into one Germany in 1990.', svg: ddrFlag()},
+  {id:'csk', name:'Czechoslovakia',  level:7, fact:'It split into Czechia and Slovakia — Czechia kept the flag!', svg: czechFlag()},
+  {id:'kit', name:'Kingdom of Italy',level:7, fact:'Italy’s old flag had a royal shield. They won two World Cups with it!', svg: kingdomItalyFlag()},
+  {id:'hu54',name:'Hungary 1954',    level:7, fact:'The flag of Hungary’s magical team with Puskás.', svg: hungary54Flag()},
+  {id:'persia', name:'Persia',       level:7, fact:'Persia is now Iran. Its old flag had a lion with a sword!', svg: persiaFlag()},
+  {id:'zr',  name:'Zaire',           level:7, fact:'Zaire is now DR Congo. They played the 1974 World Cup!', svg: zaireFlag()},
+  {id:'gco', name:'Gran Colombia',   level:7, fact:'One big country that became Colombia, Venezuela and Ecuador!', svg: granColombiaFlag()},
+  {id:'siam',name:'Siam',            level:7, fact:'Siam is now Thailand. Its old flag had a white elephant!', svg: siamFlag()},
 ];
 const flagById = Object.fromEntries(FLAGS.map(f=>[f.id,f]));
 
@@ -739,6 +1199,14 @@ const CONFUSABLE = {
   'ci':['ie','it'], 'au':['nz'], 'nz':['au'], 'lu':['nl'], 'id':['pl'],
   'co':['ec','ve'], 'ec':['co','ve'], 've':['co','ec'], 'rs':['sk','hr'], 'sk':['rs','hr'],
   'dz':['tr','ma'], 'cm':['sn','gh'], 'cr':['nl'], 'ro':['co'],
+  'vn':['cn','ma'], 'cn':['vn'], 'cu':['cl','pa'], 'ru':['nl','lu','si'], 'hu':['bg','ir'],
+  'tn':['tr','ma'], 'pk':['dz','tr'], 'bd':['jp'], 'jp':['bd'], 'my':['us'], 'sg':['id','pl'],
+  'jo':['ae'], 'ae':['jo'], 'hn':['ar'], 'tt':['jm'],
+  'ml':['gn','sn'], 'gn':['ml','cm'], 'bg':['hu','ru'], 'lt':['bo','gh'], 'lv':['at'],
+  'ge':['dk','gb-eng'], 'et':['bo','lt'], 'bo':['lt','gh'], 'th':['cr','nl'], 'ee':['ru'],
+  'cd':['tz'], 'tz':['cd'], 'az':['tr','tn'], 'kp':['cl','cu'], 'do':['pa'], 'ir':['hu','bg'],
+  'mk':['jp','vn'], 'si':['sk','ru'], 'md':['ro'], 'zw':['zm'], 'zm':['zw'], 'al':['me'],
+  'me':['al'], 'np':['ch'], 'bt':['gb-wls'], 'kh':['th'], 'tg':['gh','sn'], 'lk':['bt'],
 };
 
 const LEVELS = [
@@ -748,6 +1216,7 @@ const LEVELS = [
   {n:4, name:'The Final',   icon:'🏆'},
   {n:5, name:'Extra Time',  icon:'⏱️'},
   {n:6, name:'Penalties',   icon:'🥅'},
+  {n:7, name:'Old Flags',   icon:'🕰️', bonus:true},
 ];
 
 /* ── World Cup trivia ────────────────────────────────────────────────── */
@@ -764,6 +1233,18 @@ const WC_ROOKIE = [
   {q:'How often is the World Cup played?', a:'Every 4 years', wrong:['Every year','Every 10 years'], fact:'That’s why winning it is so special!'},
   {q:'What colour is the World Cup trophy?', a:'Gold', wrong:['Silver','Green'], fact:'It’s made of real gold and weighs as much as a cat!'},
   {q:'How many teams played at the 2026 World Cup?', a:'48', wrong:['10','100'], fact:'The biggest World Cup ever!'},
+  {q:'How many players are on a football team?', a:'11', wrong:['5','50'], fact:'Ten players plus one goalkeeper.'},
+  {q:'What colour card sends a player off the pitch?', a:'Red', wrong:['Yellow','Blue'], fact:'Two yellows make a red!'},
+  {q:'Brazil play in which colour shirts?', a:'Yellow', wrong:['Pink','Black'], fact:'People call them the Yellow Canaries!'},
+  {q:'How many minutes long is a football match?', a:'90', wrong:['10','1000'], fact:'Two halves of 45 minutes each.'},
+  {q:'What prize do you win for scoring the most goals?', a:'The Golden Boot', wrong:['The Golden Sock','The Golden Hat'], fact:'Mbappé won it in 2022 AND 2026!'},
+  {q:'World Cup Willie, the first ever mascot (England 1966), was which animal?', a:'A lion', wrong:['A mouse','A whale'], fact:'The very first World Cup mascot!'},
+  {q:'Zabivaka, the 2018 mascot from Russia, was which animal?', a:'A wolf', wrong:['A cat','A bear'], fact:'His name means “the one who scores”!'},
+  {q:'Footix, the 1998 mascot from France, was which bird?', a:'A cockerel', wrong:['A penguin','An owl'], fact:'The cockerel is France’s lucky animal.'},
+  {q:'La’eeb, the 2022 mascot, was a magic flying…?', a:'Hat', wrong:['Sock','Sandwich'], fact:'A flying hat from Qatar!'},
+  {q:'Naranjito, the 1982 mascot from Spain, was which fruit?', a:'An orange', wrong:['A banana','A pineapple'], fact:'An orange in a Spain kit!'},
+  {q:'Which country won the very first Women’s World Cup, in 1991?', a:'USA', wrong:['France','Japan'], flags:{USA:'us',France:'fr',Japan:'jp'}, fact:'The USA have won it four times — the most!'},
+  {q:'The 2026 final was played near which big city?', a:'New York', wrong:['London','Paris'], fact:'In a giant stadium with 82,000 seats!'},
 ];
 const WC_LEGEND = [
   {q:'Which country has won the most World Cups?', a:'Brazil', wrong:['Germany','England','Argentina'], flags:{Brazil:'br',Germany:'de',England:'gb-eng',Argentina:'ar'}, fact:'Brazil have won it 5 times!'},
@@ -780,6 +1261,20 @@ const WC_LEGEND = [
   {q:'What was the score in the 2026 final?', a:'1–0 to Spain', wrong:['5–4 to Spain','0–0'], fact:'One goal in extra time won the cup.'},
   {q:'Diego Maradona led which country to win the 1986 World Cup?', a:'Argentina', wrong:['Portugal','USA','Wales'], flags:{Argentina:'ar',Portugal:'pt',USA:'us',Wales:'gb-wls'}, fact:'Many say it was the best World Cup ever played by one player.'},
   {q:'Which country won the Women’s World Cup in 2023?', a:'Spain', wrong:['Brazil','Japan','Norway'], flags:{Spain:'es',Brazil:'br',Japan:'jp',Norway:'no'}, fact:'Spain’s women AND men are both world champions!'},
+  {q:'Miroslav Klose has scored more World Cup goals than anyone. How many?', a:'16', wrong:['6','60','2'], fact:'He scored them for Germany over four World Cups.'},
+  {q:'Just Fontaine of France scored HOW many goals at one World Cup in 1958?', a:'13', wrong:['3','30','1'], fact:'Thirteen goals in six games. Still the record!'},
+  {q:'In 1950, little Uruguay shocked the whole world by beating which host country?', a:'Brazil', wrong:['Mexico','Argentina','Chile'], flags:{Brazil:'br',Mexico:'mx',Argentina:'ar',Chile:'cl'}, fact:'200,000 people went silent in the stadium!'},
+  {q:'The 1954 final is called the Miracle of Bern. West Germany beat which amazing team?', a:'Hungary', wrong:['Brazil','England','Sweden'], flags:{Hungary:'hu',Brazil:'br',England:'gb-eng',Sweden:'se'}, fact:'Hungary’s magic team had won 31 games in a row!'},
+  {q:'Who scored THREE goals in the 1966 final for England?', a:'Geoff Hurst', wrong:['Bobby Charlton','David Beckham','Harry Kane'], fact:'The first ever hat-trick in a World Cup final!'},
+  {q:'Maradona’s sneaky 1986 goal, scored with his fist, is called…?', a:'The Hand of God', wrong:['The Foot of Gold','The Magic Glove','The Big Punch'], fact:'Four minutes later he scored the greatest goal ever!'},
+  {q:'Roger Milla danced by the corner flag for Cameroon. How old was he when he scored in 1994?', a:'42', wrong:['12','19','25'], fact:'The oldest World Cup scorer ever!'},
+  {q:'In 2002, the World Cup was shared by two countries for the first time. Which two?', a:'South Korea & Japan', wrong:['Spain & Portugal','England & France','USA & Canada'], fact:'Brazil won it, with Ronaldo scoring 8 goals.'},
+  {q:'Which African team was the first EVER to reach the semi-finals, in 2022?', a:'Morocco', wrong:['Egypt','Nigeria','Ghana'], flags:{Morocco:'ma',Egypt:'eg',Nigeria:'ng',Ghana:'gh'}, fact:'The whole of Africa cheered them on!'},
+  {q:'Which country that no longer exists came second at the World Cup in 1934 AND 1962?', a:'Czechoslovakia', wrong:['Yugoslavia','The USSR','East Germany'], flags:{Czechoslovakia:'csk',Yugoslavia:'yu','The USSR':'su','East Germany':'ddr'}, fact:'It later split into Czechia and Slovakia.'},
+  {q:'Lev Yashin, the greatest goalkeeper ever, played for which country that no longer exists?', a:'The USSR', wrong:['Yugoslavia','East Germany','Zaire'], flags:{'The USSR':'su',Yugoslavia:'yu','East Germany':'ddr',Zaire:'zr'}, fact:'He wore all black — they called him the Black Spider!'},
+  {q:'Zaire played the 1974 World Cup. What is Zaire called today?', a:'DR Congo', wrong:['Zambia','Morocco','Jamaica'], flags:{'DR Congo':'cd',Zambia:'zm',Morocco:'ma',Jamaica:'jm'}, fact:'They were the first team from the middle of Africa!'},
+  {q:'Italy won the 2006 final against France. How was it decided?', a:'On penalties', wrong:['By coin flip','By golden goal','By dance-off'], fact:'Penalties are the most exciting, scary ending of all!'},
+  {q:'The 2026 World Cup was the biggest ever. How many matches were played?', a:'104', wrong:['10','1000','64'], fact:'Nearly double the old number of 64!'},
 ];
 
 /* ── saved progress (per player) ─────────────────────────────────────── */
@@ -922,7 +1417,7 @@ function starRow(n, size, animate){
   return s+`</div>`;
 }
 function totalStars(){ return Object.values(P().best).reduce((a,b)=>a+(b.stars||0),0); }
-const MAX_STARS = (6+6+2)*3;
+const MAX_STARS = (7+7+2)*3;
 function bestFor(key){ return P().best[key] || {stars:0, score:0}; }
 
 /* ── screens ─────────────────────────────────────────────────────────── */
@@ -933,12 +1428,12 @@ function goHome(){
     <h1 class="biglogo">${esc(state.current)}’s<br><span class="sun">Flag Cup</span></h1>
     <p class="tagline">Flags and World Cup fun — let’s play!</p>
     <div class="modes">
-      ${modeBtn('flags','⚽','Flag Quiz','Which country is it?', 6)}
-      ${modeBtn('find','🔍','Find the Flag','Tap the right flag!', 6)}
+      ${modeBtn('flags','⚽','Flag Quiz','Which country is it?', 7)}
+      ${modeBtn('find','🔍','Find the Flag','Tap the right flag!', 7)}
       ${modeBtn('wc','🏆','World Cup Quiz','Winners, mascots &amp; more', 2)}
       <button class="mode-btn" data-go="book">
         <span class="mode-ico">📖</span>
-        <span><span class="mode-name">Flag Book</span><br><span class="mode-sub">All 60 flags in one album</span></span>
+        <span><span class="mode-name">Flag Book</span><br><span class="mode-sub">All 120 flags in one album</span></span>
       </button>
     </div>
     <div class="totals">
@@ -1026,9 +1521,9 @@ function goLevels(mode){
         const mini = mode==='wc' ? '' :
           `<span class="level-flags">${shuffle(FLAGS.filter(f=>f.level===l.n)).slice(0,4)
             .map(f=>`<span class="mini ${f.square?'sq':''}">${wrap(f.svg)}</span>`).join('')}</span>`;
-        return `<button class="level-btn" data-play="${mode}" data-level="${l.n}">
+        return `<button class="level-btn" data-play="${mode}" data-level="${l.n}" ${l.bonus?'style="background:#FFF6D6"':''}>
           <span class="level-num">${l.icon}</span>
-          <span><span class="level-name">Level ${l.n}: ${l.name}</span>${mini}</span>
+          <span><span class="level-name">${l.bonus ? 'BONUS: '+l.name : 'Level '+l.n+': '+l.name}</span>${mini}</span>
           <span class="level-stars">${starRowSmall(best.stars)}</span>
         </button>`;
       }).join('')}
@@ -1058,13 +1553,16 @@ function buildMatch(mode, level){
   }
   const pool = FLAGS.filter(f=>f.level===level);
   const nOpts = (mode==='flags' && level===1) ? 3 : 4;
-  return shuffle(pool).map(flag=>{
+  const old = level===7;                             // bonus level: flags of former countries
+  return shuffle(pool).slice(0,10).map(flag=>{
     const ds = pickDistractors(flag, pool, nOpts-1);
     const opts = shuffle([flag].concat(ds));
     return {
       kind: mode,        // 'flags': see flag, pick name — 'find': hear name, pick flag
       flag, options:opts, answer:opts.indexOf(flag),
-      prompt: mode==='flags' ? 'Which country’s flag is this?' : `Tap the flag of ${flag.name}!`,
+      prompt: mode==='flags'
+        ? (old ? 'Long ago, whose flag was this?' : 'Which country’s flag is this?')
+        : (old ? `Tap the old flag of ${flag.name}!` : `Tap the flag of ${flag.name}!`),
       fact: flag.fact,
     };
   });
@@ -1182,7 +1680,7 @@ function finishMatch(){
     stars===1 ? `Great match, ${who}! Keep playing and grab more stars!` :
                 `Good practice, ${who}! Every champion starts somewhere. Try again!`;
   const nextLevel = match.level + 1;
-  const maxLevel = match.mode==='wc' ? 2 : 6;
+  const maxLevel = match.mode==='wc' ? 2 : 7;
   stage.innerHTML = `
     <div class="card results">
       <h2>${stars>=2?'⚽ FULL TIME! ⚽':'Full time!'}</h2>
@@ -1209,7 +1707,7 @@ function goBook(){
       <h1 class="screen-title">Flag Book</h1>
     </div>
     ${LEVELS.map(l=>`
-      <h2 class="booksec">${l.icon} ${l.name}</h2>
+      <h2 class="booksec">${l.icon} ${l.bonus ? 'BONUS: '+l.name : l.name}</h2>
       <div class="bookgrid">
         ${FLAGS.filter(f=>f.level===l.n).map(f=>{
           const m = P().mastery[f.id]||0;
