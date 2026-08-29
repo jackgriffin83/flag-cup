@@ -1914,6 +1914,30 @@ const WC_STARS = [
   {q:'Goalkeeper Gianluigi Donnarumma plays for which country?', a:'Italy', wrong:['Spain','France','Greece'], flags:{Italy:'it',Spain:'es',France:'fr',Greece:'gr'}, fact:'A giant wall in goal!'},
   {q:'Virgil van Dijk plays for which country?', a:'Netherlands', wrong:['Belgium','Luxembourg','Denmark'], flags:{Netherlands:'nl',Belgium:'be',Luxembourg:'lu',Denmark:'dk'}, fact:'A colossus in defence.'},
 ];
+const WC_TROPHY = [
+  {q:'How many World Cups have Brazil won — more than anyone?', a:'5', wrong:['1','2','50'], fact:'That’s why they wear five stars on their shirts!'},
+  {q:'Spain won the World Cup in 2026. How many do they have now?', a:'2', wrong:['9','1','6'], fact:'2010 in South Africa, and 2026 in America!'},
+  {q:'Germany and Italy have won the SAME number of World Cups. How many each?', a:'4', wrong:['1','2','11'], fact:'Eight trophies between them!'},
+  {q:'How many World Cups have Argentina won?', a:'3', wrong:['1','7','30'], fact:'1978, 1986 with Maradona, and 2022 with Messi.'},
+  {q:'How many World Cups have France won?', a:'2', wrong:['6','1','20'], fact:'1998 at home, and 2018 with teenage Mbappé!'},
+  {q:'Uruguay won the very first World Cup. How many do they have?', a:'2', wrong:['1','8','0'], fact:'1930 and 1950 — back when TV was only in black and white!'},
+  {q:'How many World Cups have England won?', a:'1', wrong:['10','3','0'], fact:'1966, at Wembley. Sixty years ago!'},
+  {q:'How many stars do Brazil wear above their badge?', a:'5', wrong:['1','100','2'], fact:'One star for every World Cup they’ve won!'},
+  {q:'Argentina wear three stars on their shirts. What is each star for?', a:'World Cup wins', wrong:['Goals scored','Players','Pets'], fact:'Germany wear four stars, Brazil five!'},
+  {q:'Which country has won the WOMEN’S World Cup the most times?', a:'USA', wrong:['Brazil','France','Italy'], flags:{USA:'us',Brazil:'br',France:'fr',Italy:'it'}, fact:'Four times — more than anyone!'},
+  {q:'How many Women’s World Cups have the USA won?', a:'4', wrong:['1','40','0'], fact:'1991, 1999, 2015 and 2019.'},
+  {q:'How many Women’s World Cups have Germany won?', a:'2', wrong:['0','7','12'], fact:'2003 and 2007 — back to back!'},
+  {q:'Which country won the Women’s World Cup in 2011 — a first for Asia?', a:'Japan', wrong:['China','Australia','India'], flags:{Japan:'jp',China:'cn',Australia:'au',India:'in'}, fact:'They beat the USA on penalties!'},
+  {q:'Norway’s women won the World Cup in 1995. Have Norway’s men ever won it?', a:'Never', wrong:['5 times','2 times','Every time'], fact:'Norway’s women lifted the trophy first — the men are still waiting!'},
+  {q:'Only TWO countries have won BOTH the men’s and women’s World Cups. Which two?', a:'Germany & Spain', wrong:['Brazil & Argentina','England & France','Japan & USA'], fact:'Spain completed the set in 2026!'},
+  {q:'England’s Lionesses reached the 2023 Women’s World Cup final. Who beat them?', a:'Spain', wrong:['Sweden','Brazil','Portugal'], flags:{Spain:'es',Sweden:'se',Brazil:'br',Portugal:'pt'}, fact:'Just 1–0. So close for the Lionesses!'},
+  {q:'Which country hosts the next Women’s World Cup, in 2027?', a:'Brazil', wrong:['Iceland','Wales','Qatar'], flags:{Brazil:'br',Iceland:'is',Wales:'gb-wls',Qatar:'qa'}, fact:'The first Women’s World Cup in South America!'},
+  {q:'Where was the very first Women’s World Cup played, in 1991?', a:'China', wrong:['England','Mexico','Egypt'], flags:{China:'cn',England:'gb-eng',Mexico:'mx',Egypt:'eg'}, fact:'The USA won it, led by striker Michelle Akers.'},
+  {q:'Brazil have 5 men’s World Cups and the USA have 4 women’s. How many is that together?', a:'9', wrong:['2','54','7'], fact:'You just did trophy maths!'},
+  {q:'Every men’s World Cup has been won by Europe or which other continent?', a:'South America', wrong:['Antarctica','Africa','Asia'], fact:'Brazil, Argentina and Uruguay carry the flag for South America!'},
+  {q:'How many Women’s World Cups have Spain won?', a:'1', wrong:['0','5','14'], fact:'2023 — and the men made it a double in 2026!'},
+  {q:'Which Nordic country’s women won the World Cup in 1995?', a:'Norway', wrong:['Denmark','Finland','Iceland'], flags:{Norway:'no',Denmark:'dk',Finland:'fi',Iceland:'is'}, fact:'They beat Germany 2–0 in the final, in neighbouring Sweden!'},
+];
 const WC_CLUBS = [
   {q:'Which club plays at Old Trafford?', a:'Manchester United', wrong:['Liverpool','Arsenal','Chelsea'], fact:'They call it the Theatre of Dreams!'},
   {q:'Which club has won the Champions League the most times?', a:'Real Madrid', wrong:['Barcelona','Manchester United','Bayern Munich'], fact:'More than anyone else — by miles!'},
@@ -2091,7 +2115,7 @@ function starRow(n, size, animate){
   return s+`</div>`;
 }
 function totalStars(){ return Object.values(P().best).reduce((a,b)=>a+(b.stars||0),0); }
-const MAX_STARS = (9+9+4)*3;
+const MAX_STARS = (9+9+5)*3;
 function bestFor(key){ return P().best[key] || {stars:0, score:0}; }
 
 /* ── screens ─────────────────────────────────────────────────────────── */
@@ -2104,7 +2128,7 @@ function goHome(){
     <div class="modes">
       ${modeBtn('flags','⚽','Flag Quiz','Which country is it?', 9)}
       ${modeBtn('find','🔍','Find the Flag','Tap the right flag!', 9)}
-      ${modeBtn('wc','🏆','Footy Quiz','World Cup, superstars &amp; clubs', 4)}
+      ${modeBtn('wc','🏆','Footy Quiz','World Cup, superstars, clubs &amp; trophies', 5)}
       <button class="mode-btn" data-go="book">
         <span class="mode-ico">📖</span>
         <span><span class="mode-name">Flag Book</span><br><span class="mode-sub">All 200+ flags in one album</span></span>
@@ -2182,7 +2206,7 @@ function modeBtn(mode, ico, name, sub, nLevels){
 function goLevels(mode){
   const titles = {flags:'Flag Quiz', find:'Find the Flag', wc:'Footy Quiz'};
   const list = mode==='wc'
-    ? [{n:1,name:'Rookie',icon:'⚽'},{n:2,name:'Legend',icon:'🏆'},{n:3,name:'Superstars',icon:'⭐'},{n:4,name:'Clubs',icon:'🛡️'}]
+    ? [{n:1,name:'Rookie',icon:'⚽'},{n:2,name:'Legend',icon:'🏆'},{n:3,name:'Superstars',icon:'⭐'},{n:4,name:'Clubs',icon:'🛡️'},{n:5,name:'Trophy Cabinet',icon:'🏅'}]
     : LEVELS;
   stage.innerHTML = `
     <div class="topbar">
@@ -2220,7 +2244,7 @@ function pickDistractors(flag, pool, n){
 }
 function buildMatch(mode, level){
   if(mode==='wc'){
-    const bank = level===1 ? WC_ROOKIE : level===2 ? WC_LEGEND : level===3 ? WC_STARS : WC_CLUBS;
+    const bank = level===1 ? WC_ROOKIE : level===2 ? WC_LEGEND : level===3 ? WC_STARS : level===4 ? WC_CLUBS : WC_TROPHY;
     return shuffle(bank).slice(0,10).map(item=>{
       const opts = shuffle([item.a].concat(item.wrong));
       return {kind:'wc', prompt:item.q, options:opts, answer:opts.indexOf(item.a), fact:item.fact, flags:item.flags||null};
@@ -2355,7 +2379,7 @@ function finishMatch(){
     stars===1 ? `Great match, ${who}! Keep playing and grab more stars!` :
                 `Good practice, ${who}! Every champion starts somewhere. Try again!`;
   const nextLevel = match.level + 1;
-  const maxLevel = match.mode==='wc' ? 4 : 9;
+  const maxLevel = match.mode==='wc' ? 5 : 9;
   stage.innerHTML = `
     <div class="card results">
       <h2>${stars>=2?'⚽ FULL TIME! ⚽':'Full time!'}</h2>
