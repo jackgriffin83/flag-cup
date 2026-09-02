@@ -177,6 +177,34 @@
   #confetti{position:fixed; inset:0; pointer-events:none; z-index:60}
   .hidden{display:none}
 
+  .mode-btn.daily{background:linear-gradient(135deg,#FFF6D6,#FFE9A8)}
+  .turnbanner{background:var(--sky); border:3px solid var(--ink); border-radius:14px;
+    font-weight:800; font-size:17px; padding:6px 10px; margin:-4px 0 10px; display:inline-block}
+  .timerbar{height:18px; border:3px solid var(--ink); border-radius:999px; background:var(--card);
+    overflow:hidden; margin:10px 0 14px}
+  .timerbar > div{height:100%; background:var(--sun); transition:width .1s linear}
+  .trophyrow{display:flex; align-items:center; gap:12px; background:var(--card); border:4px solid var(--ink);
+    border-radius:20px; box-shadow:var(--shadow); padding:12px 16px}
+  .trophyrow .tname{font-family:"Lilita One",sans-serif; font-size:20px}
+  .trophyrow .tstars{margin-left:auto; font-weight:800; color:var(--sun-deep)}
+  .certcard{background:#FFFDF4; border:6px double var(--sun-deep); border-radius:14px; padding:26px 20px;
+    text-align:center; color:var(--ink)}
+  .certcard h2{font-family:"Lilita One",sans-serif; font-size:30px; margin:6px 0}
+  .certcard .cname{font-family:"Lilita One",sans-serif; font-size:38px; color:var(--sun-deep); margin:10px 0}
+  .certcard p{font-weight:700; margin:6px 0}
+
+  #printzone{display:none}
+  @media print{
+    #printzone{display:block; color:#000}
+    body.printing > :not(#printzone){display:none !important}
+    #printzone h1{font-family:"Lilita One",sans-serif; text-align:center; margin:0 0 8px}
+    #printzone h2{font-family:"Lilita One",sans-serif; font-size:14px; margin:10px 0 4px}
+    .printgrid{display:grid; grid-template-columns:repeat(8,1fr); gap:4px}
+    .pf .pfl{border:1px solid #000; line-height:0}
+    .pf .pfn{font:7px sans-serif; text-align:center}
+    .certcard{border:6px double #B8860B; page-break-inside:avoid}
+  }
+
   @media (prefers-reduced-motion: reduce){
     *{animation:none !important; transition:none !important}
   }
@@ -1568,6 +1596,50 @@ function siamFlag(){
   return s;
 }
 
+/* ── football kits (colours and patterns only — no badges) ───────────── */
+function kitSvg(spec){
+  const {body, alt='#FFFFFF', pattern='plain'} = spec;
+  const uid = ++svgUid;
+  const torso = 'M105 62 q45 -20 90 0 l0 108 q-45 14 -90 0 z';
+  let fillLayer = '';
+  if(pattern==='stripes'){ for(let i=0;i<4;i++) fillLayer += `<rect x="${105+11.3+i*22.5}" y="40" width="11.3" height="136" fill="${alt}"/>`; }
+  if(pattern==='hoops'){ for(let i=0;i<4;i++) fillLayer += `<rect x="100" y="${62+14+i*28}" width="100" height="14" fill="${alt}"/>`; }
+  if(pattern==='half'){ fillLayer += `<rect x="150" y="40" width="50" height="140" fill="${alt}"/>`; }
+  if(pattern==='sash'){ fillLayer += `<path d="M108 66 L192 168" stroke="${alt}" stroke-width="22"/>`; }
+  if(pattern==='midstripe'){ fillLayer += `<rect x="139" y="40" width="22" height="140" fill="${alt}"/>`; }
+  if(pattern==='checks'){ for(let r=0;r<8;r++) for(let c=0;c<7;c++) if((r+c)%2===0) fillLayer += `<rect x="${102+c*14}" y="${58+r*15}" width="14" height="15" fill="${alt}"/>`; }
+  return `<svg viewBox="60 30 180 160" preserveAspectRatio="xMidYMid meet" role="img">
+    <path d="M105 64 L62 84 L74 112 L105 96 Z" fill="${spec.sleeves||body}"/>
+    <path d="M195 64 L238 84 L226 112 L195 96 Z" fill="${spec.sleeves||body}"/>
+    <defs><clipPath id="kit${uid}"><path d="${torso}"/></clipPath></defs>
+    <path d="${torso}" fill="${body}"/>
+    <g clip-path="url(#kit${uid})">${fillLayer}</g>
+    <path d="${torso}" fill="none" stroke="#202A5C" stroke-width="4"/>
+    <path d="M105 64 L62 84 L74 112 L105 96 M195 64 L238 84 L226 112 L195 96" fill="none" stroke="#202A5C" stroke-width="4"/>
+    <path d="M132 56 q18 10 36 0" fill="none" stroke="#202A5C" stroke-width="4"/>
+  </svg>`;
+}
+const WC_KITS = [
+  {q:'Which north London team wears red shirts with bright white sleeves?', a:'Arsenal', wrong:['Chelsea','Liverpool','Tottenham'], kit:{body:'#EF0107', sleeves:'#FFFFFF'}, fact:'White sleeves since 1933!'},
+  {q:'Which Glasgow team wears green and white hoops?', a:'Celtic', wrong:['Rangers','Aberdeen','Hearts'], kit:{body:'#FFFFFF', alt:'#018749', pattern:'hoops'}, fact:'Their great rivals Rangers wear blue.'},
+  {q:'Which seaside team plays in tangerine?', a:'Blackpool', wrong:['Newcastle','Norwich','Fulham'], kit:{body:'#FF8C00'}, fact:'Tangerine — like the fruit!'},
+  {q:'Which Italian giants wear black and white stripes?', a:'Juventus', wrong:['AC Milan','Inter Milan','Roma'], kit:{body:'#FFFFFF', alt:'#000000', pattern:'stripes'}, fact:'Newcastle wear the same stripes in England!'},
+  {q:'Which team from Milan wears red and black stripes?', a:'AC Milan', wrong:['Inter Milan','Juventus','Napoli'], kit:{body:'#FB090B', alt:'#000000', pattern:'stripes'}, fact:'Inter, who share their stadium, wear blue and black!'},
+  {q:'Which German team wears bright yellow and black?', a:'Borussia Dortmund', wrong:['Bayern Munich','Hamburg','Cologne'], kit:{body:'#FDE100', sleeves:'#000000'}, fact:'Their fans make the famous Yellow Wall.'},
+  {q:'Brazil wear yellow shirts. What colour did they wear BEFORE 1950?', a:'White', wrong:['Pink','Gold','Stripes'], kit:{body:'#FFDC02', sleeves:'#009C3B'}, fact:'They changed after losing the 1950 final at home!'},
+  {q:'Which Spanish giants wear blue and deep red stripes?', a:'Barcelona', wrong:['Real Madrid','Atlético Madrid','Valencia'], kit:{body:'#004D98', alt:'#A50044', pattern:'stripes'}, fact:'They call the colours Blaugrana.'},
+  {q:'Peru’s white shirt has a famous diagonal band. What colour is it?', a:'Red', wrong:['Green','Black','Purple'], kit:{body:'#FFFFFF', alt:'#D91023', pattern:'sash'}, fact:'Just like the sash on a superhero!'},
+  {q:'Which country plays in red and white checks, like their flag?', a:'Croatia', wrong:['Poland','Denmark','Austria'], kit:{body:'#FFFFFF', alt:'#FF0000', pattern:'checks'}, flags:{Croatia:'hr',Poland:'pl',Denmark:'dk',Austria:'at'}, fact:'The chequerboard from their flag!'},
+  {q:'Which east London team wears claret and blue?', a:'West Ham', wrong:['Chelsea','Arsenal','Millwall'], kit:{body:'#7A263A', sleeves:'#1BB1E7'}, fact:'Aston Villa in Birmingham wear it too!'},
+  {q:'Which Lancashire team wears blue and white halves?', a:'Blackburn Rovers', wrong:['Burnley','Bolton','Preston'], kit:{body:'#009EE0', alt:'#FFFFFF', pattern:'half'}, fact:'Premier League champions in 1995!'},
+  {q:'The Seagulls wear blue and white stripes. Where do they play?', a:'Brighton', wrong:['Portsmouth','Plymouth','Blackpool'], kit:{body:'#0057B8', alt:'#FFFFFF', pattern:'stripes'}, fact:'At the Amex, in Brighton by the sea!'},
+  {q:'The Bees of west London wear red and white stripes. Who are they?', a:'Brentford', wrong:['Watford','Fulham','QPR'], kit:{body:'#E30613', alt:'#FFFFFF', pattern:'stripes'}, fact:'Buzzing up from little Griffin Park to the Premier League!'},
+  {q:'Which Yorkshire team plays all in white, like Real Madrid?', a:'Leeds United', wrong:['Sheffield United','Barnsley','Hull City'], kit:{body:'#FFFFFF'}, fact:'They copied the all-white look from Real Madrid in 1961!'},
+  {q:'Which Paris team wears navy with a red stripe down the middle?', a:'PSG', wrong:['Marseille','Lyon','Monaco'], kit:{body:'#004170', alt:'#DA291C', pattern:'midstripe'}, fact:'Their rivals Marseille wear white and sky blue.'},
+  {q:'Argentina’s famous stripes are white and which colour?', a:'Sky blue', wrong:['Orange','Dark green','Brown'], kit:{body:'#FFFFFF', alt:'#74ACDF', pattern:'stripes'}, fact:'La Albiceleste — the sky-blue-and-whites!'},
+  {q:'Which Merseyside team wears all red at home?', a:'Liverpool', wrong:['Everton','Tranmere','Wigan'], kit:{body:'#C8102E'}, fact:'Their big rivals Everton wear blue!'},
+];
+
 /* ── The 210 flags: 8 levels + the bonus time machine ────────────────── */
 const FLAGS = [
   // Level 1 — Kick-Off
@@ -1792,6 +1864,67 @@ const FLAGS = [
 ];
 const flagById = Object.fromEntries(FLAGS.map(f=>[f.id,f]));
 
+/* ── capitals (shown in the Flag Book and quizzed in Capitals mode) ──── */
+const CAPITALS = {
+  gb:'London', fr:'Paris', it:'Rome', jp:'Tokyo', de:'Berlin', 'gb-eng':'London', br:'Brasília',
+  es:'Madrid', us:'Washington DC', ar:'Buenos Aires', ca:'Ottawa', vn:'Hanoi', cu:'Havana',
+  il:'Jerusalem', ru:'Moscow', hu:'Budapest', tn:'Tunis', pk:'Islamabad', bd:'Dhaka',
+  pt:'Lisbon', nl:'Amsterdam', be:'Brussels', mx:'Mexico City', pl:'Warsaw', se:'Stockholm',
+  ch:'Bern', ie:'Dublin', dk:'Copenhagen', gr:'Athens', ae:'Abu Dhabi', jo:'Amman', lb:'Beirut',
+  my:'Kuala Lumpur', sg:'Singapore', ph:'Manila', hn:'Tegucigalpa', tt:'Port of Spain',
+  sa:'Riyadh', ps:'Ramallah', kw:'Kuwait City', om:'Muscat',
+  hr:'Zagreb', uy:'Montevideo', co:'Bogotá', ma:'Rabat', sn:'Dakar', ng:'Abuja', gh:'Accra',
+  kr:'Seoul', tr:'Ankara', ua:'Kyiv', ml:'Bamako', gn:'Conakry', bg:'Sofia', lt:'Vilnius',
+  lv:'Riga', ge:'Tbilisi', et:'Addis Ababa', ke:'Nairobi', tz:'Dodoma', bo:'La Paz (and Sucre)',
+  iq:'Baghdad', sy:'Damascus', ye:'Sanaa', ly:'Tripoli',
+  'gb-sct':'Edinburgh', 'gb-wls':'Cardiff', no:'Oslo', is:'Reykjavík', fi:'Helsinki',
+  at:'Vienna', cl:'Santiago', pe:'Lima', za:'Pretoria (one of three!)', qa:'Doha', th:'Bangkok', ee:'Tallinn',
+  cd:'Kinshasa', ba:'Sarajevo', az:'Baku', kp:'Pyongyang', do:'Santo Domingo', ir:'Tehran',
+  kz:'Astana', mk:'Skopje', bh:'Manama', af:'Kabul', mm:'Naypyidaw', la:'Vientiane',
+  au:'Canberra', cn:'Beijing', in:'New Delhi', eg:'Cairo', ci:'Yamoussoukro', cm:'Yaoundé',
+  dz:'Algiers', ec:'Quito', py:'Asunción', cr:'San José', si:'Ljubljana', md:'Chișinău',
+  mt:'Valletta', me:'Podgorica', zw:'Harare', zm:'Lusaka', ug:'Kampala', al:'Tirana',
+  uz:'Tashkent', kg:'Bishkek', tj:'Dushanbe', tm:'Ashgabat', by:'Minsk', am:'Yerevan', cy:'Nicosia',
+  nz:'Wellington', cz:'Prague', sk:'Bratislava', rs:'Belgrade', ro:'Bucharest',
+  lu:'Luxembourg City', id:'Jakarta', ve:'Caracas', pa:'Panama City', jm:'Kingston',
+  np:'Kathmandu', lk:'Kotte', bt:'Thimphu', mn:'Ulaanbaatar', kh:'Phnom Penh', tg:'Lomé',
+  xk:'Pristina', 'gb-nir':'Belfast', gt:'Guatemala City', sv:'San Salvador', ni:'Managua',
+  ht:'Port-au-Prince', bz:'Belmopan', mv:'Malé', bn:'Bandar Seri Begawan',
+  sd:'Khartoum', ss:'Juba', mr:'Nouakchott', ne:'Niamey', td:'N’Djamena', bf:'Ouagadougou',
+  gm:'Banjul', gw:'Bissau', sl:'Freetown', lr:'Monrovia', ga:'Libreville', cg:'Brazzaville',
+  cf:'Bangui', gq:'Malabo', st:'São Tomé', ao:'Luanda', mz:'Maputo', na:'Windhoek',
+  ls:'Maseru', sz:'Mbabane (and Lobamba)', mw:'Lilongwe', bi:'Gitega', dj:'Djibouti City', er:'Asmara',
+  so:'Mogadishu', km:'Moroni', mu:'Port Louis', sc:'Victoria', cv:'Praia', rw:'Kigali',
+  mg:'Antananarivo', bw:'Gaborone', bj:'Porto-Novo',
+  mc:'Monaco', ad:'Andorra la Vella', li:'Vaduz', sm:'San Marino', va:'Vatican City',
+  bs:'Nassau', bb:'Bridgetown', gy:'Georgetown', sr:'Paramaribo', dm:'Roseau', lc:'Castries',
+  gd:'St George’s', vc:'Kingstown', ag:'St John’s', kn:'Basseterre', fj:'Suva',
+  pg:'Port Moresby', sb:'Honiara', vu:'Port Vila', ws:'Apia', to:'Nukuʻalofa', ki:'Tarawa',
+  tv:'Funafuti', nr:'Yaren', pw:'Ngerulmud', mh:'Majuro', fm:'Palikir', tl:'Dili',
+  su:'Moscow', yu:'Belgrade', ddr:'East Berlin', csk:'Prague', kit:'Rome', hu54:'Budapest',
+  persia:'Tehran', zr:'Kinshasa', gco:'Bogotá', siam:'Bangkok',
+};
+// left out of capital QUESTIONS (disputed, multiple, or same-name capitals) — still shown in the Book
+const NO_CAP_QUIZ = new Set(['il','ps','bo','lk','za','nr','va','mc','sz','sm','st','sg']);
+
+/* ── seeded randomness, so the daily match is the same for everyone ──── */
+function mulberry32(seed){
+  return function(){
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed>>>15, 1|seed);
+    t = t + Math.imul(t ^ t>>>7, 61|t) ^ t;
+    return ((t ^ t>>>14)>>>0)/4294967296;
+  };
+}
+function dateSeed(ds){ let h=0; for(const c of ds){ h = Math.imul(31,h) + c.charCodeAt(0) | 0; } return h; }
+function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function yesterdayStr(from){
+  const p = from ? String(from).split('-').map(Number) : null;
+  const d = p ? new Date(p[0], p[1]-1, p[2]) : new Date();
+  d.setDate(d.getDate()-1);
+  return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+}
+
 // visually confusable neighbours — used to pick sneaky wrong answers
 const CONFUSABLE = {
   'ie':['ci','it'], 'it':['ie','mx'], 'mx':['it'], 'fr':['nl','ie'], 'nl':['fr','lu'],
@@ -1992,6 +2125,17 @@ function saveState(){
       }
       // max-merge: two tabs answering the same flag at once may drop one mastery count — accepted
       for(const k in (d.mastery||{})) mine.mastery[k] = Math.max(mine.mastery[k]||0, d.mastery[k]);
+      if(d.lightning && (d.lightning.best||0) > ((mine.lightning||{}).best||0))
+        mine.lightning = Object.assign({}, mine.lightning, {best:d.lightning.best});
+      if(d.miss){ mine.miss = mine.miss||{}; for(const k in d.miss) mine.miss[k] = Math.max(mine.miss[k]||0, d.miss[k]); }
+      if(d.daily){
+        // 'YYYY-M-D' is unpadded, so compare numerically, not as strings
+        const dayNum = s=>{ const p=String(s||'').split('-').map(Number); return (p[0]||0)*10000+(p[1]||0)*100+(p[2]||0); };
+        const md = mine.daily;
+        if(!md || dayNum(d.daily.last) > dayNum(md.last))
+          mine.daily = Object.assign({}, d.daily, {best: Math.max(d.daily.best||0, (md||{}).best||0)});
+        else md.best = Math.max(md.best||0, d.daily.best||0);
+      }
     }
     localStorage.setItem('flag-cup', JSON.stringify(state));
   }catch(e){}
@@ -2102,7 +2246,7 @@ function confetti(big){
 
 /* ── helpers ─────────────────────────────────────────────────────────── */
 const stage = document.getElementById('stage');
-function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function shuffle(a, rnd){ rnd = rnd || Math.random; a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
 function starSvg(fill){
   return `<svg viewBox="0 0 40 40"><polygon points="${starPts(20,22,17,-90)}" fill="${fill}" stroke="#202A5C" stroke-width="2.5"/></svg>`;
@@ -2115,27 +2259,47 @@ function starRow(n, size, animate){
   return s+`</div>`;
 }
 function totalStars(){ return Object.values(P().best).reduce((a,b)=>a+(b.stars||0),0); }
-const MAX_STARS = (9+9+5)*3;
+const MAX_STARS = (9+9+9+6)*3;   // flags + find + capitals + footy quiz, 3 stars each level
 function bestFor(key){ return P().best[key] || {stars:0, score:0}; }
 
 /* ── screens ─────────────────────────────────────────────────────────── */
 function goHome(){
   document.title = state.current + "'s Flag Cup";
   const st = totalStars();
+  const d = P().daily || {};
+  const playedToday = d.last === todayStr();
+  // show 0 once a streak has already lapsed (last play before yesterday), matching finishDaily's reset
+  const liveStreak = (d.last===todayStr() || d.last===yesterdayStr()) ? (d.streak||0) : 0;
   stage.innerHTML = `
     <h1 class="biglogo">${esc(state.current)}’s<br><span class="sun">Flag Cup</span></h1>
     <p class="tagline">Flags and World Cup fun — let’s play!</p>
     <div class="modes">
+      <button class="mode-btn daily" data-go="daily">
+        <span class="mode-ico">📅</span>
+        <span><span class="mode-name">Match of the Day</span><br>
+          <span class="mode-sub">${playedToday ? 'Played today! Back tomorrow 🌙' : 'Today’s special 10 — keep the streak!'}</span></span>
+        <span class="mode-stars">🔥 ${liveStreak}</span>
+      </button>
       ${modeBtn('flags','⚽','Flag Quiz','Which country is it?', 9)}
       ${modeBtn('find','🔍','Find the Flag','Tap the right flag!', 9)}
-      ${modeBtn('wc','🏆','Footy Quiz','World Cup, superstars, clubs &amp; trophies', 5)}
+      ${modeBtn('caps','🏛️','Capitals Quiz','Name the capital city!', 9)}
+      ${modeBtn('wc','🏆','Footy Quiz','World Cup, superstars, clubs &amp; kits', 6)}
+      <button class="mode-btn" data-go="duel">
+        <span class="mode-ico">⚔️</span>
+        <span><span class="mode-name">Duel</span><br><span class="mode-sub">Two players, one trophy!</span></span>
+      </button>
+      <button class="mode-btn" data-go="lightning">
+        <span class="mode-ico">⚡</span>
+        <span><span class="mode-name">Lightning</span><br><span class="mode-sub">60 seconds, how many flags?</span></span>
+        <span class="mode-stars">⚡ ${(P().lightning||{}).best||0}</span>
+      </button>
       <button class="mode-btn" data-go="book">
         <span class="mode-ico">📖</span>
-        <span><span class="mode-name">Flag Book</span><br><span class="mode-sub">All 200+ flags in one album</span></span>
+        <span><span class="mode-name">Flag Book</span><br><span class="mode-sub">All 210 flags &amp; capitals</span></span>
       </button>
     </div>
     <div class="totals">
-      <span class="pill">⭐ ${st} / ${MAX_STARS} stars</span>
+      <span class="pill"><button data-go="trophies">⭐ ${st} / ${MAX_STARS} · Trophy Room</button></span>
       <span class="pill"><button data-act="players">👥 Swap player</button></span>
       <span class="pill"><button data-act="sound">${state.sound?'🔊 Sound on':'🔇 Sound off'}</button></span>
     </div>`;
@@ -2204,10 +2368,10 @@ function modeBtn(mode, ico, name, sub, nLevels){
 }
 
 function goLevels(mode){
-  const titles = {flags:'Flag Quiz', find:'Find the Flag', wc:'Footy Quiz'};
+  const titles = {flags:'Flag Quiz', find:'Find the Flag', caps:'Capitals Quiz', wc:'Footy Quiz'};
   const list = mode==='wc'
-    ? [{n:1,name:'Rookie',icon:'⚽'},{n:2,name:'Legend',icon:'🏆'},{n:3,name:'Superstars',icon:'⭐'},{n:4,name:'Clubs',icon:'🛡️'},{n:5,name:'Trophy Cabinet',icon:'🏅'}]
-    : LEVELS;
+    ? [{n:1,name:'Rookie',icon:'⚽'},{n:2,name:'Legend',icon:'🏆'},{n:3,name:'Superstars',icon:'⭐'},{n:4,name:'Clubs',icon:'🛡️'},{n:5,name:'Trophy Cabinet',icon:'🏅'},{n:6,name:'Famous Kits',icon:'👕'}]
+    : (mode==='caps' ? LEVELS.map(l=>Object.assign({},l)) : LEVELS);
   stage.innerHTML = `
     <div class="topbar">
       <button class="back-btn" data-go="home" aria-label="Back">←</button>
@@ -2235,25 +2399,53 @@ function starRowSmall(n){
 }
 
 /* ── building a match ────────────────────────────────────────────────── */
-function pickDistractors(flag, pool, n){
+function pickDistractors(flag, pool, n, rnd){
+  rnd = rnd || Math.random;
   const confus = (CONFUSABLE[flag.id]||[]).map(id=>flagById[id]).filter(Boolean);
   // sneaky lookalikes get guaranteed slots; the rest fill up from the level pool
-  const sneaky = shuffle(confus).slice(0, Math.min(confus.length, Math.random()<0.7?1:2, n));
-  const rest = shuffle(pool.filter(f=>f.id!==flag.id && !sneaky.includes(f)));
-  return shuffle(sneaky.concat(rest.slice(0, Math.max(0, n - sneaky.length))));
+  const sneaky = shuffle(confus, rnd).slice(0, Math.min(confus.length, rnd()<0.7?1:2, n));
+  const rest = shuffle(pool.filter(f=>f.id!==flag.id && !sneaky.includes(f)), rnd);
+  return shuffle(sneaky.concat(rest.slice(0, Math.max(0, n - sneaky.length))), rnd);
+}
+function capDistractors(flag, pool, n, rnd){
+  // no two answer buttons may show the same capital (gb and gb-eng both say 'London')
+  const seen = new Set([CAPITALS[flag.id]]), ds = [];
+  for(const f of shuffle(pool.filter(x=>x.id!==flag.id), rnd)){
+    if(seen.has(CAPITALS[f.id])) continue;
+    seen.add(CAPITALS[f.id]); ds.push(f);
+    if(ds.length===n) break;
+  }
+  return ds;
 }
 function buildMatch(mode, level){
   if(mode==='wc'){
-    const bank = level===1 ? WC_ROOKIE : level===2 ? WC_LEGEND : level===3 ? WC_STARS : level===4 ? WC_CLUBS : WC_TROPHY;
+    const bank = level===1 ? WC_ROOKIE : level===2 ? WC_LEGEND : level===3 ? WC_STARS : level===4 ? WC_CLUBS : level===5 ? WC_TROPHY : WC_KITS;
     return shuffle(bank).slice(0,10).map(item=>{
       const opts = shuffle([item.a].concat(item.wrong));
-      return {kind:'wc', prompt:item.q, options:opts, answer:opts.indexOf(item.a), fact:item.fact, flags:item.flags||null};
+      return {kind:'wc', prompt:item.q, options:opts, answer:opts.indexOf(item.a), fact:item.fact, flags:item.flags||null, kit:item.kit||null};
+    });
+  }
+  const old = level===9;                             // bonus level: flags of former countries
+  if(mode==='caps'){
+    const pool = FLAGS.filter(f=>f.level===level && CAPITALS[f.id] && !NO_CAP_QUIZ.has(f.id));
+    const nOpts = level===1 ? 3 : 4;
+    return shuffle(pool).slice(0,10).map(flag=>{
+      const ds = capDistractors(flag, pool, nOpts-1);
+      const opts = shuffle([flag].concat(ds));
+      return {
+        kind:'caps', flag, options:opts, answer:opts.indexOf(flag),
+        prompt: (old ? 'Long ago, what was the capital of ' : 'What is the capital of ') + flag.name + '?',
+        fact: old ? `${CAPITALS[flag.id]} was ${flag.name}’s capital city.` : `${CAPITALS[flag.id]} is ${flag.name}’s capital city.`,
+      };
     });
   }
   const pool = FLAGS.filter(f=>f.level===level);
   const nOpts = (mode==='flags' && level===1) ? 3 : 4;
-  const old = level===9;                             // bonus level: flags of former countries
-  return shuffle(pool).slice(0,10).map(flag=>{
+  // spaced repetition: flags this player has missed sneak back in sooner
+  const missMap = P().miss || {};
+  const missed = shuffle(pool.filter(f=>missMap[f.id]>0)).slice(0,4);
+  const rest = shuffle(pool.filter(f=>!missed.includes(f)));
+  return shuffle(missed.concat(rest).slice(0,10)).map(flag=>{
     const ds = pickDistractors(flag, pool, nOpts-1);
     const opts = shuffle([flag].concat(ds));
     return {
@@ -2290,6 +2482,9 @@ function renderQuestion(){
   } else if(q.kind==='flags'){
     answers = `<div class="answers">` + q.options.map((f,i)=>
       `<button class="ans-btn" data-ans="${i}">${esc(f.name)}</button>`).join('') + `</div>`;
+  } else if(q.kind==='caps'){
+    answers = `<div class="answers">` + q.options.map((f,i)=>
+      `<button class="ans-btn" data-ans="${i}">${esc(CAPITALS[f.id])}</button>`).join('') + `</div>`;
   } else {
     answers = `<div class="answers">` + q.options.map((t,i)=>{
       const ff = q.flags && q.flags[t] ? flagById[q.flags[t]] : null;
@@ -2297,57 +2492,85 @@ function renderQuestion(){
       return `<button class="ans-btn" data-ans="${i}">${mini}${esc(t)}</button>`;
     }).join('') + `</div>`;
   }
-  if(q.kind==='flags'){
+  if(q.kind==='flags' || q.kind==='caps'){
     card = `<div class="bigflag ${q.flag.square?'sq':''}">${wrap(q.flag.svg)}</div>`;
+  } else if(q.kit){
+    card = `<div class="bigflag" style="background:transparent;border-color:transparent;box-shadow:none">${kitSvg(q.kit)}</div>`;
   }
+  const homeModes = {daily:1, duel:1};
+  const scoreboard = match.duel
+    ? `<span class="ballcount">${esc(match.players[0].slice(0,8))} ${match.scores[0]} – ${match.scores[1]} ${esc(match.players[1].slice(0,8))}</span>`
+    : `<span class="ballcount">⚽ ${match.firstTry}</span>`;
+  const turn = match.duel
+    ? `<div class="turnbanner">${match.shootout?'🥅 PENALTIES! ':''}⚽ ${esc(match.players[match.i % 2])}’s ball!</div><br>`
+    : '';
   stage.innerHTML = `
     <div class="quizbar">
-      <button class="back-btn" data-go="levels" data-mode="${match.mode}" aria-label="Quit match">✕</button>
+      <button class="back-btn" ${homeModes[match.mode]?'data-go="home"':`data-go="levels" data-mode="${match.mode}"`} aria-label="Quit match">✕</button>
       <div class="dots">${dots}</div>
-      <span class="ballcount">⚽ ${match.firstTry}</span>
+      ${scoreboard}
     </div>
     <div class="qcard">
       <button class="say-btn" data-act="say" aria-label="Read aloud">🔊</button>
+      ${turn}
       <p class="qprompt">${esc(q.prompt)}</p>
       ${card}
     </div>
     ${answers}
     <div id="fb"></div>`;
   wire();
-  if(q.kind==='find') say(q.prompt);
+  if(q.kind==='find') say(match.duel ? `${match.players[match.i % 2]}: ${q.prompt}` : q.prompt);
+  else if(match.duel) say(`${match.players[match.i % 2]}’s ball!`);
 }
 function sayCurrent(){
   const q = match && match.qs[match.i];
   if(!q) return;
   if(q.kind==='flags') say(q.prompt);
   else if(q.kind==='find') say(q.prompt);
+  else if(q.kind==='caps') say(q.prompt + '. ' + q.options.map(f=>CAPITALS[f.id]).join('. Or, '));
   else say(q.prompt + '. ' + q.options.join('. Or, '));
+}
+function playerProg(name){
+  if(!hasOwn(state.players, name)) state.players[name] = {best:{}, mastery:{}};
+  return state.players[name];
 }
 function answer(i, btn){
   if(!match || performance.now() - (match.renderedAt||0) < 350) return;  // ignore taps meant for the previous screen
   const q = match.qs[match.i];
   match.tries++;
+  const prog = match.duel ? playerProg(match.players[match.i % 2]) : P();
+  const flagKind = q.kind==='flags' || q.kind==='find';
   if(i===q.answer){
     const first = match.tries===1;
     if(first){ match.firstTry++; match.done[match.i]='hit'; }
     else { match.laterTry++; match.done[match.i]='ok'; }
-    if(q.flag && first){
-      P().mastery[q.flag.id] = (P().mastery[q.flag.id]||0)+1;
+    if(match.duel && first) match.scores[match.i % 2]++;
+    if(q.flag && first && flagKind){
+      prog.mastery[q.flag.id] = (prog.mastery[q.flag.id]||0)+1;
+      if(prog.miss && prog.miss[q.flag.id]){                // it came back and they got it — ease off
+        prog.miss[q.flag.id]--;
+        if(!prog.miss[q.flag.id]) delete prog.miss[q.flag.id];
+      }
       saveState();
     }
     sfx.correct();
     btn.classList.add('right');
     document.querySelectorAll('.ans-btn').forEach(b=>b.disabled=true);
-    const name = q.flag ? q.flag.name : q.options[q.answer];
+    const name = q.kind==='caps' ? CAPITALS[q.flag.id] : (q.flag ? q.flag.name : q.options[q.answer]);
     const cheers = ['Goal!','Brilliant!','Super save!','What a shot!','Top corner!','You’re on fire!'];
     const cheer = first ? cheers[Math.floor(Math.random()*cheers.length)] : 'You got it!';
     document.getElementById('fb').innerHTML =
       `<div class="feedback yay">${cheer} ${q.kind!=='wc' ? 'It’s '+esc(name)+'!' : ''}
        <span class="fact">${esc(q.fact||'')}</span></div>`;
-    if(q.kind==='flags' && first) say(cheer + ' ' + name + '!');
+    if((q.kind==='flags' || q.kind==='caps') && first) say(cheer + ' ' + name + '!');
     const wait = q.kind==='wc' ? 2600 : 1800;
     advanceTimer = setTimeout(nextQuestion, wait);
   } else {
+    if(match.tries===1 && q.flag && flagKind){             // remember the miss — this flag will come back
+      const m = prog.miss || (prog.miss = {});
+      m[q.flag.id] = (m[q.flag.id]||0)+1;
+      saveState();
+    }
     sfx.wrong();
     btn.classList.add('nope');
     btn.disabled = true;
@@ -2360,9 +2583,16 @@ function nextQuestion(){
   if(!match) return;
   match.i++;
   if(match.i < match.qs.length) renderQuestion();
+  else if(match.duel && match.scores[0]===match.scores[1] && match.qs.length < 16){
+    match.qs = match.qs.concat(buildMixedQs(2));           // penalties: one question each
+    match.shootout = true;
+    renderQuestion();
+  }
   else finishMatch();
 }
 function finishMatch(){
+  if(match.duel) return finishDuel();
+  if(match.mode==='daily') return finishDaily();
   const score = match.firstTry, n = match.qs.length;
   const stars = score>=9 ? 3 : score>=7 ? 2 : score>=5 ? 1 : 0;
   const key = match.mode+'-'+match.level;
@@ -2379,7 +2609,7 @@ function finishMatch(){
     stars===1 ? `Great match, ${who}! Keep playing and grab more stars!` :
                 `Good practice, ${who}! Every champion starts somewhere. Try again!`;
   const nextLevel = match.level + 1;
-  const maxLevel = match.mode==='wc' ? 5 : 9;
+  const maxLevel = match.mode==='wc' ? 6 : 9;
   stage.innerHTML = `
     <div class="card results">
       <h2>${stars>=2?'⚽ FULL TIME! ⚽':'Full time!'}</h2>
@@ -2398,12 +2628,295 @@ function finishMatch(){
   say(cheer);
 }
 
+/* ── mixed-question builder (daily + duel + penalties) ───────────────── */
+function buildMixedQs(n, rng){
+  rng = rng || Math.random;
+  const modern = FLAGS.filter(f=>f.level<9);
+  const capsOk = f => CAPITALS[f.id] && !NO_CAP_QUIZ.has(f.id);
+  const mk = (flag, kind) => {
+    const pool = FLAGS.filter(f=>f.level===flag.level);
+    const ds = kind==='caps'
+      ? capDistractors(flag, pool.filter(capsOk), 3, rng)
+      : pickDistractors(flag, pool, 3, rng);
+    const opts = shuffle([flag].concat(ds), rng);
+    return {kind, flag, options:opts, answer:opts.indexOf(flag),
+      prompt: kind==='flags' ? 'Which country’s flag is this?'
+            : kind==='find' ? `Tap the flag of ${flag.name}!`
+            : `What is the capital of ${flag.name}?`,
+      fact: kind==='caps' ? `${CAPITALS[flag.id]} is ${flag.name}’s capital city.` : flag.fact};
+  };
+  const kinds = [];
+  for(let i=0;i<n;i++) kinds.push(['flags','find','caps','wc'][i % 4]);
+  const picks = shuffle(modern, rng);
+  const capPicks = shuffle(modern.filter(capsOk), rng);
+  const bank = shuffle(WC_ROOKIE.concat(WC_LEGEND, WC_STARS, WC_CLUBS, WC_TROPHY, WC_KITS), rng);
+  let pi=0, ci=0, bi=0;
+  const qs = kinds.map(kind=>{
+    if(kind==='wc'){
+      const item = bank[bi++ % bank.length];
+      const opts = shuffle([item.a].concat(item.wrong), rng);
+      return {kind:'wc', prompt:item.q, options:opts, answer:opts.indexOf(item.a), fact:item.fact, flags:item.flags||null, kit:item.kit||null};
+    }
+    return mk(kind==='caps' ? capPicks[ci++] : picks[pi++], kind);
+  });
+  return shuffle(qs, rng);
+}
+
+/* ── Match of the Day ────────────────────────────────────────────────── */
+function startDaily(){
+  clearTimeout(advanceTimer);
+  const day = todayStr();          // credit the run to the day whose quiz was dealt, even across midnight
+  const rng = mulberry32(dateSeed(day));
+  match = {mode:'daily', day, qs: buildMixedQs(10, rng), i:0, firstTry:0, laterTry:0, tries:0, done:[]};
+  renderQuestion();
+}
+function finishDaily(){
+  const score = match.firstTry, n = match.qs.length;
+  const d = P().daily || (P().daily = {});
+  const today = match.day || todayStr();
+  const firstToday = d.last !== today;
+  if(firstToday){
+    d.streak = (d.last === yesterdayStr(today)) ? (d.streak||0)+1 : 1;
+    d.best = Math.max(d.best||0, d.streak);
+    d.last = today;
+    saveState();
+  }
+  const cheer = firstToday
+    ? `🔥 ${d.streak} day streak, ${state.current}! Come back tomorrow to keep the fire burning!`
+    : `Streak already safe today — that was just for fun, ${state.current}!`;
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>📅 FULL TIME!</h2>
+      <p class="scoreline">Today’s score: ${score} out of ${n}!</p>
+      <div class="starrow"><span style="font-size:56px">🔥</span></div>
+      <p class="scoreline">${d.streak||0} day streak &nbsp;·&nbsp; best ever: ${d.best||0}</p>
+      <p class="cheer">${esc(cheer)}</p>
+      <div class="btnrow">
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  wire();
+  sfx.fanfare(); confetti(score>=8); say(cheer);
+}
+
+/* ── Duel: two players, one trophy ───────────────────────────────────── */
+let duelPick = [];
+function goDuelSetup(){
+  duelPick = [];
+  renderDuelPick();
+}
+function renderDuelPick(){
+  const names = Object.keys(state.players).filter(n=>!duelPick.includes(n));
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">${duelPick.length===0 ? 'Who’s Player 1?' : esc(duelPick[0])+' vs …?'}</h1>
+    </div>
+    <div class="levels">
+      ${names.map(n=>`<button class="level-btn" data-duelpick="${esc(n)}">
+        <span class="level-num">${duelPick.length===0?'🔵':'🔴'}</span>
+        <span class="level-name">${esc(n)}</span></button>`).join('')}
+      ${names.length===0 ? '<div class="card">Add another player first — tap 👥 on the home screen!</div>' : ''}
+    </div>
+    <p style="text-align:center;color:#EAFFF2;font-weight:700;margin-top:16px;text-shadow:0 2px 0 rgba(18,58,35,.35)">
+      10 questions, taking turns. Most goals wins the cup! ⚽</p>`;
+  wire();
+}
+function startDuel(){
+  clearTimeout(advanceTimer);
+  match = {mode:'duel', duel:true, players:duelPick.slice(), scores:[0,0],
+           qs: buildMixedQs(10), i:0, firstTry:0, laterTry:0, tries:0, done:[]};
+  say(`${duelPick[0]} versus ${duelPick[1]}. Kick off!`);
+  renderQuestion();
+}
+function finishDuel(){
+  const [a,b] = match.scores, [pa,pb] = match.players;
+  const winner = a>b ? pa : b>a ? pb : null;
+  const cheer = winner ? `${winner} WINS THE CUP!` : 'It’s a draw — share the trophy!';
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>${winner ? '🏆 ' + esc(winner.toUpperCase()) + ' WINS! 🏆' : '🤝 IT’S A DRAW!'}</h2>
+      <p class="scoreline">${esc(pa)} ${a} – ${b} ${esc(pb)}</p>
+      <p class="cheer">${winner ? 'What a final! Rematch, anyone?' : 'Two champions — share the trophy lift!'}</p>
+      <div class="btnrow">
+        <button class="go-btn" data-act="rematch">Rematch! ↻</button>
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  wire();
+  sfx.fanfare(); confetti(true); say(cheer);
+}
+
+/* ── Lightning round ─────────────────────────────────────────────────── */
+let lightning = null, lightningTimer = null;
+function stopLightning(){ clearInterval(lightningTimer); lightningTimer = null; lightning = null; }
+function goLightning(){
+  const best = (P().lightning||{}).best || 0;
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Lightning ⚡</h1>
+    </div>
+    <div class="card results">
+      <h2>60 seconds!</h2>
+      <p class="cheer">How many flags can you name before the whistle? No pressure — just fun and fast!</p>
+      ${best ? `<p class="scoreline">Your best: ⚡ ${best}</p>` : ''}
+      <div class="btnrow"><button class="go-btn" data-act="golightning">GO! ⚡</button></div>
+    </div>`;
+  wire();
+}
+function startLightning(){
+  lightning = {score:0, end: Date.now()+60000};
+  lightningTimer = setInterval(()=>{
+    const left = lightning ? lightning.end - Date.now() : 0;
+    const bar = document.getElementById('lbar');
+    if(bar) bar.style.width = Math.max(0, left/600) + '%';
+    if(left <= 0) finishLightning();
+  }, 100);
+  nextLightningQ();
+}
+function nextLightningQ(){
+  if(!lightning) return;
+  const pool = FLAGS.filter(f=>f.level<9);
+  const flag = pool[Math.floor(Math.random()*pool.length)];
+  const ds = shuffle(FLAGS.filter(f=>f.level===flag.level && f.id!==flag.id)).slice(0,2);
+  lightning.q = {flag, options: shuffle([flag].concat(ds))};
+  lightning.renderedAt = performance.now();          // tap-through guard, same as answer()
+  stage.innerHTML = `
+    <div class="quizbar">
+      <button class="back-btn" data-go="home" aria-label="Quit">✕</button>
+      <span class="ballcount" style="flex:1;text-align:center">⚡ ${lightning.score}</span>
+    </div>
+    <div class="timerbar"><div id="lbar" style="width:${Math.max(0,(lightning.end-Date.now())/600)}%"></div></div>
+    <div class="qcard">
+      <div class="bigflag ${lightning.q.flag.square?'sq':''}">${wrap(lightning.q.flag.svg)}</div>
+    </div>
+    <div class="answers">
+      ${lightning.q.options.map((f,i)=>`<button class="ans-btn" data-lans="${i}">${esc(f.name)}</button>`).join('')}
+    </div>`;
+  wire();
+}
+function answerLightning(i, btn){
+  if(!lightning) return;
+  if(performance.now() - (lightning.renderedAt||0) < 350) return;
+  if(lightning.q.options[i] === lightning.q.flag){
+    lightning.score++; sfx.pop(); nextLightningQ();
+  } else {
+    sfx.wrong(); btn.classList.add('nope'); btn.disabled = true;
+    setTimeout(()=>{ if(lightning) nextLightningQ(); }, 550);
+  }
+}
+function finishLightning(){
+  const score = lightning ? lightning.score : 0;
+  stopLightning();
+  const lp = P().lightning || (P().lightning = {});
+  const isBest = score > (lp.best||0);
+  if(isBest){ lp.best = score; saveState(); }
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>⚡ FULL TIME! ⚡</h2>
+      <p class="scoreline">You named ${score} ${score===1?'flag':'flags'} in 60 seconds!</p>
+      <p class="cheer">${isBest ? 'NEW BEST SCORE! ⚡🎉' : `Your best is ${lp.best||score}. You’ll beat it!`}</p>
+      <div class="btnrow">
+        <button class="go-btn" data-act="golightning">Again! ⚡</button>
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  wire();
+  sfx.fanfare(); if(isBest) confetti(true);
+}
+
+/* ── trophy room + certificates + printing ───────────────────────────── */
+function modeStars(mode, n){ let s=0; for(let l=1;l<=n;l++) s += bestFor(mode+'-'+l).stars; return s; }
+function goTrophies(){
+  const rows = [
+    ['⚽','Flag Quiz','flags',9], ['🔍','Find the Flag','find',9],
+    ['🏛️','Capitals Quiz','caps',9], ['🏆','Footy Quiz','wc',6],
+  ];
+  const total = totalStars();
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Trophy Room</h1>
+    </div>
+    <div class="levels">
+      ${rows.map(r=>{
+        const got = modeStars(r[2], r[3]), max = r[3]*3;
+        return `<div class="trophyrow"><span style="font-size:30px">${r[0]}</span>
+          <span class="tname">${r[1]}</span>
+          <span class="tstars">${got===max?'🏆 ':''}⭐ ${got}/${max}</span></div>`;
+      }).join('')}
+      <div class="trophyrow"><span style="font-size:30px">🔥</span><span class="tname">Best streak</span>
+        <span class="tstars">${(P().daily||{}).best||0} ${((P().daily||{}).best||0)===1?'day':'days'}</span></div>
+      <div class="trophyrow"><span style="font-size:30px">⚡</span><span class="tname">Lightning best</span>
+        <span class="tstars">${(P().lightning||{}).best||0} ${((P().lightning||{}).best||0)===1?'flag':'flags'}</span></div>
+      <button class="go-btn ${total>=50?'':'quiet'}" data-act="cert" data-tier="explorer" ${total>=50?'':'disabled'}>
+        ${total>=50 ? '📜 Flag Explorer certificate!' : `📜 Flag Explorer at 50 ⭐ (you have ${total})`}</button>
+      <button class="go-btn ${total>=MAX_STARS?'':'quiet'}" data-act="cert" data-tier="champion" ${total>=MAX_STARS?'':'disabled'}>
+        ${total>=MAX_STARS ? '🏆 WORLD CHAMPION certificate!' : `🏆 World Champion at ${MAX_STARS} ⭐`}</button>
+    </div>`;
+  wire();
+}
+function certHtml(tier){
+  const today = new Date().toLocaleDateString(undefined, {day:'numeric', month:'long', year:'numeric'});
+  return `<div class="certcard">
+    <div style="font-size:44px">${tier==='champion'?'🏆':'📜'}</div>
+    <h2>CERTIFICATE</h2>
+    <p>This is to declare that</p>
+    <div class="cname">${esc(state.current)}</div>
+    <p>is an official <b>${tier==='champion'?'WORLD CHAMPION':'FLAG EXPLORER'}</b> of the Flag Cup</p>
+    <p>⭐ ${totalStars()} stars · 210 flags of the world</p>
+    <p>${today}</p>
+  </div>`;
+}
+function showCert(tier){
+  const div = document.createElement('div');
+  div.className = 'peek';
+  div.innerHTML = `<div class="card" style="padding:14px">${certHtml(tier)}
+    <div class="btnrow" style="margin-top:12px">
+      <button class="go-btn" data-act="printcert" data-tier="${tier}">Print it! 🖨️</button>
+      <button class="go-btn quiet" data-act="peekclose">Close ✕</button>
+    </div></div>`;
+  div.addEventListener('click', e=>{
+    if(e.target===div || e.target.closest('[data-act="peekclose"]')) div.remove();
+    else if(e.target.closest('[data-act="printcert"]')) printNode(certHtml(tier));
+  });
+  document.body.appendChild(div);
+  sfx.fanfare(); confetti(true);
+}
+let printCleanup = null;                 // clear leftovers if afterprint never fired (iOS Safari)
+function printNode(innerHtml){
+  if(printCleanup) printCleanup();
+  const div = document.createElement('div');
+  div.id = 'printzone';
+  div.innerHTML = innerHtml;
+  document.querySelectorAll('#printzone').forEach(el=>el.remove());
+  document.body.appendChild(div);
+  document.body.classList.add('printing');
+  let fallback;
+  const done = ()=>{ div.remove(); document.body.classList.remove('printing');
+    window.removeEventListener('afterprint', done); clearTimeout(fallback);
+    if(printCleanup===done) printCleanup = null; };
+  printCleanup = done;
+  window.addEventListener('afterprint', done);
+  setTimeout(()=>{ try{ window.print(); }catch(e){ done(); } }, 60);
+  fallback = setTimeout(done, 120000);
+}
+function printPoster(){
+  printNode(`<h1>The Flag Cup — All 210 Flags</h1>` + LEVELS.map(l=>
+    `<h2>${l.bonus?'BONUS: ':''}${l.name}</h2><div class="printgrid">` +
+    FLAGS.filter(f=>f.level===l.n).map(f=>
+      `<div class="pf"><div class="pfl">${wrap(f.svg)}</div><div class="pfn">${esc(f.name)}</div></div>`).join('') +
+    `</div>`).join(''));
+}
+
 /* ── flag book ───────────────────────────────────────────────────────── */
 function goBook(){
   stage.innerHTML = `
     <div class="topbar">
       <button class="back-btn" data-go="home" aria-label="Back">←</button>
       <h1 class="screen-title">Flag Book</h1>
+      <span class="pill" style="margin-left:auto"><button data-act="poster">🖨️ Poster</button></span>
     </div>
     ${LEVELS.map(l=>`
       <h2 class="booksec">${l.icon} ${l.bonus ? 'BONUS: '+l.name : l.name}</h2>
@@ -2431,6 +2944,7 @@ function peekFlag(id){
     <div class="card">
       <div class="bigflag ${f.square?'sq':''}" style="margin:0 auto">${wrap(f.svg)}</div>
       <h3>${esc(f.name)}</h3>
+      ${CAPITALS[f.id] ? `<p class="learn" style="color:var(--ink-soft)">🏛️ Capital: ${esc(CAPITALS[f.id])}</p>` : ''}
       ${m>0?`<p class="learn">${m>=3?'🌟 Flag master!':'⭐ You know this one!'}</p>`:''}
       <p class="fact">${esc(f.fact)}</p>
       <div class="btnrow">
@@ -2440,7 +2954,7 @@ function peekFlag(id){
     </div>`;
   div.addEventListener('click', e=>{
     if(e.target===div || e.target.closest('[data-act="peekclose"]')) div.remove();
-    else if(e.target.closest('[data-act="peeksay"]')){ sfx.tap(); say(f.name + '. ' + f.fact); }
+    else if(e.target.closest('[data-act="peeksay"]')){ sfx.tap(); say(f.name + (CAPITALS[f.id] ? '. Capital: ' + CAPITALS[f.id] : '') + '. ' + f.fact); }
   });
   document.body.appendChild(div);
   say(f.name);
@@ -2451,12 +2965,27 @@ function wire(){
   stage.querySelectorAll('[data-go]').forEach(b=> b.addEventListener('click', ()=>{
     sfx.tap();
     match = null; clearTimeout(advanceTimer);   // leaving a match cancels its pending advance
+    stopLightning();
     hushVoice();
     const go = b.dataset.go;
     if(go==='home') goHome();
     else if(go==='book') goBook();
     else if(go==='levels') goLevels(b.dataset.mode);
+    else if(go==='daily') startDaily();
+    else if(go==='duel') goDuelSetup();
+    else if(go==='lightning') goLightning();
+    else if(go==='trophies') goTrophies();
   }));
+  stage.querySelectorAll('[data-duelpick]').forEach(b=> b.addEventListener('click', ()=>{
+    sfx.tap();
+    duelPick.push(b.dataset.duelpick);
+    if(duelPick.length===2) startDuel(); else renderDuelPick();
+  }));
+  stage.querySelectorAll('[data-act="rematch"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); startDuel(); }));
+  stage.querySelectorAll('[data-act="golightning"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); startLightning(); }));
+  stage.querySelectorAll('[data-lans]').forEach(b=> b.addEventListener('click', ()=> answerLightning(parseInt(b.dataset.lans,10), b)));
+  stage.querySelectorAll('[data-act="cert"]').forEach(b=> b.addEventListener('click', ()=>{ if(!b.disabled){ sfx.tap(); showCert(b.dataset.tier); } }));
+  stage.querySelectorAll('[data-act="poster"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); printPoster(); }));
   stage.querySelectorAll('[data-play]').forEach(b=> b.addEventListener('click', ()=>{
     sfx.tap(); hushVoice(); startMatch(b.dataset.play, parseInt(b.dataset.level,10));
   }));
@@ -2477,7 +3006,9 @@ function wire(){
 }
 
 document.addEventListener('pointerdown', ()=>audio(), {once:true});
-window.__game = {startMatch, goHome, goBook, goPlayers, savePlayer, FLAGS, CONFUSABLE, state:()=>state, match:()=>match, answer, buildMatch, P};
+window.__game = {startMatch, goHome, goBook, goPlayers, savePlayer, FLAGS, CONFUSABLE, CAPITALS, NO_CAP_QUIZ,
+  state:()=>state, match:()=>match, answer, buildMatch, P, buildMixedQs, startDaily, goDuelSetup, startDuel,
+  goLightning, startLightning, goTrophies, lightning:()=>lightning, duelPickList:()=>duelPick, setDuelPick:(a)=>{duelPick=a;}};
 
 const params = new URLSearchParams(location.search);
 if(params.has('book')) goBook();
