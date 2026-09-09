@@ -12,7 +12,7 @@ A flags and World Cup quiz game for kids — play it here:
 - **Find the Flag** — hear a country's name read aloud, tap its flag.
 - **Capitals Quiz** — see the flag, name the capital, nine levels. Countries
   with disputed or multiple capitals sit this one out honestly.
-- **Footy Quiz** — six levels: World Cup rookie and legend trivia (through
+- **Footy Quiz** — six levels, ~210 questions: World Cup rookie and legend trivia (through
   2026), superstars, clubs, every nation's men's AND women's World Cup
   trophy count, and a Kit Quiz with drawn shirts (whose hoops? whose sash?).
 - **Duel** — two players, one screen, sudden-death penalties if it's a draw.

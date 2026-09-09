@@ -104,7 +104,7 @@
 
   .qcard{background:var(--card); border:4px solid var(--ink); border-radius:24px; box-shadow:var(--shadow);
     padding:18px; text-align:center; margin-bottom:14px; position:relative}
-  .qprompt{font-weight:800; font-size:clamp(19px,4.6vw,23px); margin:0 0 12px; text-wrap:balance}
+  .qprompt{font-weight:800; font-size:clamp(19px,4.6vw,23px); margin:0 0 12px; padding:0 46px; text-wrap:balance}
   .bigflag{width:min(78%,320px); margin:2px auto 6px; border:4px solid var(--ink); border-radius:14px;
     overflow:hidden; line-height:0; background:#fff; box-shadow:0 5px 0 rgba(18,58,35,.18)}
   .bigflag.sq{background:transparent; border-color:transparent; box-shadow:none}
@@ -225,6 +225,7 @@
    reading aloud via speechSynthesis, progress in localStorage.
    ════════════════════════════════════════════════════════════════════════ */
 const PLAYER = 'Champ';
+const PLAYER2 = '';        // pre-loaded second player ('' = none)
 
 /* ── SVG flag builders (300×200 viewBox) ─────────────────────────────── */
 const W = 300, H = 200;
@@ -1638,6 +1639,18 @@ const WC_KITS = [
   {q:'Which Paris team wears navy with a red stripe down the middle?', a:'PSG', wrong:['Marseille','Lyon','Monaco'], kit:{body:'#004170', alt:'#DA291C', pattern:'midstripe'}, fact:'Their rivals Marseille wear white and sky blue.'},
   {q:'Argentina’s famous stripes are white and which colour?', a:'Sky blue', wrong:['Orange','Dark green','Brown'], kit:{body:'#FFFFFF', alt:'#74ACDF', pattern:'stripes'}, fact:'La Albiceleste — the sky-blue-and-whites!'},
   {q:'Which Merseyside team wears all red at home?', a:'Liverpool', wrong:['Everton','Tranmere','Wigan'], kit:{body:'#C8102E'}, fact:'Their big rivals Everton wear blue!'},
+  {"q":"Which country plays in bright orange?","a":"Netherlands","wrong":["Spain","Denmark","Wales"],"flags":{"Netherlands":"nl","Spain":"es","Denmark":"dk","Wales":"gb-wls"},"kit":{"body":"#F36C21"},"fact":"Orange is the colour of the Dutch royal family!"},
+  {"q":"Germany’s classic kit has white shirts. What colour are the shorts?","a":"Black","wrong":["Pink","Orange","Gold"],"kit":{"body":"#FFFFFF"},"fact":"White and black were the colours of an old kingdom called Prussia!"},
+  {"q":"Which country plays in yellow and blue, just like its flag?","a":"Sweden","wrong":["Norway","Germany","Ireland"],"flags":{"Sweden":"se","Norway":"no","Germany":"de","Ireland":"ie"},"kit":{"body":"#FECC02","sleeves":"#006AA7"},"fact":"A yellow cross on blue — the shirt matches the flag!"},
+  {"q":"Which country from Asia plays in deep blue?","a":"Japan","wrong":["South Korea","China","Saudi Arabia"],"flags":{"Japan":"jp","South Korea":"kr","China":"cn","Saudi Arabia":"sa"},"kit":{"body":"#002063"},"fact":"Japan’s team is nicknamed the Samurai Blue!"},
+  {"q":"Which Italian team wears blue and black stripes?","a":"Inter Milan","wrong":["Juventus","Roma","Fiorentina"],"kit":{"body":"#0068A8","alt":"#000000","pattern":"stripes"},"fact":"Nerazzurri means the black-and-blues in Italian!"},
+  {"q":"Which team is called the Canaries and wears yellow and green?","a":"Norwich City","wrong":["Ipswich Town","Newcastle","Liverpool"],"kit":{"body":"#FFF200","sleeves":"#00A650"},"fact":"A canary is a little yellow bird — their rivals Ipswich wear blue!"},
+  {"q":"Which Midlands team plays in old gold and black?","a":"Wolves","wrong":["Aston Villa","Leicester City","Derby County"],"kit":{"body":"#FDB913"},"fact":"Wolves is short for Wolverhampton Wanderers — what a mouthful!"},
+  {"q":"Which Birmingham team wears claret shirts with sky blue sleeves?","a":"Aston Villa","wrong":["Birmingham City","Coventry City","West Brom"],"kit":{"body":"#670E36","sleeves":"#95BFE5"},"fact":"Villa have played at Villa Park for more than 125 years!"},
+  {"q":"Which famous Argentinian team wears a white shirt with a red sash?","a":"River Plate","wrong":["Boca Juniors","Flamengo","Barcelona"],"kit":{"body":"#FFFFFF","alt":"#EB1C2D","pattern":"sash"},"fact":"Their great rivals Boca Juniors wear blue and gold!"},
+  {"q":"Which Brazilian team wears red and black hoops?","a":"Flamengo","wrong":["Palmeiras","Santos","Corinthians"],"kit":{"body":"#C8102E","alt":"#000000","pattern":"hoops"},"fact":"More people cheer for Flamengo than any other club in Brazil!"},
+  {"q":"Which team from Brazil plays in deep green?","a":"Palmeiras","wrong":["Flamengo","Santos","Botafogo"],"kit":{"body":"#006437"},"fact":"Palmeiras means palm trees in Portuguese!"},
+  {"q":"Which team from Lisbon wears green and white hoops?","a":"Sporting","wrong":["Benfica","Porto","Braga"],"kit":{"body":"#FFFFFF","alt":"#008057","pattern":"hoops"},"fact":"Cristiano Ronaldo joined Sporting when he was just a boy!"},
 ];
 
 /* ── The 210 flags: 8 levels + the bonus time machine ────────────────── */
@@ -1992,6 +2005,18 @@ const WC_ROOKIE = [
   {q:'Naranjito, the 1982 mascot from Spain, was which fruit?', a:'An orange', wrong:['A banana','A pineapple'], fact:'An orange in a Spain kit!'},
   {q:'Which country won the very first Women’s World Cup, in 1991?', a:'USA', wrong:['France','Japan'], flags:{USA:'us',France:'fr',Japan:'jp'}, fact:'The USA have won it four times — the most!'},
   {q:'The 2026 final was played near which big city?', a:'New York', wrong:['London','Paris'], fact:'In a giant stadium with 82,000 seats!'},
+  {"q":"Which player is allowed to catch the ball during play?","a":"The goalkeeper","wrong":["The striker","The winger"],"fact":"But only in their own penalty box!"},
+  {"q":"What does the referee blow to start the match?","a":"A whistle","wrong":["A trumpet","A party horn"],"fact":"Peep peep! The whistle starts the match and ends it too!"},
+  {"q":"The ball rolls off the side of the pitch. How does it come back?","a":"A throw-in","wrong":["A penalty","A goal kick"],"fact":"The only time outfield players get to use their hands!"},
+  {"q":"A kick taken from beside the little flag in the corner is called a…?","a":"Corner kick","wrong":["Flag kick","Zigzag kick"],"fact":"Big jumps and headers — lots of goals come from corners!"},
+  {"q":"What is it called when one player scores THREE goals in a match?","a":"A hat-trick","wrong":["A sock-trick","A boot-trick"],"fact":"Score three and you get to keep the match ball!"},
+  {"q":"Where is a penalty kick taken from?","a":"The penalty spot","wrong":["The corner flag","The centre circle"],"fact":"Just the kicker against the goalkeeper — twelve big steps from goal!"},
+  {"q":"How many teams play in one football match?","a":"2","wrong":["3","22"],"fact":"Two teams of eleven — that’s 22 players on the pitch!"},
+  {"q":"France play in which colour shirts?","a":"Blue","wrong":["Orange","Pink"],"fact":"Their nickname is Les Bleus — The Blues!"},
+  {"q":"Fuleco, the 2014 mascot from Brazil, was which animal?","a":"An armadillo","wrong":["A crocodile","A puppy"],"fact":"A real armadillo can roll up into a ball — just like a football!"},
+  {"q":"Zakumi, the 2010 mascot from South Africa, was which big cat?","a":"A leopard","wrong":["A tiger","A house cat"],"fact":"A leopard with bright green hair!"},
+  {"q":"Striker, the 1994 mascot from the USA, was which animal?","a":"A dog","wrong":["A hamster","A shark"],"fact":"A happy puppy in a red, white and blue kit!"},
+  {"q":"Pique, the 1986 mascot from Mexico, was which spicy food?","a":"A chilli pepper","wrong":["A hot dog","A pizza"],"fact":"A jalapeño pepper with a moustache and a big hat!"},
 ];
 const WC_LEGEND = [
   {q:'Which country has won the most World Cups?', a:'Brazil', wrong:['Germany','England','Argentina'], flags:{Brazil:'br',Germany:'de',England:'gb-eng',Argentina:'ar'}, fact:'Brazil have won it 5 times!'},
@@ -2022,6 +2047,18 @@ const WC_LEGEND = [
   {q:'Zaire played the 1974 World Cup. What is Zaire called today?', a:'DR Congo', wrong:['Zambia','Morocco','Jamaica'], flags:{'DR Congo':'cd',Zambia:'zm',Morocco:'ma',Jamaica:'jm'}, fact:'They were the first team from the middle of Africa!'},
   {q:'Italy won the 2006 final against France. How was it decided?', a:'On penalties', wrong:['By coin flip','By golden goal','By dance-off'], fact:'Penalties are the most exciting, scary ending of all!'},
   {q:'The 2026 World Cup was the biggest ever. How many matches were played?', a:'104', wrong:['10','1000','64'], fact:'That’s 40 more games than the old 64!'},
+  {"q":"In 1950, England lost 1–0 to a team of part-time players. Who beat them?","a":"USA","wrong":["Scotland","Wales","Ireland"],"flags":{"USA":"us","Scotland":"gb-sct","Wales":"gb-wls","Ireland":"ie"},"fact":"The goal scorer, Joe Gaetjens, worked as a dishwasher!"},
+  {"q":"At the 1966 World Cup, which surprise team knocked out mighty Italy?","a":"North Korea","wrong":["Mexico","Switzerland","Chile"],"flags":{"North Korea":"kp","Mexico":"mx","Switzerland":"ch","Chile":"cl"},"fact":"Pak Doo-ik scored — and little North Korea reached the quarter-finals!"},
+  {"q":"In 2002, champions France lost their very first match to which team?","a":"Senegal","wrong":["Ghana","Morocco","Nigeria"],"flags":{"Senegal":"sn","Ghana":"gh","Morocco":"ma","Nigeria":"ng"},"fact":"Papa Bouba Diop scored — in Senegal’s first ever World Cup game!"},
+  {"q":"In 2014, hosts Brazil lost a semi-final by a HUGE score. What was it?","a":"7–1 to Germany","wrong":["2–1 to Germany","1–0 to Germany","100–0 to Germany"],"fact":"Germany scored four goals in just six minutes!"},
+  {"q":"France won their first World Cup in 1998, at home. Who did they beat 3–0 in the final?","a":"Brazil","wrong":["Germany","Italy","England"],"flags":{"Brazil":"br","Germany":"de","Italy":"it","England":"gb-eng"},"fact":"Zinedine Zidane scored two goals with his head!"},
+  {"q":"In the 1930s, one country won the World Cup TWICE in a row. Which one?","a":"Italy","wrong":["England","Spain","France"],"flags":{"Italy":"it","England":"gb-eng","Spain":"es","France":"fr"},"fact":"1934 and 1938 — and in the war they hid the trophy in a shoebox!"},
+  {"q":"How old was Pelé when he won his first World Cup, in 1958?","a":"17","wrong":["8","35","70"],"fact":"He scored twice in the final, then cried happy tears!"},
+  {"q":"Italy’s captain Dino Zoff became the oldest ever World Cup winner in 1982. How old was he?","a":"40","wrong":["12","21","65"],"fact":"A goalkeeper lifting the cup at 40!"},
+  {"q":"The World Cup trophy was STOLEN in 1966. Who found it?","a":"A dog called Pickles","wrong":["A cat called Ketchup","A parrot called Mustard","A policeman called Bob"],"fact":"Pickles sniffed it out under a garden hedge in London!"},
+  {"q":"How many teams played at the very first World Cup, in 1930?","a":"13","wrong":["48","100","2"],"fact":"Just 13! In 2026 there were 48."},
+  {"q":"Which country scored the very first World Cup goal ever, in 1930?","a":"France","wrong":["Uruguay","Brazil","England"],"flags":{"France":"fr","Uruguay":"uy","Brazil":"br","England":"gb-eng"},"fact":"Lucien Laurent scored it — after two whole weeks sailing to Uruguay by boat!"},
+  {"q":"Which country has hosted the World Cup THREE times — more than any other?","a":"Mexico","wrong":["England","Japan","Argentina"],"flags":{"Mexico":"mx","England":"gb-eng","Japan":"jp","Argentina":"ar"},"fact":"1970, 1986 and 2026 — a hat-trick of World Cups!"},
 ];
 const WC_STARS = [
   {q:'Lionel Messi plays for which country?', a:'Argentina', wrong:['Brazil','Spain','Italy'], flags:{Argentina:'ar',Brazil:'br',Spain:'es',Italy:'it'}, fact:'Messi finally lifted the World Cup in 2022.'},
@@ -2046,6 +2083,18 @@ const WC_STARS = [
   {q:'Marta, the record scorer of the Women’s World Cup, played for which country?', a:'Brazil', wrong:['Spain','USA','Colombia'], flags:{Brazil:'br',Spain:'es',USA:'us',Colombia:'co'}, fact:'Seventeen goals — more than anyone in the Women’s World Cup!'},
   {q:'Goalkeeper Gianluigi Donnarumma plays for which country?', a:'Italy', wrong:['Spain','France','Greece'], flags:{Italy:'it',Spain:'es',France:'fr',Greece:'gr'}, fact:'A giant wall in goal!'},
   {q:'Virgil van Dijk plays for which country?', a:'Netherlands', wrong:['Belgium','Luxembourg','Denmark'], flags:{Netherlands:'nl',Belgium:'be',Luxembourg:'lu',Denmark:'dk'}, fact:'A colossus in defence.'},
+  {"q":"Achraf Hakimi plays for which country?","a":"Morocco","wrong":["Algeria","Tunisia","Senegal"],"flags":{"Morocco":"ma","Algeria":"dz","Tunisia":"tn","Senegal":"sn"},"fact":"He was born in Spain but plays for Morocco, his family’s home country!"},
+  {"q":"Striker Victor Osimhen plays for which country?","a":"Nigeria","wrong":["Ghana","Cameroon","Ivory Coast"],"flags":{"Nigeria":"ng","Ghana":"gh","Cameroon":"cm","Ivory Coast":"ci"},"fact":"Nigeria’s team is called the Super Eagles!"},
+  {"q":"Speedy Alphonso Davies plays for which country?","a":"Canada","wrong":["USA","Mexico","Jamaica"],"flags":{"Canada":"ca","USA":"us","Mexico":"mx","Jamaica":"jm"},"fact":"He was born in a refugee camp — now he’s one of the fastest players on Earth!"},
+  {"q":"Trinity Rodman plays for which country?","a":"USA","wrong":["Canada","England","Brazil"],"flags":{"USA":"us","Canada":"ca","England":"gb-eng","Brazil":"br"},"fact":"She won Olympic gold in 2024 — and her dad was a famous basketball star!"},
+  {"q":"Kaoru Mitoma plays for which country?","a":"Japan","wrong":["South Korea","China","Australia"],"flags":{"Japan":"jp","South Korea":"kr","China":"cn","Australia":"au"},"fact":"At university he wrote a whole paper about how to dribble!"},
+  {"q":"Federico Valverde plays for which country?","a":"Uruguay","wrong":["Argentina","Chile","Paraguay"],"flags":{"Uruguay":"uy","Argentina":"ar","Chile":"cl","Paraguay":"py"},"fact":"He is famous for his rocket shots from far away!"},
+  {"q":"Aitana Bonmatí, the midfield magician, plays for which country?","a":"Spain","wrong":["England","France","Germany"],"flags":{"Spain":"es","England":"gb-eng","France":"fr","Germany":"de"},"fact":"She has won the Ballon d’Or three years in a row!"},
+  {"q":"Linda Caicedo plays for which country?","a":"Colombia","wrong":["Brazil","Ecuador","Venezuela"],"flags":{"Colombia":"co","Brazil":"br","Ecuador":"ec","Venezuela":"ve"},"fact":"She scored a wonder goal at the World Cup when she was just 18!"},
+  {"q":"Barbra Banda plays for which country?","a":"Zambia","wrong":["Nigeria","South Africa","Zimbabwe"],"flags":{"Zambia":"zm","Nigeria":"ng","South Africa":"za","Zimbabwe":"zw"},"fact":"She scored hat-tricks at TWO Olympic Games in a row!"},
+  {"q":"What shirt number does Lionel Messi wear?","a":"10","wrong":["3","77","1"],"fact":"Ten is the magic number — Pelé and Maradona wore it too!"},
+  {"q":"Kylian Mbappé has scored more World Cup goals than ANYONE ever. How many?","a":"22","wrong":["2","100","7"],"fact":"Messi is second with 21!"},
+  {"q":"Who has scored the most goals EVER for their country — 190 of them?","a":"Christine Sinclair","wrong":["Cristiano Ronaldo","Lionel Messi","Harry Kane"],"fact":"Canada’s Christine Sinclair beat every man and woman in history!"},
 ];
 const WC_TROPHY = [
   {q:'How many World Cups have Brazil won — more than anyone?', a:'5', wrong:['1','2','50'], fact:'That’s why they wear five stars on their shirts!'},
@@ -2070,6 +2119,18 @@ const WC_TROPHY = [
   {q:'Every men’s World Cup has been won by Europe or which other continent?', a:'South America', wrong:['Antarctica','Africa','Asia'], fact:'Brazil, Argentina and Uruguay carry the flag for South America!'},
   {q:'How many Women’s World Cups have Spain won?', a:'1', wrong:['0','5','14'], fact:'2023 — and the men made it a double in 2026!'},
   {q:'Which Nordic country’s women won the World Cup in 1995?', a:'Norway', wrong:['Denmark','Finland','Iceland'], flags:{Norway:'no',Denmark:'dk',Finland:'fi',Iceland:'is'}, fact:'They beat Germany 2–0 in the final, in neighbouring Sweden!'},
+  {"q":"How many different countries have EVER won the men’s World Cup?","a":"8","wrong":["3","23","80"],"fact":"Uruguay, Italy, Germany, Brazil, England, Argentina, France and Spain!"},
+  {"q":"How many different countries have won the WOMEN’S World Cup?","a":"5","wrong":["1","9","55"],"fact":"USA, Norway, Germany, Japan and Spain — give them a high five!"},
+  {"q":"Italy won two World Cups in a row in the 1930s. Who is the only other country to win two in a row?","a":"Brazil","wrong":["Germany","France","Argentina"],"flags":{"Brazil":"br","Germany":"de","France":"fr","Argentina":"ar"},"fact":"Brazil won in 1958 and 1962 — nobody has done it since!"},
+  {"q":"Uruguay have won 2 World Cups but wear 4 stars on their shirts! What are the extra stars for?","a":"Winning the Olympics","wrong":["Winning at chess","Having 4 captains","Scoring 400 goals"],"fact":"Uruguay won Olympic gold in 1924 and 1928, before the World Cup was even invented!"},
+  {"q":"How many times has the HOST country won the men’s World Cup?","a":"6","wrong":["0","1","60"],"fact":"France in 1998 were the last hosts to win at home!"},
+  {"q":"In 1970 Brazil were allowed to keep the trophy FOREVER. Why?","a":"They had won it 3 times","wrong":["They asked nicely","They paid for it","They hid it in a boot"],"fact":"That old cup was named after Jules Rimet, the man who dreamed up the World Cup!"},
+  {"q":"Brazil’s men have won 5 World Cups. How many have Brazil’s women won?","a":"None yet","wrong":["5","2","20"],"fact":"They came second in 2007 — so close!"},
+  {"q":"In 1958 Sweden played the final in their own country. Who beat them?","a":"Brazil","wrong":["Italy","England","Uruguay"],"flags":{"Brazil":"br","Italy":"it","England":"gb-eng","Uruguay":"uy"},"fact":"Pelé was only 17, and he scored TWO goals in the final!"},
+  {"q":"The Netherlands reached the 2019 Women’s World Cup final. Who beat them?","a":"USA","wrong":["Germany","Japan","Brazil"],"flags":{"USA":"us","Germany":"de","Japan":"jp","Brazil":"br"},"fact":"Megan Rapinoe scored a penalty as the USA won 2–0."},
+  {"q":"Uruguay won the very first final, in 1930. Which country lost it?","a":"Argentina","wrong":["Brazil","Chile","Peru"],"flags":{"Argentina":"ar","Brazil":"br","Chile":"cl","Peru":"pe"},"fact":"Poor Argentina lost the first ever final — and the 2026 one too!"},
+  {"q":"The 1999 Women’s World Cup final went all the way to penalties! The USA beat which country?","a":"China","wrong":["Japan","Norway","Brazil"],"flags":{"China":"cn","Japan":"jp","Norway":"no","Brazil":"br"},"fact":"90,000 fans packed the stadium in California that day!"},
+  {"q":"The USA helped host the 2026 World Cup. How many men’s World Cups have the USA won?","a":"None yet","wrong":["4","2","14"],"fact":"Their best was reaching the semi-finals, way back in 1930!"},
 ];
 const WC_CLUBS = [
   {q:'Which club plays at Old Trafford?', a:'Manchester United', wrong:['Liverpool','Arsenal','Chelsea'], fact:'They call it the Theatre of Dreams!'},
@@ -2094,6 +2155,18 @@ const WC_CLUBS = [
   {q:'Manchester City play in which colour?', a:'Sky blue', wrong:['Red','Yellow','Black'], fact:'Their rivals United play in red.'},
   {q:'Real Madrid play in which colour?', a:'All white', wrong:['All black','Gold','Stripes'], fact:'Their nickname is Los Blancos — The Whites!'},
   {q:'Paris Saint-Germain play in which city?', a:'Paris', wrong:['London','Madrid','Rome'], fact:'The Eiffel Tower is on their badge!'},
+  {"q":"Which club plays at Anfield?","a":"Liverpool","wrong":["Everton","Manchester United","Arsenal"],"fact":"Players touch the This Is Anfield sign for luck!"},
+  {"q":"Benfica and Porto are huge rivals in which country?","a":"Portugal","wrong":["Spain","Brazil","Greece"],"flags":{"Portugal":"pt","Spain":"es","Brazil":"br","Greece":"gr"},"fact":"Benfica have a real eagle mascot called Vitória!"},
+  {"q":"The great Pelé played almost all his life for one Brazilian club. Which one?","a":"Santos","wrong":["Flamengo","Corinthians","Palmeiras"],"fact":"Pelé scored over 600 goals for Santos!"},
+  {"q":"Al Ahly have been champions of Africa more times than any club. Which country do they play in?","a":"Egypt","wrong":["Morocco","South Africa","Nigeria"],"flags":{"Egypt":"eg","Morocco":"ma","South Africa":"za","Nigeria":"ng"},"fact":"No club in Africa has won more big trophies!"},
+  {"q":"Which north London club has a cockerel on its badge?","a":"Tottenham","wrong":["Arsenal","Chelsea","West Ham"],"fact":"A proud cockerel standing on a football!"},
+  {"q":"The giant Maracanã stadium is in which country?","a":"Brazil","wrong":["Argentina","Mexico","Portugal"],"flags":{"Brazil":"br","Argentina":"ar","Mexico":"mx","Portugal":"pt"},"fact":"Two World Cup finals were played there — 1950 and 2014!"},
+  {"q":"Galatasaray and Fenerbahçe are fiery rivals in which city?","a":"Istanbul","wrong":["Madrid","Rome","Cairo"],"fact":"Istanbul sits on two continents — so the rivals come from Europe AND Asia!"},
+  {"q":"What is South America's biggest club trophy called?","a":"Copa Libertadores","wrong":["The Sombrero Cup","Copa Banana","The Jungle Trophy"],"fact":"Boca Juniors and River Plate have both lifted it!"},
+  {"q":"West Ham fans sing a famous song about blowing what?","a":"Bubbles","wrong":["Balloons","Whistles","Raspberries"],"fact":"Machines blow real bubbles when the team runs out!"},
+  {"q":"Cristiano Ronaldo left home at 12 to join which club in Lisbon?","a":"Sporting Lisbon","wrong":["Benfica","Porto","Real Madrid"],"fact":"He moved all the way from the little island of Madeira!"},
+  {"q":"Kaizer Chiefs and Orlando Pirates play the famous Soweto derby in which country?","a":"South Africa","wrong":["Ghana","Senegal","Egypt"],"flags":{"South Africa":"za","Ghana":"gh","Senegal":"sn","Egypt":"eg"},"fact":"A famous rock band named themselves after Kaizer Chiefs!"},
+  {"q":"Club América play at the giant Azteca stadium. Which country do they come from?","a":"Mexico","wrong":["Spain","Argentina","USA"],"flags":{"Mexico":"mx","Spain":"es","Argentina":"ar","USA":"us"},"fact":"They have won the Mexican league more than anyone!"},
 ];
 
 /* ── saved progress (per player) ─────────────────────────────────────── */
@@ -2153,6 +2226,7 @@ function renameOldBonus(best){      // pre-lv9 saves kept bonus stars at level 7
   state.lv9 = true;
   saveState();
 })();
+if(PLAYER2 && !hasOwn(state.players, PLAYER2)) state.players[PLAYER2] = {best:{}, mastery:{}};
 function P(){                                       // the current player's progress
   if(!hasOwn(state.players, state.current)) state.players[state.current] = {best:{}, mastery:{}};
   return state.players[state.current];
