@@ -273,7 +273,7 @@
   .wreg:focus-visible .wland{stroke:var(--sun-deep); stroke-width:5}
   .wland{stroke:#202A5C; stroke-width:2.5; stroke-linejoin:round}
   .wreg:active .wland{filter:brightness(1.15)}
-  .wlab{font:800 9px "Baloo 2",sans-serif; fill:var(--ink); text-anchor:middle;
+  .wlab{font:800 8.5px "Baloo 2",sans-serif; fill:var(--ink); text-anchor:middle;
     paint-order:stroke; stroke:#fff; stroke-width:2.6; stroke-linejoin:round; pointer-events:none}
   .wreg.right .wland{fill:var(--sun) !important; stroke-width:4}
   .wreg.nope .wland{fill:#C9CEDD !important; opacity:.7}
@@ -2830,7 +2830,9 @@ function answer(i, btn){
   if(performance.now() - (match.renderedAt||0) < 350) return;  // ignore taps meant for the previous screen
   const q = match.qs[match.i];
   match.tries++;
-  const prog = match.duel ? playerProg(match.players[match.i % 2]) : P();
+  const prog = match.duel ? playerProg(match.players[match.i % 2])
+    : (match.robots && robots.team.length===2) ? playerProg(robots.team[match.i % 2])
+    : P();
   const flagKind = q.kind==='flags' || q.kind==='find';
   if(i===q.answer || (q.alsoOk||[]).includes(i)){
     const first = match.tries===1;
@@ -2857,7 +2859,7 @@ function answer(i, btn){
     const cheers = ['Goal!','Brilliant!','Super save!','What a shot!','Top corner!','You’re on fire!'];
     let cheer = first ? cheers[Math.floor(Math.random()*cheers.length)] : 'You got it!';
     if(match.cup && first) cheer = `⚽ GOAL for ${flagById[cup.nation].name}!`;
-    const robotLine = match.robots ? ' ' + robotShot() : '';
+    const robotLine = (match.robots && first) ? ' ' + robotShot() : '';   // one shot per question
     document.getElementById('fb').innerHTML =
       `<div class="feedback yay">${cheer} ${q.kind!=='wc' ? 'It’s '+esc(name)+'!' : ''}${esc(robotLine)}
        <span class="fact">${esc(q.fact||'')}</span></div>`;
@@ -3680,7 +3682,7 @@ const CONT_NAMES = {EU:'Europe', AF:'Africa', AS:'Asia', NA:'North America', SA:
 const CONT_ORDER = ['NA','SA','EU','AF','AS','OC'];
 const CONT_SHORT = {NA:'N. America', SA:'S. America', EU:'Europe', AF:'Africa', AS:'Asia', OC:'Oceania'};
 const CONT_FILL  = {NA:'#7FC98A', SA:'#F2A65A', EU:'#C99BE0', AF:'#F4D06F', AS:'#EF8E7E', OC:'#8AD9C4'};
-const CONT_LABEL = {NA:[54,44], SA:[82,114], EU:[151,33], AF:[159,94], AS:[233,45], OC:[261,120]};
+const CONT_LABEL = {NA:[54,44], SA:[81,104], EU:[151,33], AF:[159,94], AS:[233,45], OC:[261,120]};
 // a friendly, chunky world — recognisable shapes, not a survey map
 const WORLD_SHAPES = {
   NA: 'M14 32 Q24 15 50 13 Q82 12 99 25 Q97 38 85 43 Q91 53 81 60 Q72 57 69 66 Q75 73 67 78 Q59 74 56 66 Q50 58 40 53 Q23 46 14 32 Z',
@@ -4241,7 +4243,12 @@ function startPairs(n){
   const sz = PAIR_SIZES.find(s=>s.n===n) || PAIR_SIZES[0];
   // easy rounds use the flags they meet first; the big board roams the whole world
   const pool = FLAGS.filter(f=> n<=6 ? f.level<=3 : n<=8 ? f.level<=5 : f.level<9);
-  const picks = shuffle(pool).slice(0, sz.n);
+  const picks = [];
+  for(const f of shuffle(pool)){                    // never deal two lookalikes onto one board
+    if(picks.length >= sz.n) break;
+    const clash = (CONFUSABLE[f.id]||[]).some(id=>picks.some(q=>q.id===id));
+    if(!clash) picks.push(f);
+  }
   const cards = shuffle(picks.concat(picks).map((f,i)=>({flag:f, key:i})));
   pairs = {sz, cards, up:[], found:[], turns:0, team:pairTeam().slice(), turn:0,
            scores:[0,0], busy:false};
@@ -4357,34 +4364,38 @@ function flagPalette(svg){
 function recolour(svg, map){
   return svg.replace(/#[0-9A-Fa-f]{6}/g, m => map[m.toUpperCase()] || m);
 }
+function colDist(a, b){                    // rough perceptual gap between two hexes
+  const v = h => [1,3,5].map(i=>parseInt(h.substr(i,2),16));
+  const [x,y] = [v(a), v(b)];
+  return (x[0]-y[0])**2 + (x[1]-y[1])**2 + (x[2]-y[2])**2;
+}
+const SPY_MIN_DIST = 3000;                 // below this the swap is invisible to a child
 function tamperFlag(svg, n, level, rnd){
   rnd = rnd || Math.random;
   const pal = flagPalette(svg);
   const out = [], seen = new Set([svg]);
   const push = map => {
+    if(out.length >= n) return;
     const v = recolour(svg, map);
     if(!seen.has(v)){ seen.add(v); out.push(v); }
   };
-  // swapping two of the flag's own colours always shows, and never invents a new palette
-  const swaps = [];
-  for(let i=0;i<pal.length;i++) for(let j=i+1;j<pal.length;j++) swaps.push([i,j]);
-  const shuffled = shuffle(swaps, rnd);
-  // early levels get the big obvious swaps (the first colours drawn are the background ones)
-  if(level <= 3) shuffled.sort((a,b)=> (a[0]+a[1]) - (b[0]+b[1]));
-  for(const [i,j] of shuffled){
-    if(out.length >= n) break;
-    const m = {}; m[pal[i]] = pal[j]; m[pal[j]] = pal[i];
-    push(m);
+  // Flags are drawn background-first, so pal[0] covers the most area. A fake has
+  // to be spottable by a six-year-old, so anything that repaints the background
+  // is tried first; repainting only a crest is a last resort.
+  const far = (a,b) => colDist(a,b) >= SPY_MIN_DIST;
+  const bigSwaps = [], smallSwaps = [];
+  for(let i=0;i<pal.length;i++) for(let j=i+1;j<pal.length;j++){
+    if(!far(pal[i], pal[j])) continue;
+    (i === 0 ? bigSwaps : smallSwaps).push([pal[i], pal[j]]);
   }
-  // two-colour flags run out of swaps, so borrow a colour that doesn't belong
-  for(const c of shuffle(SPY_SUBS, rnd)){
+  const swapMap = ([a,b]) => ({[a]:b, [b]:a});
+  const subsOn = depth => shuffle(SPY_SUBS, rnd).flatMap(c =>
+    shuffle(pal.slice(0, depth), rnd).filter(from=>far(from, c)).map(from=>({[from]: c})));
+  // early levels want the boldest changes, so shuffle within each tier, not across
+  for(const maps of [shuffle(bigSwaps, rnd).map(swapMap), subsOn(1),
+                     shuffle(smallSwaps, rnd).map(swapMap), subsOn(pal.length)]){
+    for(const m of maps){ push(m); if(out.length >= n) break; }
     if(out.length >= n) break;
-    for(const from of shuffle(pal, rnd)){
-      if(from === c) continue;
-      const m = {}; m[from] = c;
-      push(m);
-      if(out.length >= n) break;
-    }
   }
   return out.slice(0, n);
 }
@@ -4405,8 +4416,8 @@ const ROBOT_TEAMS = [
   {n:1, name:'Rusty Rovers',   acc:0.30, colour:'#B0752F', eye:'#FFC626'},
   {n:2, name:'Tin Town',       acc:0.42, colour:'#8C97A8', eye:'#4AA8FF'},
   {n:3, name:'Circuit City',   acc:0.54, colour:'#3F8F6B', eye:'#B7FF5A'},
-  {n:4, name:'Data United',    acc:0.66, colour:'#5B4AC4', eye:'#FF7AE0'},
-  {n:5, name:'Galactic United',acc:0.78, colour:'#202A5C', eye:'#FF3B3B'},
+  {n:4, name:'Data United',    acc:0.62, colour:'#5B4AC4', eye:'#FF7AE0'},
+  {n:5, name:'Galactic United',acc:0.72, colour:'#202A5C', eye:'#FF3B3B'},
 ];
 const ROBOT_QS = 8;
 let robots = null;
@@ -4498,7 +4509,7 @@ function robotShot(){
 }
 function finishRobots(){
   const g = match.goals, c = match.conceded, t = robots.t;
-  const won = g > c;
+  const won = g > c, drew = g === c;
   if(won){
     const rp = P().robots || (P().robots = {});
     if(t.n > (rp.beaten||0)){ rp.beaten = t.n; saveState(); }
@@ -4509,10 +4520,11 @@ function finishRobots(){
   const cheer = won
     ? (last ? `${who} beat GALACTIC UNITED! You have beaten every robot team on Earth!`
             : `${who} beat ${t.name}! The next robots are warming up…`)
+    : drew ? `A draw! ${who} held ${t.name}. One more goal next time!`
     : `${t.name} edged it — but ${who} were close. Go again!`;
   stage.innerHTML = `
     <div class="card results">
-      <h2>${won ? '🏅 ROBOTS BEATEN! 🏅' : '🤖 Robots win'}</h2>
+      <h2>${won ? '🏅 ROBOTS BEATEN! 🏅' : drew ? '🤝 A DRAW!' : '🤖 Robots win'}</h2>
       <div style="width:96px;margin:6px auto">${robotSvg(t, won?'sad':'happy')}</div>
       <p class="scoreline">${esc(robots.team.map(n=>n.slice(0,8)).join(' & '))} ${g} – ${c} ${esc(t.name)}</p>
       <p class="cheer">${esc(cheer)}</p>
@@ -4523,7 +4535,9 @@ function finishRobots(){
       </div>
     </div>`;
   wire();
-  if(won){ sfx.fanfare(); confetti(last); } else sfx.groan();
+  if(won){ sfx.fanfare(); confetti(last); }
+  else if(drew){ sfx.fanfare(); confetti(false); }
+  else sfx.groan();
   say(cheer);
 }
 
