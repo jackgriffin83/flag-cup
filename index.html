@@ -178,6 +178,50 @@
   .hidden{display:none}
 
   .mode-btn.daily{background:linear-gradient(135deg,#FFF6D6,#FFE9A8)}
+  .homesec{font-family:"Lilita One",sans-serif; color:#fff; font-size:20px; margin:20px 0 -4px;
+    text-shadow:2px 2px 0 var(--ink), -2px 2px 0 var(--ink), 2px -2px 0 var(--ink), -2px -2px 0 var(--ink)}
+  .dailyrow{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .mode-btn.mini{flex-direction:column; align-items:center; text-align:center; gap:7px; padding:13px 9px}
+  .mode-btn.mini .mode-name{font-size:19px; line-height:1.05}
+  .mode-btn.mini .mode-sub{font-size:13px; margin-top:3px}
+  .mode-btn.mini .mode-stars{margin-left:0}
+
+  /* penalty shoot-out */
+  .pitchcard{background:var(--card); border:4px solid var(--ink); border-radius:24px; box-shadow:var(--shadow);
+    padding:10px; margin-bottom:14px; overflow:hidden}
+  .pitchcard svg{display:block; width:100%; height:auto; border-radius:14px}
+  .pendots{display:flex; gap:6px; flex:1; justify-content:center; font-size:23px; line-height:1}
+  .pendots.stack{flex-direction:column; gap:3px; align-items:center; font-weight:800}
+
+  /* cup run */
+  .bracket{display:grid; gap:10px}
+  .tie{display:flex; align-items:center; gap:9px; background:var(--card); border:4px solid var(--ink);
+    border-radius:18px; box-shadow:0 4px 0 rgba(18,58,35,.25); padding:9px 12px}
+  .tie.now{background:#FFF6D6}
+  .tie.done{opacity:.62}
+  .tie .rnd{font-family:"Lilita One",sans-serif; font-size:14px; width:58px; flex:none; line-height:1.05}
+  .tflag{width:42px; flex:none; border:2px solid var(--ink); border-radius:6px; overflow:hidden; line-height:0; background:#fff}
+  .tflag.sq{border-color:transparent; background:transparent}
+  .tie .vs{font-weight:800; color:var(--ink-soft); font-size:14px}
+  .tie .tscore{margin-left:auto; font-family:"Lilita One",sans-serif; font-size:19px; white-space:nowrap}
+  .honours{display:flex; flex-wrap:wrap; gap:9px; justify-content:center; margin:4px 0 2px}
+  .honours .hf{width:58px; text-align:center}
+  .honours .hf .tflag{width:58px; border-color:var(--sun-deep); border-width:3px}
+  .honours .hf small{display:block; font-weight:800; font-size:11px; color:var(--ink-soft);
+    margin-top:3px; white-space:nowrap}
+  .sbflag{width:26px; display:inline-block; vertical-align:-6px; border:2px solid var(--ink);
+    border-radius:4px; overflow:hidden; line-height:0; background:#fff}
+  .sbflag.sq{border-color:transparent; background:transparent}
+
+  /* mystery flag */
+  .mystery{position:relative; width:min(80%,320px); margin:4px auto 8px; border:4px solid var(--ink);
+    border-radius:14px; overflow:hidden; line-height:0; background:#fff; box-shadow:0 5px 0 rgba(18,58,35,.18)}
+  .mystery.sq{background:transparent}
+  .mystery .tiles{position:absolute; inset:0; display:grid;
+    grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(3,1fr)}
+  .mystery .tile{background:var(--sun); border:2px solid var(--ink);
+    transition:opacity .35s ease, transform .35s ease}
+  .mystery .tile.off{opacity:0; transform:scale(.45) rotate(14deg)}
   .turnbanner{background:var(--sky); border:3px solid var(--ink); border-radius:14px;
     font-weight:800; font-size:17px; padding:6px 10px; margin:-4px 0 10px; display:inline-block}
   .timerbar{height:18px; border:3px solid var(--ink); border-radius:999px; background:var(--card);
@@ -2170,6 +2214,7 @@ const WC_CLUBS = [
 ];
 
 /* ── saved progress (per player) ─────────────────────────────────────── */
+const CUP_MAX_TROPHIES = 24;        // the honours board keeps the newest lifts, so storage can't grow forever
 function loadState(){
   try{
     const raw = JSON.parse(localStorage.getItem('flag-cup')||'{}');
@@ -2201,13 +2246,30 @@ function saveState(){
       if(d.lightning && (d.lightning.best||0) > ((mine.lightning||{}).best||0))
         mine.lightning = Object.assign({}, mine.lightning, {best:d.lightning.best});
       if(d.miss){ mine.miss = mine.miss||{}; for(const k in d.miss) mine.miss[k] = Math.max(mine.miss[k]||0, d.miss[k]); }
+      // 'YYYY-M-D' is unpadded, so compare numerically, not as strings
+      const dayNum = s=>{ const p=String(s||'').split('-').map(Number); return (p[0]||0)*10000+(p[1]||0)*100+(p[2]||0); };
       if(d.daily){
-        // 'YYYY-M-D' is unpadded, so compare numerically, not as strings
-        const dayNum = s=>{ const p=String(s||'').split('-').map(Number); return (p[0]||0)*10000+(p[1]||0)*100+(p[2]||0); };
         const md = mine.daily;
         if(!md || dayNum(d.daily.last) > dayNum(md.last))
           mine.daily = Object.assign({}, d.daily, {best: Math.max(d.daily.best||0, (md||{}).best||0)});
         else md.best = Math.max(md.best||0, d.daily.best||0);
+      }
+      if(d.pens){                                   // penalties: every number is a personal best
+        const mp = mine.pens || (mine.pens = {});
+        for(const k of ['best','streak','wins']) mp[k] = Math.max(mp[k]||0, d.pens[k]||0);
+      }
+      if(d.mystery){
+        const mm = mine.mystery || (mine.mystery = {});
+        mm.solved = Math.max(mm.solved||0, d.mystery.solved||0);
+        mm.best = Math.max(mm.best||0, d.mystery.best||0);
+        if(dayNum(d.mystery.last) > dayNum(mm.last)) mm.last = d.mystery.last;
+      }
+      if(d.cup){                                    // trophies are keyed by lift time, so both tabs' cups survive
+        const mc = mine.cup || (mine.cup = {});
+        mc.runs = Math.max(mc.runs||0, d.cup.runs||0);
+        const seen = new Set((mc.wins||[]).map(w=>w.t));
+        mc.wins = (mc.wins||[]).concat((d.cup.wins||[]).filter(w=>!seen.has(w.t)))
+          .sort((a,b)=>(b.t||0)-(a.t||0)).slice(0, CUP_MAX_TROPHIES);
       }
     }
     localStorage.setItem('flag-cup', JSON.stringify(state));
@@ -2247,24 +2309,29 @@ function tone(freq, dur, type, at, vol, glideTo){
   o.connect(g).connect(ctx.destination);
   o.start(t0); o.stop(t0+dur+0.05);
 }
+function crowd(dur, freq, vol){        // filtered noise swell — a little stadium in a buffer
+  const ctx = audio();
+  if(!ctx || !state.sound) return;
+  const len = Math.floor(ctx.sampleRate * dur), buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const d = buf.getChannelData(0);
+  for(let i=0;i<len;i++) d[i] = (Math.random()*2-1) * Math.pow(Math.sin(Math.PI*i/len), 2);
+  const src = ctx.createBufferSource(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+  f.type='bandpass'; f.frequency.value = freq; f.Q.value = 0.6;
+  g.gain.value = vol; src.buffer = buf;
+  src.connect(f).connect(g).connect(ctx.destination); src.start();
+}
 const sfx = {
   tap:    ()=> tone(620, .06, 'square', 0, .05),
   correct:()=>{ tone(659, .12, 'triangle', 0, .18); tone(880, .22, 'triangle', .09, .18); },
   wrong:  ()=> tone(240, .3, 'sine', 0, .12, 170),
   pop:    ()=> tone(520, .1, 'triangle', 0, .2, 900),
+  whistle:()=>{ tone(1850, .13, 'square', 0, .07); tone(2050, .1, 'square', .12, .06); },
+  roar:   ()=>{ crowd(1.6, 800, .13); tone(784, .16, 'triangle', 0, .16); tone(1047, .26, 'triangle', .12, .16); },
+  groan:  ()=>{ crowd(1.0, 380, .10); tone(300, .45, 'sawtooth', 0, .09, 150); },
   fanfare:()=>{
     [523,659,784,1047].forEach((f,i)=> tone(f, .18, 'triangle', i*0.13, .18));
     tone(1047, .5, 'triangle', .55, .2);
-    const ctx = audio();
-    if(ctx && state.sound){                                      // little crowd roar
-      const len = ctx.sampleRate * 1.4, buf = ctx.createBuffer(1, len, ctx.sampleRate);
-      const d = buf.getChannelData(0);
-      for(let i=0;i<len;i++) d[i] = (Math.random()*2-1) * Math.pow(Math.sin(Math.PI*i/len), 2);
-      const src = ctx.createBufferSource(), g = ctx.createGain(), f = ctx.createBiquadFilter();
-      f.type='bandpass'; f.frequency.value=900; f.Q.value=0.6;
-      g.gain.value = 0.10; src.buffer = buf;
-      src.connect(f).connect(g).connect(ctx.destination); src.start();
-    }
+    crowd(1.4, 900, .10);
   },
 };
 
@@ -2344,20 +2411,46 @@ function goHome(){
   const playedToday = d.last === todayStr();
   // show 0 once a streak has already lapsed (last play before yesterday), matching finishDaily's reset
   const liveStreak = (d.last===todayStr() || d.last===yesterdayStr()) ? (d.streak||0) : 0;
+  const myst = P().mystery || {};
+  const mystDone = myst.last === todayStr();
+  const cupWins = ((P().cup||{}).wins||[]).length;
   stage.innerHTML = `
     <h1 class="biglogo">${esc(state.current)}’s<br><span class="sun">Flag Cup</span></h1>
     <p class="tagline">Flags and World Cup fun — let’s play!</p>
-    <div class="modes">
-      <button class="mode-btn daily" data-go="daily">
+    <h2 class="homesec">📆 Today</h2>
+    <div class="modes dailyrow">
+      <button class="mode-btn daily mini" data-go="daily">
         <span class="mode-ico">📅</span>
         <span><span class="mode-name">Match of the Day</span><br>
-          <span class="mode-sub">${playedToday ? 'Played today! Back tomorrow 🌙' : 'Today’s special 10 — keep the streak!'}</span></span>
+          <span class="mode-sub">${playedToday ? 'Played! Back tomorrow 🌙' : 'Today’s special 10'}</span></span>
         <span class="mode-stars">🔥 ${liveStreak}</span>
       </button>
+      <button class="mode-btn daily mini" data-go="mystery">
+        <span class="mode-ico">🔎</span>
+        <span><span class="mode-name">Mystery Flag</span><br>
+          <span class="mode-sub">${mystDone ? 'Solved today! 🎉' : 'Guess the hidden flag'}</span></span>
+        <span class="mode-stars">⭐ ${myst.best||0}</span>
+      </button>
+    </div>
+    <h2 class="homesec">🧠 Quizzes</h2>
+    <div class="modes">
       ${modeBtn('flags','⚽','Flag Quiz','Which country is it?', 9)}
       ${modeBtn('find','🔍','Find the Flag','Tap the right flag!', 9)}
       ${modeBtn('caps','🏛️','Capitals Quiz','Name the capital city!', 9)}
       ${modeBtn('wc','🏆','Footy Quiz','World Cup, superstars, clubs &amp; kits', 6)}
+    </div>
+    <h2 class="homesec">⚽ Match day</h2>
+    <div class="modes">
+      <button class="mode-btn" data-go="cup">
+        <span class="mode-ico">🏆</span>
+        <span><span class="mode-name">Cup Run</span><br><span class="mode-sub">Pick a country, win the cup!</span></span>
+        ${cupWins ? `<span class="mode-stars">🏆 ${cupWins}</span>` : ''}
+      </button>
+      <button class="mode-btn" data-go="penalty">
+        <span class="mode-ico">🥅</span>
+        <span><span class="mode-name">Penalties</span><br><span class="mode-sub">Beat the keeper — 5 shots!</span></span>
+        <span class="mode-stars">⚽ ${(P().pens||{}).best||0}/5</span>
+      </button>
       <button class="mode-btn" data-go="duel">
         <span class="mode-ico">⚔️</span>
         <span><span class="mode-name">Duel</span><br><span class="mode-sub">Two players, one trophy!</span></span>
@@ -2571,12 +2664,17 @@ function renderQuestion(){
   } else if(q.kit){
     card = `<div class="bigflag" style="background:transparent;border-color:transparent;box-shadow:none">${kitSvg(q.kit)}</div>`;
   }
-  const homeModes = {daily:1, duel:1};
+  const homeModes = {daily:1, duel:1, cup:1};
   const scoreboard = match.duel
-    ? `<span class="ballcount">${esc(match.players[0].slice(0,8))} ${match.scores[0]} – ${match.scores[1]} ${esc(match.players[1].slice(0,8))}</span>`
-    : `<span class="ballcount">⚽ ${match.firstTry}</span>`;
+    ? `<span class="ballcount" id="sb">${esc(match.players[0].slice(0,8))} ${match.scores[0]} – ${match.scores[1]} ${esc(match.players[1].slice(0,8))}</span>`
+    : match.cup
+    ? `<span class="ballcount" id="sb">${cupScoreLine()}</span>`
+    : `<span class="ballcount" id="sb">⚽ ${match.firstTry}</span>`;
   const turn = match.duel
-    ? `<div class="turnbanner">${match.shootout?'🥅 PENALTIES! ':''}⚽ ${esc(match.players[match.i % 2])}’s ball!</div><br>`
+    ? `<div class="turnbanner">⚽ ${esc(match.players[match.i % 2])}’s ball!</div><br>`
+    : match.cup
+    ? `<div class="turnbanner">${match.sudden ? '🥅 SUDDEN DEATH — get it right first time!'
+        : CUP_ROUNDS[cup.round].icon + ' ' + CUP_ROUNDS[cup.round].short + ' v ' + esc(cupOppo().name)}</div><br>`
     : '';
   stage.innerHTML = `
     <div class="quizbar">
@@ -2619,6 +2717,7 @@ function answer(i, btn){
     if(first){ match.firstTry++; match.done[match.i]='hit'; }
     else { match.laterTry++; match.done[match.i]='ok'; }
     if(match.duel && first) match.scores[match.i % 2]++;
+    if(match.cup && first){ match.goals++; refreshCupScore(); }
     if(q.flag && first && flagKind){
       prog.mastery[q.flag.id] = (prog.mastery[q.flag.id]||0)+1;
       if(prog.miss && prog.miss[q.flag.id]){                // it came back and they got it — ease off
@@ -2632,7 +2731,8 @@ function answer(i, btn){
     document.querySelectorAll('.ans-btn').forEach(b=>b.disabled=true);
     const name = q.kind==='caps' ? CAPITALS[q.flag.id] : (q.flag ? q.flag.name : q.options[q.answer]);
     const cheers = ['Goal!','Brilliant!','Super save!','What a shot!','Top corner!','You’re on fire!'];
-    const cheer = first ? cheers[Math.floor(Math.random()*cheers.length)] : 'You got it!';
+    let cheer = first ? cheers[Math.floor(Math.random()*cheers.length)] : 'You got it!';
+    if(match.cup && first) cheer = `⚽ GOAL for ${flagById[cup.nation].name}!`;
     document.getElementById('fb').innerHTML =
       `<div class="feedback yay">${cheer} ${q.kind!=='wc' ? 'It’s '+esc(name)+'!' : ''}
        <span class="fact">${esc(q.fact||'')}</span></div>`;
@@ -2645,27 +2745,32 @@ function answer(i, btn){
       m[q.flag.id] = (m[q.flag.id]||0)+1;
       saveState();
     }
+    // in a cup tie a first miss hands the other lot a chance — sudden death, they always take it
+    let counter = '';
+    if(match.cup && match.tries===1){
+      const opp = cupOppo().name;
+      if(match.sudden || Math.random() < 0.5){ match.conceded++; counter = ` ${opp} break away and score!`; }
+      else counter = ` ${opp} shoot… and miss!`;
+      refreshCupScore();
+    }
     sfx.wrong();
     btn.classList.add('nope');
     btn.disabled = true;
     const nudges = ['Good try! Have another go!','Almost! Try again!','So close! One more try!'];
     document.getElementById('fb').innerHTML =
-      `<div class="feedback try">${nudges[Math.floor(Math.random()*nudges.length)]}</div>`;
+      `<div class="feedback try">${nudges[Math.floor(Math.random()*nudges.length)]}${esc(counter)}</div>`;
   }
 }
 function nextQuestion(){
   if(!match) return;
   match.i++;
   if(match.i < match.qs.length) renderQuestion();
-  else if(match.duel && match.scores[0]===match.scores[1] && match.qs.length < 16){
-    match.qs = match.qs.concat(buildMixedQs(2));           // penalties: one question each
-    match.shootout = true;
-    renderQuestion();
-  }
+  else if(match.duel && match.scores[0]===match.scores[1]) startDuelShootout();
   else finishMatch();
 }
 function finishMatch(){
   if(match.duel) return finishDuel();
+  if(match.cup) return finishFixture();
   if(match.mode==='daily') return finishDaily();
   const score = match.firstTry, n = match.qs.length;
   const stars = score>=9 ? 3 : score>=7 ? 2 : score>=5 ? 1 : 0;
@@ -2900,6 +3005,563 @@ function finishLightning(){
   sfx.fanfare(); if(isBest) confetti(true);
 }
 
+/* ── Penalty shoot-out ───────────────────────────────────────────────── */
+const PEN_ZONES = [62, 106, 150, 194, 238];      // five aiming zones across the goal mouth
+const PEN_KEEPER_ODDS = [1, 1.5, 2, 1.5, 1];     // the keeper favours the middle, so the corners pay off
+const PEN_SHOTS = 5;
+let pens = null, penRaf = null, penTimer = null;
+function stopPens(){
+  if(penRaf) cancelAnimationFrame(penRaf);
+  clearTimeout(penTimer);
+  penRaf = null; penTimer = null; pens = null;
+}
+function goalSvg(){
+  let net = '';
+  for(let x=46; x<=254; x+=13) net += `<line x1="${x}" y1="44" x2="${x}" y2="150" stroke="#CBD8EC" stroke-width="1.5"/>`;
+  for(let y=48; y<=148; y+=13) net += `<line x1="40" y1="${y}" x2="260" y2="${y}" stroke="#CBD8EC" stroke-width="1.5"/>`;
+  return `
+    <rect x="0" y="0" width="300" height="152" fill="#BFE6FF"/>
+    <rect x="0" y="150" width="300" height="50" fill="#3FB566"/>
+    <rect x="0" y="150" width="300" height="5" fill="#FFFFFF" opacity=".75"/>
+    <g>${net}</g>
+    <rect x="34" y="34" width="232" height="10" rx="5" fill="#FFFFFF" stroke="#202A5C" stroke-width="4"/>
+    <rect x="34" y="40" width="10" height="114" rx="5" fill="#FFFFFF" stroke="#202A5C" stroke-width="4"/>
+    <rect x="256" y="40" width="10" height="114" rx="5" fill="#FFFFFF" stroke="#202A5C" stroke-width="4"/>
+    <circle cx="150" cy="176" r="2.5" fill="#FFFFFF"/>`;
+}
+function keeperSvg(){                              // drawn around 0,0 so the whole group can dive
+  return `
+    <ellipse cx="0" cy="48" rx="26" ry="6" fill="rgba(18,58,35,.22)"/>
+    <path d="M-21 4 L-41 -9 L-35 -20 L-15 -8 Z" fill="#18A06A" stroke="#202A5C" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M21 4 L41 -9 L35 -20 L15 -8 Z" fill="#18A06A" stroke="#202A5C" stroke-width="3.5" stroke-linejoin="round"/>
+    <rect x="-9" y="16" width="8" height="28" rx="4" fill="#202A5C"/>
+    <rect x="1" y="16" width="8" height="28" rx="4" fill="#202A5C"/>
+    <rect x="-16" y="-10" width="32" height="32" rx="11" fill="#18A06A" stroke="#202A5C" stroke-width="3.5"/>
+    <circle cx="-41" cy="-15" r="8.5" fill="#FFC626" stroke="#202A5C" stroke-width="3"/>
+    <circle cx="41" cy="-15" r="8.5" fill="#FFC626" stroke="#202A5C" stroke-width="3"/>
+    <circle cx="0" cy="-25" r="12" fill="#F6C99A" stroke="#202A5C" stroke-width="3.5"/>
+    <path d="M-12 -29 a12 12 0 0 1 24 0 z" fill="#6B3F1D"/>
+    <circle cx="-4.5" cy="-25" r="1.6" fill="#202A5C"/><circle cx="4.5" cy="-25" r="1.6" fill="#202A5C"/>`;
+}
+function goPenalty(){
+  const pp = P().pens || {};
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Penalties 🥅</h1>
+    </div>
+    <div class="card results">
+      <h2>Five shots!</h2>
+      <p class="cheer">The red target slides across the goal. Tap SHOOT when it’s where you want the ball —
+        then hope the keeper dives the wrong way! Aim near the posts: keepers love the middle.</p>
+      ${pp.best ? `<p class="scoreline">Best: ${pp.best}/${PEN_SHOTS} &nbsp;·&nbsp; 🏆 ${pp.wins||0} shoot-outs won</p>` : ''}
+      ${pp.streak ? `<p class="scoreline">Longest run of goals: ${pp.streak} ⚽</p>` : ''}
+      <div class="btnrow"><button class="go-btn" data-act="gopens">Step up! ⚽</button></div>
+    </div>`;
+  wire();
+}
+function startPens(){
+  stopPens();
+  pens = {i:0, goals:0, run:0, bestRun:0, results:[], phase:'aim', x:PEN_ZONES[0], dir:1};
+  sfx.whistle();
+  renderPens();
+}
+function penDots(){
+  if(pens.duel){
+    // one row per player: their kicks so far, newest last
+    return pens.players.map((n,side)=>{
+      const kicks = pens.results.filter(r=>r.side===side)
+        .map(r=>r.scored ? '⚽' : '🧤').join('');
+      return `<span style="font-size:15px">${esc(n.slice(0,7))} ${kicks || '·'}</span>`;
+    }).join('');
+  }
+  return Array.from({length:PEN_SHOTS}, (_,i)=>
+    `<span>${pens.results[i]==='goal' ? '⚽' : pens.results[i]==='save' ? '🧤' : '⚪'}</span>`).join('');
+}
+function renderPens(){
+  const scoreboard = pens.duel
+    ? `<span class="ballcount">${esc(pens.players[0].slice(0,7))} ${pens.scores[0]} – ${pens.scores[1]} ${esc(pens.players[1].slice(0,7))}</span>`
+    : `<span class="ballcount">⚽ ${pens.goals}</span>`;
+  const banner = pens.duel
+    ? `<div class="turnbanner" style="margin:0 0 10px">🥅 ${pens.sudden ? 'SUDDEN DEATH! ' : ''}${esc(pens.players[pens.turn])}’s penalty!</div>`
+    : '';
+  stage.innerHTML = `
+    <div class="quizbar">
+      <button class="back-btn" data-go="home" aria-label="Quit">✕</button>
+      <div class="pendots ${pens.duel?'stack':''}">${penDots()}</div>
+      ${scoreboard}
+    </div>
+    ${banner}
+    <div class="pitchcard">
+      <svg viewBox="0 0 300 200" role="img" aria-label="Penalty kick at the goal">
+        ${goalSvg()}
+        <g id="penkeeper" transform="translate(150,100)">${keeperSvg()}</g>
+        <g id="penball" transform="translate(150,176)">
+          <circle r="11" fill="#FFFFFF" stroke="#202A5C" stroke-width="3"/>
+          <path d="M0 -5.6 l5.3 3.9 -2 6.4 -6.6 0 -2 -6.4 z" fill="#202A5C"/>
+          <path d="M0 -11 v5.4 M-10.5 -3.4 l5.3 1.7 M10.5 -3.4 l-5.3 1.7 M-6.5 10 l2.4 -5 M6.5 10 l-2.4 -5"
+                stroke="#202A5C" stroke-width="2.2" fill="none"/>
+        </g>
+        <g id="pentarget" transform="translate(150,90)">
+          <circle r="16" fill="none" stroke="#FF6B6B" stroke-width="5"/>
+          <circle r="5" fill="#FF6B6B"/>
+        </g>
+      </svg>
+    </div>
+    <div class="answers">
+      <button class="ans-btn" data-act="penshoot" style="background:var(--sun)">SHOOT! 🥅</button>
+    </div>
+    <div id="fb"></div>`;
+  wire();
+  pens.renderedAt = performance.now();
+  sweepTarget();
+}
+function sweepTarget(){
+  if(!pens || pens.phase!=='aim') return;
+  // rAF, not a CSS animation: reduced-motion strips CSS animation and this is the game itself
+  const speed = reduceMotion ? 0.055 : 0.115;      // px per ms
+  let last = performance.now();
+  const step = now=>{
+    if(!pens || pens.phase!=='aim') return;
+    const el = document.getElementById('pentarget');
+    if(!el) return;                                 // screen changed under us
+    const dt = Math.min(50, now - last); last = now;
+    pens.x += pens.dir * speed * dt;
+    if(pens.x >= 245){ pens.x = 245; pens.dir = -1; }
+    if(pens.x <= 55){ pens.x = 55; pens.dir = 1; }
+    el.setAttribute('transform', `translate(${pens.x.toFixed(1)},90)`);
+    penRaf = requestAnimationFrame(step);
+  };
+  penRaf = requestAnimationFrame(step);
+}
+function penShoot(){
+  if(!pens || pens.phase!=='aim') return;
+  if(performance.now() - (pens.renderedAt||0) < 350) return;   // tap meant for the previous screen
+  if(penRaf) cancelAnimationFrame(penRaf);
+  penRaf = null;
+  pens.phase = 'shot';
+  let zi = 0, near = Infinity;
+  PEN_ZONES.forEach((zx,i)=>{ const d = Math.abs(zx - pens.x); if(d < near){ near = d; zi = i; } });
+  const total = PEN_KEEPER_ODDS.reduce((a,b)=>a+b, 0);
+  let r = Math.random() * total, ki = PEN_KEEPER_ODDS.length - 1;
+  for(let i=0;i<PEN_KEEPER_ODDS.length;i++){ if((r -= PEN_KEEPER_ODDS[i]) < 0){ ki = i; break; } }
+  const zx = PEN_ZONES[zi], kx = PEN_ZONES[ki], krot = (ki - 2) * 20;
+  const scored = ki !== zi;
+  const ball = document.getElementById('penball'), keep = document.getElementById('penkeeper');
+  const aim = document.getElementById('pentarget');
+  if(aim) aim.remove();                          // the ball is the star once it's struck
+  if(reduceMotion){
+    if(ball) ball.setAttribute('transform', `translate(${zx},90)`);
+    if(keep) keep.setAttribute('transform', `translate(${kx},100) rotate(${krot})`);
+    penTimer = setTimeout(()=>resolvePen(scored), 280);
+    return;
+  }
+  const t0 = performance.now(), dur = 430;
+  const step = now=>{
+    const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 2);
+    if(ball) ball.setAttribute('transform',
+      `translate(${(150 + (zx-150)*e).toFixed(1)},${(176 + (90-176)*e).toFixed(1)}) rotate(${(e*420).toFixed(0)})`);
+    if(keep) keep.setAttribute('transform',
+      `translate(${(150 + (kx-150)*e).toFixed(1)},${(100 - (ki===2 ? 0 : 7*e)).toFixed(1)}) rotate(${(krot*e).toFixed(1)})`);
+    if(k < 1) penRaf = requestAnimationFrame(step);
+    else { penRaf = null; resolvePen(scored); }
+  };
+  penRaf = requestAnimationFrame(step);
+}
+function resolvePen(scored){
+  if(!pens) return;
+  if(pens.duel){
+    pens.results.push({side: pens.turn, scored});
+    if(scored) pens.scores[pens.turn]++;
+  } else {
+    pens.results[pens.i] = scored ? 'goal' : 'save';
+    if(scored){ pens.goals++; pens.run++; pens.bestRun = Math.max(pens.bestRun, pens.run); }
+    else pens.run = 0;
+  }
+  if(scored) sfx.roar(); else sfx.groan();
+  const cheers = ['GOAL!', 'What a strike!', 'Top corner!', 'Back of the net!', 'Unstoppable!'];
+  const saves  = ['Saved!', 'The keeper guessed right!', 'So close!', 'Nearly — next one!'];
+  const line = scored ? cheers[Math.floor(Math.random()*cheers.length)] : saves[Math.floor(Math.random()*saves.length)];
+  const fb = document.getElementById('fb');
+  if(fb) fb.innerHTML = `<div class="feedback ${scored?'yay':'try'}">${line}</div>`;
+  const count = document.querySelector('.ballcount');
+  if(count) count.innerHTML = pens.duel
+    ? `${esc(pens.players[0].slice(0,7))} ${pens.scores[0]} – ${pens.scores[1]} ${esc(pens.players[1].slice(0,7))}`
+    : `⚽ ${pens.goals}`;
+  const dots = document.querySelector('.pendots');
+  if(dots) dots.innerHTML = penDots();
+  say(scored ? 'Goal!' : 'Saved!');
+  pens.i++;
+  penTimer = setTimeout(()=>{
+    if(!pens) return;
+    if(pens.duel) return nextDuelKick();
+    if(pens.i >= PEN_SHOTS) finishPens();
+    else { pens.phase = 'aim'; pens.x = PEN_ZONES[0]; pens.dir = 1; renderPens(); }
+  }, 1550);
+}
+/* a level duel is settled the proper way: alternating spot kicks */
+const DUEL_PEN_ROUNDS = 3, DUEL_PEN_MAX = 12;
+function startDuelShootout(){
+  const players = match.players.slice();
+  clearTimeout(advanceTimer);
+  match = null;                       // the questions are over; the shootout owns the screen now
+  stopPens();
+  pens = {duel:true, players, scores:[0,0], turn:0, round:0, sudden:false,
+          i:0, goals:0, run:0, bestRun:0, results:[], phase:'aim', x:PEN_ZONES[0], dir:1};
+  sfx.whistle();
+  say(`It’s a draw! Penalties. ${players[0]} first.`);
+  renderPens();
+}
+function nextDuelKick(){
+  if(!pens || !pens.duel) return;
+  pens.turn = 1 - pens.turn;
+  if(pens.turn === 0){                                  // both have kicked — is it settled?
+    pens.round++;
+    const [a,b] = pens.scores;
+    if(pens.round >= DUEL_PEN_ROUNDS && a !== b) return finishDuelShootout();
+    if(pens.round >= DUEL_PEN_MAX) return finishDuelShootout();
+    if(pens.round >= DUEL_PEN_ROUNDS) pens.sudden = true;
+  }
+  pens.phase = 'aim'; pens.x = PEN_ZONES[0]; pens.dir = 1;
+  renderPens();
+}
+function finishDuelShootout(){
+  const [a,b] = pens.scores, [pa,pb] = pens.players;
+  const winner = a>b ? pa : b>a ? pb : null;
+  stopPens();
+  const cheer = winner ? `${winner} wins it from the spot!` : 'Still level — share the trophy!';
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>${winner ? '🏆 ' + esc(winner.toUpperCase()) + ' WINS! 🏆' : '🤝 IT’S A DRAW!'}</h2>
+      <p class="scoreline">Penalties: ${esc(pa)} ${a} – ${b} ${esc(pb)}</p>
+      <div class="starrow"><span style="font-size:54px">🥅</span></div>
+      <p class="cheer">${esc(cheer)}</p>
+      <div class="btnrow">
+        <button class="go-btn" data-act="rematch">Rematch! ↻</button>
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  wire();
+  sfx.fanfare(); confetti(true); say(cheer);
+}
+function finishPens(){
+  const goals = pens.goals, bestRun = pens.bestRun, won = goals >= 3;
+  const pp = P().pens || (P().pens = {});
+  const isBest = goals > (pp.best||0);
+  pp.best = Math.max(pp.best||0, goals);
+  pp.streak = Math.max(pp.streak||0, bestRun);
+  if(won) pp.wins = (pp.wins||0) + 1;
+  saveState();
+  stopPens();
+  const who = state.current;
+  const cheer =
+    goals===PEN_SHOTS ? `PERFECT, ${who}! Five out of five — nobody could stop you!` :
+    goals>=3 ? `You win the shoot-out, ${who}! What a hero!` :
+    goals>=1 ? `Good hitting, ${who}! That keeper was on fire — go again!` :
+               `That keeper had a blinder, ${who}! Next time they won’t be so lucky.`;
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>${won ? '🏆 SHOOT-OUT WON! 🏆' : '🧤 Full time!'}</h2>
+      <p class="scoreline">You scored ${goals} out of ${PEN_SHOTS}!</p>
+      <div class="starrow"><span style="font-size:54px">${won ? '⚽' : '🧤'}</span></div>
+      ${isBest && goals>0 ? '<p class="scoreline">NEW BEST! 🎉</p>' : ''}
+      <p class="cheer">${esc(cheer)}</p>
+      <div class="btnrow">
+        <button class="go-btn" data-act="gopens">Take five more ↻</button>
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  wire();
+  sfx.fanfare();
+  confetti(goals===PEN_SHOTS);
+  say(cheer);
+}
+
+/* ── Cup Run: your nation, four knockout matches, one trophy ─────────── */
+const CUP_ROUNDS = [
+  {key:'R16', short:'Round of 16', icon:'🎟️'},
+  {key:'QF',  short:'Quarter-Final', icon:'🎯'},
+  {key:'SF',  short:'Semi-Final', icon:'🚀'},
+  {key:'F',   short:'FINAL', icon:'🏆'},
+];
+const CUP_QS = 5;
+let cup = null;
+function miniFlag(id, cls){
+  const f = flagById[id];
+  return f ? `<span class="${cls||'tflag'} ${f.square?'sq':''}">${wrap(f.svg)}</span>` : '';
+}
+function heroFlag(id){                            // the big flag on a cup result screen
+  const f = flagById[id];
+  return f ? `<div class="bigflag ${f.square?'sq':''}" style="width:min(58%,190px); margin:8px auto">${wrap(f.svg)}</div>` : '';
+}
+function shortDate(ds){                           // '2026-9-11' → '11/9/26', so it fits under a flag
+  const p = String(ds||'').split('-');
+  return p.length===3 ? `${p[2]}/${p[1]}/${String(p[0]).slice(2)}` : (ds||'');
+}
+function cupOppo(){ return cup ? flagById[cup.oppo[cup.round]] : null; }
+function goCupRun(){
+  const c = P().cup || {};
+  const wins = c.wins || [];
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Cup Run 🏆</h1>
+    </div>
+    <div class="card results">
+      <h2>Win the cup!</h2>
+      <p class="cheer">Pick your country, then win four knockout matches in a row.
+        Every question you get right first time is a GOAL — but every miss lets them shoot back.
+        Lose once and you’re out!</p>
+      <div class="btnrow"><button class="go-btn" data-act="cuppick">Pick your team ▶</button></div>
+    </div>
+    ${wins.length ? `
+      <h2 class="homesec">🏆 Honours board</h2>
+      <div class="card">
+        <div class="honours">
+          ${wins.map(w=>`<span class="hf">${miniFlag(w.id)}<small>${esc(shortDate(w.date))}</small></span>`).join('')}
+        </div>
+        <p class="mode-sub" style="text-align:center;margin-top:10px">
+          ${wins.length} ${wins.length===1?'cup':'cups'} won in ${c.runs||wins.length} ${((c.runs||wins.length)===1)?'run':'runs'}!</p>
+      </div>` : ''}`;
+  wire();
+}
+function renderCupPick(){
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="cup" aria-label="Back">←</button>
+      <h1 class="screen-title">Who do you play for?</h1>
+    </div>
+    ${LEVELS.map(l=>`
+      <h2 class="booksec">${l.icon} ${l.bonus ? 'BONUS: '+l.name : l.name}</h2>
+      <div class="bookgrid">
+        ${FLAGS.filter(f=>f.level===l.n).map(f=>`<button class="sticker" data-cuppick="${f.id}">
+          <span class="flg ${f.square?'sq':''}">${wrap(f.svg)}</span>
+          <span class="nm">${esc(f.name)}</span></button>`).join('')}
+      </div>`).join('')}`;
+  wire();
+}
+function startCupRun(id){
+  const me = flagById[id];
+  if(!me) return goCupRun();
+  // opponents are drawn from today's countries, so the bracket always reads like a real tournament
+  const oppo = shuffle(FLAGS.filter(f=>f.level<9 && f.id!==id)).slice(0,4).map(f=>f.id);
+  cup = {nation:id, oppo, round:0, results:[]};
+  const c = P().cup || (P().cup = {});
+  c.runs = (c.runs||0) + 1;
+  saveState();
+  say(`${me.name}! Here we go.`);
+  renderBracket();
+}
+function renderBracket(){
+  const me = flagById[cup.nation];
+  const done = cup.round >= CUP_ROUNDS.length;
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Quit">✕</button>
+      <h1 class="screen-title">${esc(me.name)}’s Cup Run</h1>
+    </div>
+    <div class="bracket">
+      ${CUP_ROUNDS.map((r,i)=>{
+        const res = cup.results[i];
+        const cls = res ? 'done' : (i===cup.round ? 'now' : '');
+        return `<div class="tie ${cls}">
+          <span class="rnd">${r.icon}<br>${r.short}</span>
+          ${miniFlag(cup.nation)}<span class="vs">v</span>${miniFlag(cup.oppo[i])}
+          <span class="tscore">${res ? res.g+' – '+res.c : (i===cup.round ? '⏳' : '')}</span>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="btnrow" style="margin-top:16px">
+      <button class="go-btn" data-act="cupkick">${cup.round===0 ? 'Kick off! ⚽' : 'Next match ▶'}</button>
+    </div>
+    <p style="text-align:center;color:#EAFFF2;font-weight:700;margin-top:14px;text-shadow:0 2px 0 rgba(18,58,35,.35)">
+      ${CUP_QS} questions. Right first time = a goal for ${esc(me.name)}!</p>`;
+  wire();
+}
+function startFixture(){
+  clearTimeout(advanceTimer);
+  match = {mode:'cup', cup:true, qs: buildMixedQs(CUP_QS), i:0,
+           firstTry:0, laterTry:0, tries:0, done:[], goals:0, conceded:0};
+  sfx.whistle();
+  renderQuestion();
+}
+function cupScoreLine(){
+  return `${miniFlag(cup.nation,'sbflag')} ${match.goals} – ${match.conceded} ${miniFlag(cup.oppo[cup.round],'sbflag')}`;
+}
+function refreshCupScore(){
+  const sb = document.getElementById('sb');
+  if(sb && match && match.cup) sb.innerHTML = cupScoreLine();
+}
+function finishFixture(){
+  const g = match.goals, c = match.conceded, opp = cupOppo();
+  if(g === c && !match.sudden){                     // level after full time — one question decides it
+    match.sudden = true;
+    match.qs = match.qs.concat(buildMixedQs(1));
+    renderQuestion();
+    return;
+  }
+  const won = g > c;
+  const me = flagById[cup.nation];
+  cup.results[cup.round] = {g, c};
+  const roundName = CUP_ROUNDS[cup.round].short;
+  if(won && cup.round === CUP_ROUNDS.length - 1) return finishCupWin(g, c);
+  if(won){
+    cup.round++;
+    stage.innerHTML = `
+      <div class="card results">
+        <h2>⚽ THROUGH! ⚽</h2>
+        ${heroFlag(cup.nation)}
+        <p class="scoreline">${esc(me.name)} ${g} – ${c} ${esc(opp.name)}</p>
+        <p class="cheer">${esc(`${me.name} win the ${roundName}! Next up: the ${CUP_ROUNDS[cup.round].short}.`)}</p>
+        <div class="btnrow">
+          <button class="go-btn" data-act="cupbracket">See the bracket ▶</button>
+        </div>
+      </div>`;
+    wire();
+    sfx.fanfare(); confetti(false);
+    say(`${me.name} win! Through to the ${CUP_ROUNDS[cup.round].short}.`);
+    return;
+  }
+  const who = state.current;
+  const cheer = `So close, ${who}! ${me.name} go out in the ${roundName} — but every champion loses one. Go again!`;
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>🥲 Knocked out</h2>
+      ${heroFlag(cup.oppo[cup.round])}
+      <p class="scoreline">${esc(me.name)} ${g} – ${c} ${esc(opp.name)}</p>
+      <p class="cheer">${esc(cheer)}</p>
+      <div class="btnrow">
+        <button class="go-btn" data-act="cupagain">Try again with ${esc(me.name)} ↻</button>
+        <button class="go-btn quiet" data-act="cuppick">Pick a new team 🌍</button>
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  wire();
+  say(cheer);
+}
+function finishCupWin(g, c){
+  const me = flagById[cup.nation];
+  const cp = P().cup || (P().cup = {});
+  const wins = cp.wins || (cp.wins = []);
+  wins.unshift({id: cup.nation, date: todayStr(), t: Date.now()});
+  cp.wins = wins.slice(0, CUP_MAX_TROPHIES);
+  saveState();
+  const who = state.current;
+  const cheer = `${me.name} ARE CHAMPIONS OF THE WORLD! Take a bow, ${who} — you won the cup!`;
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>🏆 CHAMPIONS! 🏆</h2>
+      ${heroFlag(cup.nation)}
+      <p class="scoreline">Final: ${esc(me.name)} ${g} – ${c} ${esc(cupOppo().name)}</p>
+      <p class="cheer">${esc(cheer)}</p>
+      <p class="mode-sub" style="text-align:center">${esc(me.name)} goes on your honours board! 📜</p>
+      <div class="btnrow">
+        <button class="go-btn" data-act="cupagain">Defend the cup ↻</button>
+        <button class="go-btn quiet" data-act="cuppick">Pick a new team 🌍</button>
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  wire();
+  sfx.fanfare(); confetti(true);
+  say(cheer);
+}
+
+/* ── Mystery Flag: one hidden flag a day, for everyone ───────────────── */
+const MYSTERY_TILES = 12, MYSTERY_OPTS = 6, MYSTERY_FREE = 2, MYSTERY_PEEL = 3;
+let mystery = null;
+function goMystery(){
+  const day = todayStr();
+  const rng = mulberry32(dateSeed('mystery-' + day));      // its own seed, so it never echoes the daily match
+  const pool = FLAGS.filter(f=>f.level<9);
+  const flag = pool[Math.floor(rng() * pool.length)];
+  const level = FLAGS.filter(f=>f.level===flag.level);
+  const options = shuffle([flag].concat(pickDistractors(flag, level, MYSTERY_OPTS-1, rng)), rng);
+  const order = shuffle(Array.from({length:MYSTERY_TILES}, (_,i)=>i), rng);
+  const mp = P().mystery || {};
+  mystery = {day, flag, options, order, gone:[], wrong:0, solved:false,
+             off: order.slice(0, MYSTERY_FREE), scoredToday: mp.last === day};
+  renderMystery();
+}
+function mysteryPoints(){ return Math.max(1, 5 - mystery.wrong); }
+function renderMystery(){
+  const m = mystery;
+  const tiles = Array.from({length:MYSTERY_TILES}, (_,i)=>
+    `<span class="tile ${m.off.includes(i) ? 'off' : ''}"></span>`).join('');
+  const left = MYSTERY_TILES - m.off.length;
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Mystery Flag 🔎</h1>
+    </div>
+    <div class="qcard">
+      <p class="qprompt">Whose flag is hiding?</p>
+      <div class="mystery ${m.flag.square?'sq':''}">
+        ${wrap(m.flag.svg)}
+        <span class="tiles">${tiles}</span>
+      </div>
+      <p class="mode-sub">${left} ${left===1?'tile':'tiles'} still hidden &nbsp;·&nbsp; worth ⭐ ${mysteryPoints()}</p>
+    </div>
+    <div class="answers">
+      ${m.options.map((f,i)=> m.gone.includes(i) ? '' :
+        `<button class="ans-btn" data-mans="${i}">${esc(f.name)}</button>`).join('')}
+    </div>
+    <div id="fb"></div>`;
+  wire();
+  m.renderedAt = performance.now();
+}
+function answerMystery(i, btn){
+  const m = mystery;
+  if(!m || m.solved) return;
+  if(performance.now() - (m.renderedAt||0) < 350) return;
+  if(m.options[i] === m.flag){
+    m.solved = true;
+    const pts = mysteryPoints();
+    if(!m.scoredToday){
+      const mp = P().mystery || (P().mystery = {});
+      mp.last = m.day;
+      mp.solved = (mp.solved||0) + 1;
+      mp.best = Math.max(mp.best||0, pts);
+      saveState();
+    }
+    const prog = P();
+    prog.mastery[m.flag.id] = (prog.mastery[m.flag.id]||0) + 1;
+    saveState();
+    sfx.correct();
+    finishMystery(pts);
+  } else {
+    m.wrong++;
+    m.gone.push(i);
+    const next = m.order.filter(t=>!m.off.includes(t)).slice(0, MYSTERY_PEEL);
+    m.off = m.off.concat(next);
+    sfx.wrong();
+    renderMystery();
+    const fb = document.getElementById('fb');
+    if(fb) fb.innerHTML = `<div class="feedback try">Not that one — here’s a bit more of it!</div>`;
+  }
+}
+function finishMystery(pts){
+  const m = mystery, f = m.flag;
+  const who = state.current;
+  const cheer = m.wrong===0
+    ? `FIRST GUESS, ${who}! You really know your flags!`
+    : `You found it, ${who}! ${CAPITALS[f.id] ? 'The capital is ' + CAPITALS[f.id] + '.' : ''}`;
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>🔎 FOUND IT!</h2>
+      <div class="bigflag ${f.square?'sq':''}" style="margin:6px auto">${wrap(f.svg)}</div>
+      <h2 style="font-size:30px;margin:6px 0">${esc(f.name)}</h2>
+      <p class="scoreline">⭐ ${pts} ${pts===1?'star':'stars'}${m.scoredToday ? ' (just for fun — today’s already counted)' : ''}</p>
+      <p class="cheer">${esc(cheer)}</p>
+      <p class="mode-sub" style="text-align:center">${esc(f.fact)}</p>
+      <div class="btnrow" style="margin-top:14px">
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  wire();
+  sfx.fanfare(); confetti(m.wrong===0);
+  say(`${f.name}! ${cheer}`);
+}
+
 /* ── trophy room + certificates + printing ───────────────────────────── */
 function modeStars(mode, n){ let s=0; for(let l=1;l<=n;l++) s += bestFor(mode+'-'+l).stars; return s; }
 function goTrophies(){
@@ -2908,6 +3570,7 @@ function goTrophies(){
     ['🏛️','Capitals Quiz','caps',9], ['🏆','Footy Quiz','wc',6],
   ];
   const total = totalStars();
+  const cups = (P().cup||{}).wins || [];
   stage.innerHTML = `
     <div class="topbar">
       <button class="back-btn" data-go="home" aria-label="Back">←</button>
@@ -2924,6 +3587,17 @@ function goTrophies(){
         <span class="tstars">${(P().daily||{}).best||0} ${((P().daily||{}).best||0)===1?'day':'days'}</span></div>
       <div class="trophyrow"><span style="font-size:30px">⚡</span><span class="tname">Lightning best</span>
         <span class="tstars">${(P().lightning||{}).best||0} ${((P().lightning||{}).best||0)===1?'flag':'flags'}</span></div>
+      <div class="trophyrow"><span style="font-size:30px">🥅</span><span class="tname">Penalties</span>
+        <span class="tstars">${(P().pens||{}).best||0}/${PEN_SHOTS} best &nbsp;·&nbsp; 🏆 ${(P().pens||{}).wins||0}</span></div>
+      <div class="trophyrow"><span style="font-size:30px">🏆</span><span class="tname">Cups won</span>
+        <span class="tstars">${cups.length} ${cups.length===1?'cup':'cups'}</span></div>
+      <div class="trophyrow"><span style="font-size:30px">🔎</span><span class="tname">Mystery Flags</span>
+        <span class="tstars">${(P().mystery||{}).solved||0} solved</span></div>
+      ${cups.length ? `<div class="card">
+        <p class="mode-sub" style="text-align:center;margin:0 0 10px">🏆 Your honours board</p>
+        <div class="honours">
+          ${cups.map(w=>`<span class="hf">${miniFlag(w.id)}<small>${esc(shortDate(w.date))}</small></span>`).join('')}
+        </div></div>` : ''}
       <button class="go-btn ${total>=50?'':'quiet'}" data-act="cert" data-tier="explorer" ${total>=50?'':'disabled'}>
         ${total>=50 ? '📜 Flag Explorer certificate!' : `📜 Flag Explorer at 50 ⭐ (you have ${total})`}</button>
       <button class="go-btn ${total>=MAX_STARS?'':'quiet'}" data-act="cert" data-tier="champion" ${total>=MAX_STARS?'':'disabled'}>
@@ -3040,6 +3714,7 @@ function wire(){
     sfx.tap();
     match = null; clearTimeout(advanceTimer);   // leaving a match cancels its pending advance
     stopLightning();
+    stopPens();                                  // …and its sweep loop, which would outlive the screen
     hushVoice();
     const go = b.dataset.go;
     if(go==='home') goHome();
@@ -3049,7 +3724,18 @@ function wire(){
     else if(go==='duel') goDuelSetup();
     else if(go==='lightning') goLightning();
     else if(go==='trophies') goTrophies();
+    else if(go==='penalty') goPenalty();
+    else if(go==='cup') goCupRun();
+    else if(go==='mystery') goMystery();
   }));
+  stage.querySelectorAll('[data-act="gopens"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); startPens(); }));
+  stage.querySelectorAll('[data-act="penshoot"]').forEach(b=> b.addEventListener('click', ()=> penShoot()));
+  stage.querySelectorAll('[data-act="cuppick"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); renderCupPick(); }));
+  stage.querySelectorAll('[data-cuppick]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); startCupRun(b.dataset.cuppick); }));
+  stage.querySelectorAll('[data-act="cupkick"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); startFixture(); }));
+  stage.querySelectorAll('[data-act="cupbracket"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); match = null; renderBracket(); }));
+  stage.querySelectorAll('[data-act="cupagain"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); match = null; startCupRun(cup.nation); }));
+  stage.querySelectorAll('[data-mans]').forEach(b=> b.addEventListener('click', ()=> answerMystery(parseInt(b.dataset.mans,10), b)));
   stage.querySelectorAll('[data-duelpick]').forEach(b=> b.addEventListener('click', ()=>{
     sfx.tap();
     duelPick.push(b.dataset.duelpick);
@@ -3082,7 +3768,10 @@ function wire(){
 document.addEventListener('pointerdown', ()=>audio(), {once:true});
 window.__game = {startMatch, goHome, goBook, goPlayers, savePlayer, FLAGS, CONFUSABLE, CAPITALS, NO_CAP_QUIZ,
   state:()=>state, match:()=>match, answer, buildMatch, P, buildMixedQs, startDaily, goDuelSetup, startDuel,
-  goLightning, startLightning, goTrophies, lightning:()=>lightning, duelPickList:()=>duelPick, setDuelPick:(a)=>{duelPick=a;}};
+  goLightning, startLightning, goTrophies, lightning:()=>lightning, duelPickList:()=>duelPick, setDuelPick:(a)=>{duelPick=a;},
+  goPenalty, startPens, penShoot, pens:()=>pens, PEN_SHOTS, startDuelShootout,
+  goCupRun, renderCupPick, startCupRun, startFixture, renderBracket, cup:()=>cup, CUP_ROUNDS, CUP_QS,
+  goMystery, answerMystery, mystery:()=>mystery, mysteryPoints};
 
 const params = new URLSearchParams(location.search);
 if(params.has('book')) goBook();

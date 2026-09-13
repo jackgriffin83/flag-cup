@@ -15,6 +15,15 @@ A flags and World Cup quiz game for kids — play it here:
 - **Footy Quiz** — six levels, ~210 questions: World Cup rookie and legend trivia (through
   2026), superstars, clubs, every nation's men's AND women's World Cup
   trophy count, and a Kit Quiz with drawn shirts (whose hoops? whose sash?).
+- **Cup Run** — pick any of the 210 nations, then win four knockout ties drawn
+  as a bracket of flags. Right first time is a goal; every miss lets the
+  opposition shoot back. Win the Final and your flag joins an honours board.
+- **Penalties** — not a quiz: a drawn keeper, a target sweeping across the
+  goal, five spot kicks. The keeper favours the middle, so aiming near the
+  posts pays off — but small players still score plenty.
+- **Mystery Flag** — a second daily puzzle: one flag under twelve tiles, the
+  same for everyone that day. Wrong guesses peel tiles and cost stars, so
+  guessing early is worth more.
 - **Duel** — two players, one screen, sudden-death penalties if it's a draw.
 - **Lightning** — 60 seconds, how many flags can you name?
 - **Trophy Room** — stars per mode, best streak and lightning records, two
