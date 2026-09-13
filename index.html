@@ -274,7 +274,7 @@
   .wland{stroke:#202A5C; stroke-width:2.5; stroke-linejoin:round}
   .wreg:active .wland{filter:brightness(1.15)}
   .wlab{font:800 8.5px "Baloo 2",sans-serif; fill:var(--ink); text-anchor:middle;
-    paint-order:stroke; stroke:#fff; stroke-width:2.6; stroke-linejoin:round; pointer-events:none}
+    paint-order:stroke; stroke:#fff; stroke-width:2.6; stroke-linejoin:round; cursor:pointer}
   .wreg.right .wland{fill:var(--sun) !important; stroke-width:4}
   .wreg.nope .wland{fill:#C9CEDD !important; opacity:.7}
 
@@ -3059,8 +3059,11 @@ function finishDuel(){
 }
 
 /* ── Lightning round ─────────────────────────────────────────────────── */
-let lightning = null, lightningTimer = null;
-function stopLightning(){ clearInterval(lightningTimer); lightningTimer = null; lightning = null; }
+let lightning = null, lightningTimer = null, lightningRetry = null;
+function stopLightning(){
+  clearInterval(lightningTimer); clearTimeout(lightningRetry);
+  lightningTimer = null; lightningRetry = null; lightning = null;
+}
 function goLightning(){
   const best = (P().lightning||{}).best || 0;
   stage.innerHTML = `
@@ -3088,6 +3091,7 @@ function startLightning(){
 }
 function nextLightningQ(){
   if(!lightning) return;
+  clearTimeout(lightningRetry); lightningRetry = null;   // never let an old question's timer land
   const pool = FLAGS.filter(f=>f.level<9);
   const flag = pool[Math.floor(Math.random()*pool.length)];
   const ds = shuffle(FLAGS.filter(f=>f.level===flag.level && f.id!==flag.id)).slice(0,2);
@@ -3113,8 +3117,12 @@ function answerLightning(i, btn){
   if(lightning.q.options[i] === lightning.q.flag){
     lightning.score++; sfx.pop(); nextLightningQ();
   } else {
-    sfx.wrong(); btn.classList.add('nope'); btn.disabled = true;
-    setTimeout(()=>{ if(lightning) nextLightningQ(); }, 550);
+    sfx.wrong(); btn.classList.add('nope');
+    // freeze the whole question: otherwise the next tap lands during the pause and
+    // the pending timer then throws away a question nobody answered
+    document.querySelectorAll('.ans-btn').forEach(b=>b.disabled = true);
+    clearTimeout(lightningRetry);
+    lightningRetry = setTimeout(()=>{ if(lightning) nextLightningQ(); }, 550);
   }
 }
 function finishLightning(){
@@ -3790,14 +3798,15 @@ function goStickers(){
 function renderAlbum(have){
   const sections = LEVELS.filter(l=>!l.bonus).map(l=>{
     const cards = FLAGS.filter(f=>f.level===l.n).map(f=>{
-      const n = have[f.id]||0, sn = have['s:'+f.id]||0;
-      if(!n && !sn) return `<div class="sticker gap"><span class="flg dim">${wrap(f.svg)}</span>
+      // a plain and a shiny are different stickers, so each gets its own card —
+      // otherwise the plain pile is invisible and can never be swapped away
+      const owned = [['', have[f.id]||0], ['s:', have['s:'+f.id]||0]].filter(v=>v[1]>0);
+      if(!owned.length) return `<div class="sticker gap"><span class="flg dim">${wrap(f.svg)}</span>
         <span class="nm">?</span></div>`;
-      const id = sn ? 's:'+f.id : f.id, count = sn || n;   // the badge counts the one you tap
-      return `<button class="sticker ${sn?'shiny':''}" data-sticker="${id}">
+      return owned.map(([pre,count])=>`<button class="sticker ${pre?'shiny':''}" data-sticker="${pre}${f.id}">
         ${count>1?`<span class="medal">×${count}</span>`:''}
         <span class="flg ${f.square?'sq':''}">${wrap(f.svg)}</span>
-        <span class="nm">${esc(f.name)}</span></button>`;
+        <span class="nm">${esc(f.name)}${pre?' ✨':''}</span></button>`).join('');
     }).join('');
     return `<h2 class="booksec">${l.icon} ${l.name}</h2><div class="bookgrid">${cards}</div>`;
   }).join('');
@@ -4084,7 +4093,8 @@ function goFactory(){
 }
 function startFactory(free){
   const order = free ? null : FAC_RECIPES[Math.floor(Math.random()*FAC_RECIPES.length)];
-  factory = {free:!!free, order, layout:'vs3', paints:['red','white','blue'], tries:0, solved:false};
+  factory = {free:!!free, order, layout:'vs3', paints:['red','white','blue'], tries:0, solved:false,
+             renderedAt:0};
   renderFactory();
 }
 function renderFactory(){
@@ -4119,7 +4129,7 @@ function renderFactory(){
     </div>
     <div id="fb"></div>`;
   wire();
-  f.renderedAt = performance.now();
+  if(!f.renderedAt) f.renderedAt = performance.now();   // entering the screen, not each repaint
 }
 function setFacLayout(k){
   factory.layout = k;
@@ -4137,6 +4147,7 @@ function setFacPaint(spec){
 function checkFactory(){
   const f = factory, r = f.order;
   if(!r || f.solved) return;
+  if(performance.now() - (f.renderedAt||0) < 350) return;   // tap meant for the previous screen
   f.tries++;
   const need = (FAC_LAYOUTS.find(l=>l.k===r.layout)||{}).slots || 3;
   const ok = f.layout === r.layout && r.paints.every((p,i)=>f.paints[i]===p) && f.paints.length >= need;
@@ -4174,6 +4185,7 @@ function checkFactory(){
 }
 function saveFactory(){
   const f = factory;
+  if(performance.now() - (f.renderedAt||0) < 350) return;
   const fp = P().factory || (P().factory = {});
   const made = fp.made || (fp.made = []);
   made.unshift({layout:f.layout, paints:f.paints.slice(), name:`${state.current}’s flag`});
@@ -4849,7 +4861,13 @@ function wire(){
   stage.querySelectorAll('[data-play]').forEach(b=> b.addEventListener('click', ()=>{
     sfx.tap(); hushVoice(); startMatch(b.dataset.play, parseInt(b.dataset.level,10));
   }));
-  stage.querySelectorAll('[data-ans]').forEach(b=> b.addEventListener('click', ()=> answer(parseInt(b.dataset.ans,10), b)));
+  stage.querySelectorAll('[data-ans]').forEach(b=>{
+    b.addEventListener('click', ()=> answer(parseInt(b.dataset.ans,10), b));
+    // map regions are <g>, not <button>: Enter and Space don't fire a click for us
+    if(b.tagName.toLowerCase() === 'g') b.addEventListener('keydown', e=>{
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); answer(parseInt(b.dataset.ans,10), b); }
+    });
+  });
   stage.querySelectorAll('[data-act="say"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); sayCurrent(); }));
   stage.querySelectorAll('[data-act="sound"]').forEach(b=> b.addEventListener('click', ()=>{
     state.sound = !state.sound; saveState();
