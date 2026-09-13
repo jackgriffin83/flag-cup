@@ -24,10 +24,24 @@ A flags and World Cup quiz game for kids — play it here:
 - **Mystery Flag** — a second daily puzzle: one flag under twelve tiles, the
   same for everyone that day. Wrong guesses peel tiles and cost stars, so
   guessing early is worth more.
+- **Flag Detective** — which is the REAL flag? Three fakes are built by swapping
+  the real flag's own colours, so the difference is always genuine.
+- **Where in the World?** — tap the flag's continent on a drawn map. All 210 were
+  placed country by country; the nine that straddle two continents take either.
+- **Robot Rivals** — the co-op mode: team up and beat a robot XI up a five-rung
+  ladder, from Rusty Rovers to Galactic United.
+- **Flag Pairs** — a memory game with no reading at all. Six to twelve pairs,
+  solo or two players taking turns.
+- **Flag Factory** — build a flag from a shape and a palette: 23 real flags to
+  make from memory, plus a free-play corner for inventing your own.
+- **Sticker Album** — finished matches earn packs of three, with rare shinies and
+  rarer mascots. Give your doubles to another player.
+- **Mascot Buddy** — adopt Maple, Zayu or Clutch (the real 2026 mascots). Your
+  buddy greets you, cheers when you've played, and earns kit as stars come in.
 - **Duel** — two players, one screen, sudden-death penalties if it's a draw.
 - **Lightning** — 60 seconds, how many flags can you name?
 - **Trophy Room** — stars per mode, best streak and lightning records, two
-  printable certificates (50 ⭐ and 99 ⭐), and a printable all-flags poster.
+  printable certificates, and a printable all-flags poster.
 - **Flag Book** — a sticker album of every flag with a fun fact and its
   capital, each read aloud on tap.
 - **Players** — everyone plays under their own name with their own stars,

@@ -180,9 +180,9 @@
   .mode-btn.daily{background:linear-gradient(135deg,#FFF6D6,#FFE9A8)}
   .homesec{font-family:"Lilita One",sans-serif; color:#fff; font-size:20px; margin:20px 0 -4px;
     text-shadow:2px 2px 0 var(--ink), -2px 2px 0 var(--ink), 2px -2px 0 var(--ink), -2px -2px 0 var(--ink)}
-  .dailyrow{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .dailyrow, .tilegrid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
   .mode-btn.mini{flex-direction:column; align-items:center; text-align:center; gap:7px; padding:13px 9px}
-  .mode-btn.mini .mode-name{font-size:19px; line-height:1.05}
+  .mode-btn.mini .mode-name{font-size:17.5px; line-height:1.05}
   .mode-btn.mini .mode-sub{font-size:13px; margin-top:3px}
   .mode-btn.mini .mode-stars{margin-left:0}
 
@@ -212,6 +212,77 @@
   .sbflag{width:26px; display:inline-block; vertical-align:-6px; border:2px solid var(--ink);
     border-radius:4px; overflow:hidden; line-height:0; background:#fff}
   .sbflag.sq{border-color:transparent; background:transparent}
+
+  /* sticker packs */
+  .packrow{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0}
+  .pkcard{position:relative; background:var(--card-dim); border:4px solid var(--ink); border-radius:16px;
+    padding:8px 6px; animation:pkpop .45s ease both}
+  .pkcard.shiny{background:linear-gradient(135deg,#FFF6D6,#FFE9A8); border-color:var(--sun-deep)}
+  .pkcard.special{background:linear-gradient(135deg,#E9DBFF,#C9B5F5); border-color:#6A47C9}
+  .pkcard .pkart{display:grid; place-items:center; min-height:56px; line-height:0}
+  .pkcard .pkart svg{width:100%; max-height:64px}
+  .pkcard .pknm{display:block; font-weight:800; font-size:12px; margin-top:6px; line-height:1.15}
+  .newtag{position:absolute; top:-11px; left:50%; transform:translateX(-50%); background:var(--oops);
+    color:#fff; font-weight:800; font-size:11px; padding:2px 8px; border:2.5px solid var(--ink); border-radius:999px}
+  @keyframes pkpop{0%{transform:scale(.4) rotate(-12deg); opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1); opacity:1}}
+  .sticker.gap{opacity:.45}
+  .sticker .flg.dim{filter:grayscale(1) brightness(1.5) contrast(.4)}
+  .sticker.shiny{background:linear-gradient(135deg,#FFF9E4,#FFEDB8); border-color:var(--sun-deep)}
+
+  /* mascot buddy */
+  .buddybar{display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+    background:none; border:0; padding:0; margin:0 0 6px}
+  .bmini{width:64px; flex:none; line-height:0}
+  .bbub{position:relative; background:var(--card); border:4px solid var(--ink); border-radius:18px;
+    box-shadow:0 4px 0 rgba(18,58,35,.25); padding:9px 13px; font-weight:800; font-size:15px;
+    color:var(--ink); flex:1}
+  .bbub::before{content:''; position:absolute; left:-11px; top:18px; width:0; height:0;
+    border:8px solid transparent; border-right-color:var(--ink)}
+
+  /* flag factory */
+  .faclay{display:grid; grid-template-columns:1fr 1fr; gap:9px}
+  .faclay .chip{display:flex; align-items:center; gap:8px; border-radius:16px; padding:8px 10px;
+    font-size:13.5px; text-align:left; line-height:1.1}
+  .facmini{width:30px; flex:none; line-height:0; border:2px solid var(--ink); border-radius:4px; overflow:hidden}
+  .facslot{display:flex; align-items:center; gap:6px; background:var(--card); border:4px solid var(--ink);
+    border-radius:16px; box-shadow:0 4px 0 rgba(18,58,35,.25); padding:8px 10px; margin-bottom:9px}
+  .facnum{font-family:"Lilita One",sans-serif; font-size:14px; width:44px; flex:none}
+  .pot{width:30px; height:30px; flex:1; max-width:34px; border:3px solid var(--ink); border-radius:50%; padding:0}
+  .pot.on{box-shadow:0 0 0 3px var(--sun-deep); transform:scale(1.08)}
+
+  /* flag pairs */
+  .pgrid{display:grid; gap:9px; margin-top:6px}
+  .pcard{position:relative; aspect-ratio:3/4; padding:0; border:0; background:none; perspective:600px}
+  .pcard > span{position:absolute; inset:0; display:grid; place-items:center; overflow:hidden;
+    border:4px solid var(--ink); border-radius:14px; box-shadow:0 4px 0 rgba(18,58,35,.25);
+    background:var(--card); line-height:0}
+  .pcard .pfront{opacity:0; background:var(--card-dim)}
+  .pcard.up .pfront{opacity:1}
+  .pcard.up .pback{opacity:0}
+  .pcard .pfront svg{width:86%; border-radius:4px; box-shadow:0 0 0 2.5px var(--ink)}
+  .pcard .pfront.sq svg{box-shadow:none}
+  .pcard .pback{background:#FFF3CC}
+  .pcard.got .pfront{border-color:var(--good); background:var(--good-soft)}
+  .pcard:active{transform:translateY(3px)}
+
+  /* world map */
+  .mapwrap{background:var(--card); border:4px solid var(--ink); border-radius:22px;
+    box-shadow:var(--shadow); padding:8px; overflow:hidden}
+  .worldmap{display:block; width:100%; height:auto; border-radius:14px}
+  .wreg{cursor:pointer; outline:none}
+  .wreg:focus-visible .wland{stroke:var(--sun-deep); stroke-width:5}
+  .wland{stroke:#202A5C; stroke-width:2.5; stroke-linejoin:round}
+  .wreg:active .wland{filter:brightness(1.15)}
+  .wlab{font:800 9px "Baloo 2",sans-serif; fill:var(--ink); text-anchor:middle;
+    paint-order:stroke; stroke:#fff; stroke-width:2.6; stroke-linejoin:round; pointer-events:none}
+  .wreg.right .wland{fill:var(--sun) !important; stroke-width:4}
+  .wreg.nope .wland{fill:#C9CEDD !important; opacity:.7}
+
+  /* robot rivals */
+  .teamrow{display:flex; gap:8px; flex-wrap:wrap; justify-content:center}
+  .chip{border:3px solid var(--ink); border-radius:999px; background:var(--card-dim);
+    font:800 15px "Baloo 2",sans-serif; color:var(--ink-soft); padding:7px 15px}
+  .chip.on{background:var(--sun); color:var(--ink); box-shadow:0 3px 0 rgba(18,58,35,.25)}
 
   /* mystery flag */
   .mystery{position:relative; width:min(80%,320px); margin:4px auto 8px; border:4px solid var(--ink);
@@ -2254,6 +2325,18 @@ function saveState(){
           mine.daily = Object.assign({}, d.daily, {best: Math.max(d.daily.best||0, (md||{}).best||0)});
         else md.best = Math.max(md.best||0, d.daily.best||0);
       }
+      if(d.buddy && !(mine.buddy||{}).id) mine.buddy = d.buddy;
+      if(d.stickers){
+        if(!mine.stickers) mine.stickers = d.stickers;
+        else {
+          // stickers already stuck in the album can only go up, so max-merge them —
+          // but unopened packs get SPENT, and max-merging a spendable thing hands them back
+          const mh = mine.stickers.have || (mine.stickers.have = {});
+          for(const k in (d.stickers.have||{})) mh[k] = Math.max(mh[k]||0, d.stickers.have[k]);
+        }
+      }
+      if(d.robots) (mine.robots = mine.robots || {}).beaten =
+        Math.max((mine.robots||{}).beaten||0, d.robots.beaten||0);
       if(d.pens){                                   // penalties: every number is a personal best
         const mp = mine.pens || (mine.pens = {});
         for(const k of ['best','streak','wins']) mp[k] = Math.max(mp[k]||0, d.pens[k]||0);
@@ -2400,10 +2483,20 @@ function starRow(n, size, animate){
   return s+`</div>`;
 }
 function totalStars(){ return Object.values(P().best).reduce((a,b)=>a+(b.stars||0),0); }
-const MAX_STARS = (9+9+9+6)*3;   // flags + find + capitals + footy quiz, 3 stars each level
+const MAX_STARS = (9+9+9+9+9+6)*3; // flags, find, capitals, detective, world map + footy quiz
 function bestFor(key){ return P().best[key] || {stars:0, score:0}; }
 
 /* ── screens ─────────────────────────────────────────────────────────── */
+function buddyStrip(){
+  const b = P().buddy || {};
+  if(!b.id) return `<button class="buddybar" data-go="buddy">
+      <span class="bmini">${buddySvg('zayu','happy',[])}</span>
+      <span class="bbub">Pick a World Cup buddy to keep you company! 🐾</span></button>`;
+  const mood = buddyMood();
+  return `<button class="buddybar" data-go="buddy">
+    <span class="bmini">${buddySvg(b.id, mood, buddyGear(totalStars()))}</span>
+    <span class="bbub">${esc(buddyBubble(mood))}</span></button>`;
+}
 function goHome(){
   document.title = state.current + "'s Flag Cup";
   const st = totalStars();
@@ -2416,7 +2509,7 @@ function goHome(){
   const cupWins = ((P().cup||{}).wins||[]).length;
   stage.innerHTML = `
     <h1 class="biglogo">${esc(state.current)}’s<br><span class="sun">Flag Cup</span></h1>
-    <p class="tagline">Flags and World Cup fun — let’s play!</p>
+    ${buddyStrip()}
     <h2 class="homesec">📆 Today</h2>
     <div class="modes dailyrow">
       <button class="mode-btn daily mini" data-go="daily">
@@ -2433,37 +2526,28 @@ function goHome(){
       </button>
     </div>
     <h2 class="homesec">🧠 Quizzes</h2>
-    <div class="modes">
+    <div class="modes tilegrid">
       ${modeBtn('flags','⚽','Flag Quiz','Which country is it?', 9)}
       ${modeBtn('find','🔍','Find the Flag','Tap the right flag!', 9)}
-      ${modeBtn('caps','🏛️','Capitals Quiz','Name the capital city!', 9)}
-      ${modeBtn('wc','🏆','Footy Quiz','World Cup, superstars, clubs &amp; kits', 6)}
+      ${modeBtn('caps','🏛️','Capitals Quiz','Name the capital!', 9)}
+      ${modeBtn('wc','🏆','Footy Quiz','World Cup &amp; clubs', 6)}
+      ${modeBtn('spy','🕵️','Flag Detective','Spot the real flag!', 9)}
+      ${modeBtn('world','🗺️','World Map','Tap the continent!', 9)}
     </div>
     <h2 class="homesec">⚽ Match day</h2>
-    <div class="modes">
-      <button class="mode-btn" data-go="cup">
-        <span class="mode-ico">🏆</span>
-        <span><span class="mode-name">Cup Run</span><br><span class="mode-sub">Pick a country, win the cup!</span></span>
-        ${cupWins ? `<span class="mode-stars">🏆 ${cupWins}</span>` : ''}
-      </button>
-      <button class="mode-btn" data-go="penalty">
-        <span class="mode-ico">🥅</span>
-        <span><span class="mode-name">Penalties</span><br><span class="mode-sub">Beat the keeper — 5 shots!</span></span>
-        <span class="mode-stars">⚽ ${(P().pens||{}).best||0}/5</span>
-      </button>
-      <button class="mode-btn" data-go="duel">
-        <span class="mode-ico">⚔️</span>
-        <span><span class="mode-name">Duel</span><br><span class="mode-sub">Two players, one trophy!</span></span>
-      </button>
-      <button class="mode-btn" data-go="lightning">
-        <span class="mode-ico">⚡</span>
-        <span><span class="mode-name">Lightning</span><br><span class="mode-sub">60 seconds, how many flags?</span></span>
-        <span class="mode-stars">⚡ ${(P().lightning||{}).best||0}</span>
-      </button>
-      <button class="mode-btn" data-go="book">
-        <span class="mode-ico">📖</span>
-        <span><span class="mode-name">Flag Book</span><br><span class="mode-sub">All 210 flags &amp; capitals</span></span>
-      </button>
+    <div class="modes tilegrid">
+      ${tile('cup','🏆','Cup Run','Win the cup!', cupWins ? '🏆 '+cupWins : '')}
+      ${tile('penalty','🥅','Penalties','Beat the keeper!', '⚽ '+((P().pens||{}).best||0)+'/5')}
+      ${tile('duel','⚔️','Duel','Two players!', '')}
+      ${tile('robots','🤖','Robot Rivals','Team up!', '🏅 '+((P().robots||{}).beaten||0)+'/'+ROBOT_TEAMS.length)}
+      ${tile('lightning','⚡','Lightning','60 seconds!', '⚡ '+((P().lightning||{}).best||0))}
+    </div>
+    <h2 class="homesec">🎨 Collect &amp; make</h2>
+    <div class="modes tilegrid">
+      ${tile('stickers','📒','Stickers','Open packs!', ((P().stickers||{}).packs||0) ? '🎁 '+(P().stickers||{}).packs : '')}
+      ${tile('factory','🎨','Flag Factory','Build a flag!', '')}
+      ${tile('pairs','🃏','Flag Pairs','Memory game!', '')}
+      ${tile('book','📖','Flag Book','All 210 flags', '')}
     </div>
     <div class="totals">
       <span class="pill"><button data-go="trophies">⭐ ${st} / ${MAX_STARS} · Trophy Room</button></span>
@@ -2527,15 +2611,23 @@ function savePlayer(){
 function modeBtn(mode, ico, name, sub, nLevels){
   let got = 0;
   for(let l=1;l<=nLevels;l++) got += bestFor(mode+'-'+l).stars;
-  return `<button class="mode-btn" data-go="levels" data-mode="${mode}">
+  return `<button class="mode-btn mini" data-go="levels" data-mode="${mode}">
     <span class="mode-ico">${ico}</span>
     <span><span class="mode-name">${name}</span><br><span class="mode-sub">${sub}</span></span>
     <span class="mode-stars">⭐ ${got}/${nLevels*3}</span>
   </button>`;
 }
+function tile(go, ico, name, sub, badge){
+  return `<button class="mode-btn mini" data-go="${go}">
+    <span class="mode-ico">${ico}</span>
+    <span><span class="mode-name">${name}</span><br><span class="mode-sub">${sub}</span></span>
+    ${badge ? `<span class="mode-stars">${badge}</span>` : ''}
+  </button>`;
+}
 
 function goLevels(mode){
-  const titles = {flags:'Flag Quiz', find:'Find the Flag', caps:'Capitals Quiz', wc:'Footy Quiz'};
+  const titles = {flags:'Flag Quiz', find:'Find the Flag', caps:'Capitals Quiz', wc:'Footy Quiz',
+                  spy:'Flag Detective', world:'Where in the World?'};
   const list = mode==='wc'
     ? [{n:1,name:'Rookie',icon:'⚽'},{n:2,name:'Legend',icon:'🏆'},{n:3,name:'Superstars',icon:'⭐'},{n:4,name:'Clubs',icon:'🛡️'},{n:5,name:'Trophy Cabinet',icon:'🏅'},{n:6,name:'Famous Kits',icon:'👕'}]
     : (mode==='caps' ? LEVELS.map(l=>Object.assign({},l)) : LEVELS);
@@ -2593,6 +2685,8 @@ function buildMatch(mode, level){
     });
   }
   const old = level===9;                             // bonus level: flags of former countries
+  if(mode==='spy') return buildSpy(level);
+  if(mode==='world') return buildWorld(level);
   if(mode==='caps'){
     const pool = FLAGS.filter(f=>f.level===level && CAPITALS[f.id] && !NO_CAP_QUIZ.has(f.id));
     const nOpts = level===1 ? 3 : 4;
@@ -2636,6 +2730,7 @@ function startMatch(mode, level){
 function renderQuestion(){
   const q = match.qs[match.i];
   match.tries = 0;
+  match.locked = false;
   match.renderedAt = performance.now();   // grace period against tap-through from the previous screen
   const dots = match.qs.map((_,i)=>{
     const cls = i===match.i ? 'now' : (match.done[i]==='hit' ? 'hit' : match.done[i]==='ok' ? 'ok' : '');
@@ -2646,6 +2741,12 @@ function renderQuestion(){
     answers = `<div class="answers flagrid">` + q.options.map((f,i)=>
       `<button class="ans-btn flagopt" data-ans="${i}" aria-label="${esc(f.name)} flag choice">
          <span class="optflag ${f.square?'sq':''}">${wrap(f.svg)}</span></button>`).join('') + `</div>`;
+  } else if(q.kind==='world'){
+    answers = `<div class="mapwrap">${worldSvg()}</div>`;
+  } else if(q.kind==='spy'){
+    answers = `<div class="answers flagrid">` + q.options.map((svg,i)=>
+      `<button class="ans-btn flagopt" data-ans="${i}" aria-label="Flag choice ${i+1}">
+         <span class="optflag ${q.flag.square?'sq':''}">${wrap(svg)}</span></button>`).join('') + `</div>`;
   } else if(q.kind==='flags'){
     answers = `<div class="answers">` + q.options.map((f,i)=>
       `<button class="ans-btn" data-ans="${i}">${esc(f.name)}</button>`).join('') + `</div>`;
@@ -2661,17 +2762,25 @@ function renderQuestion(){
   }
   if(q.kind==='flags' || q.kind==='caps'){
     card = `<div class="bigflag ${q.flag.square?'sq':''}">${wrap(q.flag.svg)}</div>`;
+  } else if(q.kind==='spy'){
+    card = '';
+  } else if(q.kind==='world'){
+    card = `<div class="bigflag ${q.flag.square?'sq':''}" style="width:min(52%,190px)">${wrap(q.flag.svg)}</div>`;
   } else if(q.kit){
     card = `<div class="bigflag" style="background:transparent;border-color:transparent;box-shadow:none">${kitSvg(q.kit)}</div>`;
   }
-  const homeModes = {daily:1, duel:1, cup:1};
+  const homeModes = {daily:1, duel:1, cup:1, robots:1};
   const scoreboard = match.duel
     ? `<span class="ballcount" id="sb">${esc(match.players[0].slice(0,8))} ${match.scores[0]} – ${match.scores[1]} ${esc(match.players[1].slice(0,8))}</span>`
     : match.cup
     ? `<span class="ballcount" id="sb">${cupScoreLine()}</span>`
+    : match.robots
+    ? `<span class="ballcount" id="sb">${robotScoreLine()}</span>`
     : `<span class="ballcount" id="sb">⚽ ${match.firstTry}</span>`;
   const turn = match.duel
     ? `<div class="turnbanner">⚽ ${esc(match.players[match.i % 2])}’s ball!</div><br>`
+    : match.robots
+    ? `<div class="turnbanner">🤖 v ${esc(robots.t.name)}${robots.team.length===2 ? ' — ⚽ '+esc(robots.team[match.i % 2])+'’s turn!' : ''}</div><br>`
     : match.cup
     ? `<div class="turnbanner">${match.sudden ? '🥅 SUDDEN DEATH — get it right first time!'
         : CUP_ROUNDS[cup.round].icon + ' ' + CUP_ROUNDS[cup.round].short + ' v ' + esc(cupOppo().name)}</div><br>`
@@ -2707,17 +2816,19 @@ function playerProg(name){
   return state.players[name];
 }
 function answer(i, btn){
-  if(!match || performance.now() - (match.renderedAt||0) < 350) return;  // ignore taps meant for the previous screen
+  if(!match || match.locked) return;
+  if(performance.now() - (match.renderedAt||0) < 350) return;  // ignore taps meant for the previous screen
   const q = match.qs[match.i];
   match.tries++;
   const prog = match.duel ? playerProg(match.players[match.i % 2]) : P();
   const flagKind = q.kind==='flags' || q.kind==='find';
-  if(i===q.answer){
+  if(i===q.answer || (q.alsoOk||[]).includes(i)){
     const first = match.tries===1;
     if(first){ match.firstTry++; match.done[match.i]='hit'; }
     else { match.laterTry++; match.done[match.i]='ok'; }
     if(match.duel && first) match.scores[match.i % 2]++;
     if(match.cup && first){ match.goals++; refreshCupScore(); }
+    if(match.robots && first){ match.goals++; refreshRobotScore(); }
     if(q.flag && first && flagKind){
       prog.mastery[q.flag.id] = (prog.mastery[q.flag.id]||0)+1;
       if(prog.miss && prog.miss[q.flag.id]){                // it came back and they got it — ease off
@@ -2727,14 +2838,18 @@ function answer(i, btn){
       saveState();
     }
     sfx.correct();
+    match.locked = true;                       // map regions aren't buttons, so lock the whole question
     btn.classList.add('right');
     document.querySelectorAll('.ans-btn').forEach(b=>b.disabled=true);
-    const name = q.kind==='caps' ? CAPITALS[q.flag.id] : (q.flag ? q.flag.name : q.options[q.answer]);
+    const name = q.kind==='caps' ? CAPITALS[q.flag.id]
+      : q.kind==='world' ? CONT_NAMES[CONT_ORDER[i]]
+      : (q.flag ? q.flag.name : q.options[q.answer]);
     const cheers = ['Goal!','Brilliant!','Super save!','What a shot!','Top corner!','You’re on fire!'];
     let cheer = first ? cheers[Math.floor(Math.random()*cheers.length)] : 'You got it!';
     if(match.cup && first) cheer = `⚽ GOAL for ${flagById[cup.nation].name}!`;
+    const robotLine = match.robots ? ' ' + robotShot() : '';
     document.getElementById('fb').innerHTML =
-      `<div class="feedback yay">${cheer} ${q.kind!=='wc' ? 'It’s '+esc(name)+'!' : ''}
+      `<div class="feedback yay">${cheer} ${q.kind!=='wc' ? 'It’s '+esc(name)+'!' : ''}${esc(robotLine)}
        <span class="fact">${esc(q.fact||'')}</span></div>`;
     if((q.kind==='flags' || q.kind==='caps') && first) say(cheer + ' ' + name + '!');
     const wait = q.kind==='wc' ? 2600 : 1800;
@@ -2747,6 +2862,7 @@ function answer(i, btn){
     }
     // in a cup tie a first miss hands the other lot a chance — sudden death, they always take it
     let counter = '';
+    if(match.robots && match.tries===1) counter = ' ' + robotShot();
     if(match.cup && match.tries===1){
       const opp = cupOppo().name;
       if(match.sudden || Math.random() < 0.5){ match.conceded++; counter = ` ${opp} break away and score!`; }
@@ -2771,6 +2887,7 @@ function nextQuestion(){
 function finishMatch(){
   if(match.duel) return finishDuel();
   if(match.cup) return finishFixture();
+  if(match.robots) return finishRobots();
   if(match.mode==='daily') return finishDaily();
   const score = match.firstTry, n = match.qs.length;
   const stars = score>=9 ? 3 : score>=7 ? 2 : score>=5 ? 1 : 0;
@@ -2780,6 +2897,7 @@ function finishMatch(){
     P().best[key] = {stars, score};
     saveState();
   }
+  earnPacks(stars>=3 ? 2 : 1);
   const who = state.current;
   const cheer =
     stars===3 && score===n ? `PERFECT, ${who}! Ten out of ten — what a superstar!` :
@@ -2795,6 +2913,7 @@ function finishMatch(){
       ${starRow(stars, 64, true)}
       <p class="scoreline">You scored ${score} out of ${n}!</p>
       <p class="cheer">${esc(cheer)}</p>
+      ${((P().stickers||{}).packs||0) ? `<p class="mode-sub">🎁 ${(P().stickers||{}).packs} sticker ${((P().stickers||{}).packs)===1?'pack':'packs'} waiting!</p>` : ''}
       <div class="btnrow">
         ${nextLevel<=maxLevel ? `<button class="go-btn" data-play="${match.mode}" data-level="${nextLevel}">Next level ▶</button>` : ''}
         <button class="go-btn ${nextLevel<=maxLevel?'quiet':''}" data-play="${match.mode}" data-level="${match.level}">Play again ↻</button>
@@ -2860,6 +2979,7 @@ function finishDaily(){
     d.last = today;
     saveState();
   }
+  earnPacks(firstToday ? 2 : 1);
   const cheer = firstToday
     ? `🔥 ${d.streak} day streak, ${state.current}! Come back tomorrow to keep the fire burning!`
     : `Streak already safe today — that was just for fun, ${state.current}!`;
@@ -3252,6 +3372,7 @@ function finishPens(){
   pp.streak = Math.max(pp.streak||0, bestRun);
   if(won) pp.wins = (pp.wins||0) + 1;
   saveState();
+  earnPacks(won ? 2 : 1);
   stopPens();
   const who = state.current;
   const cheer =
@@ -3446,6 +3567,7 @@ function finishCupWin(g, c){
   wins.unshift({id: cup.nation, date: todayStr(), t: Date.now()});
   cp.wins = wins.slice(0, CUP_MAX_TROPHIES);
   saveState();
+  earnPacks(3);
   const who = state.current;
   const cheer = `${me.name} ARE CHAMPIONS OF THE WORLD! Take a bow, ${who} — you won the cup!`;
   stage.innerHTML = `
@@ -3463,6 +3585,931 @@ function finishCupWin(g, c){
     </div>`;
   wire();
   sfx.fanfare(); confetti(true);
+  say(cheer);
+}
+
+/* ── which continent each flag lives in (checked country by country) ─── */
+const CONTINENTS = {
+  gb:'EU', fr:'EU', it:'EU', jp:'AS', de:'EU', 'gb-eng':'EU', br:'SA', es:'EU', us:'NA', ar:'SA', ca:'NA',
+  vn:'AS', cu:'NA', il:'AS', ru:'EU', hu:'EU', tn:'AF', pk:'AS', bd:'AS', pt:'EU', nl:'EU', be:'EU', mx:'NA',
+  pl:'EU', se:'EU', ch:'EU', ie:'EU', dk:'EU', gr:'EU', ae:'AS', jo:'AS', lb:'AS', my:'AS', sg:'AS', ph:'AS',
+  hn:'NA', tt:'NA', sa:'AS', ps:'AS', kw:'AS', om:'AS', hr:'EU', uy:'SA', co:'SA', ma:'AF', sn:'AF', ng:'AF',
+  gh:'AF', kr:'AS', tr:'AS', ua:'EU', ml:'AF', gn:'AF', bg:'EU', lt:'EU', lv:'EU', ge:'EU', et:'AF', ke:'AF',
+  tz:'AF', bo:'SA', iq:'AS', sy:'AS', ye:'AS', ly:'AF', 'gb-sct':'EU', 'gb-wls':'EU', no:'EU', is:'EU',
+  fi:'EU', at:'EU', cl:'SA', pe:'SA', za:'AF', qa:'AS', th:'AS', ee:'EU', cd:'AF', ba:'EU', az:'AS', kp:'AS',
+  do:'NA', ir:'AS', kz:'AS', mk:'EU', bh:'AS', af:'AS', mm:'AS', la:'AS', au:'OC', cn:'AS', in:'AS', eg:'AF',
+  ci:'AF', cm:'AF', dz:'AF', ec:'SA', py:'SA', cr:'NA', si:'EU', md:'EU', mt:'EU', me:'EU', zw:'AF', zm:'AF',
+  ug:'AF', al:'EU', uz:'AS', kg:'AS', tj:'AS', tm:'AS', by:'EU', am:'AS', cy:'EU', nz:'OC', cz:'EU', sk:'EU',
+  rs:'EU', ro:'EU', lu:'EU', id:'AS', ve:'SA', pa:'NA', jm:'NA', np:'AS', lk:'AS', bt:'AS', mn:'AS', kh:'AS',
+  tg:'AF', xk:'EU', 'gb-nir':'EU', gt:'NA', sv:'NA', ni:'NA', ht:'NA', bz:'NA', mv:'AS', bn:'AS', sd:'AF',
+  ss:'AF', mr:'AF', ne:'AF', td:'AF', bf:'AF', gm:'AF', gw:'AF', sl:'AF', lr:'AF', ga:'AF', cg:'AF', cf:'AF',
+  gq:'AF', st:'AF', ao:'AF', mz:'AF', na:'AF', ls:'AF', sz:'AF', mw:'AF', bi:'AF', dj:'AF', er:'AF', so:'AF',
+  km:'AF', mu:'AF', sc:'AF', cv:'AF', rw:'AF', mg:'AF', bw:'AF', bj:'AF', mc:'EU', ad:'EU', li:'EU', sm:'EU',
+  va:'EU', bs:'NA', bb:'NA', gy:'SA', sr:'SA', dm:'NA', lc:'NA', gd:'NA', vc:'NA', ag:'NA', kn:'NA', fj:'OC',
+  pg:'OC', sb:'OC', vu:'OC', ws:'OC', to:'OC', ki:'OC', tv:'OC', nr:'OC', pw:'OC', mh:'OC', fm:'OC', tl:'AS',
+  su:'EU', yu:'EU', ddr:'EU', csk:'EU', kit:'EU', hu54:'EU', persia:'AS', zr:'AF', gco:'SA', siam:'AS'
+};
+// countries that genuinely sit in two — both answers are accepted
+const CONT_ALT = {ru:'AS', tr:'EU', ge:'AS', az:'EU', kz:'EU', eg:'AS', am:'EU', cy:'AS', su:'AS'};
+const CONT_NOTE = {
+  cu: 'Caribbean islands count as part of North America.',
+  ru: 'Russia is so big it sits in both Europe and Asia.',
+  lb: 'The Middle East is part of Asia.',
+  hn: 'Central America is part of North America.',
+  tt: 'It sits near South America but counts as North America.',
+  kw: 'The Middle East is part of Asia.',
+  tr: 'Turkey sits in both Europe and Asia, so both answers work.',
+  ge: 'Georgia sits right on the Europe and Asia border.',
+  ye: 'The Middle East is part of Asia.',
+  az: 'It sits right where Asia and Europe meet.',
+  do: 'Caribbean islands belong to North America.',
+  kz: 'Mostly in Asia, but a western part is Europe.',
+  eg: 'Most of Egypt is in Africa, a small part in Asia.',
+  cr: 'Central America is part of North America.',
+  mt: 'A tiny island south of Italy, but it is European.',
+  am: 'Armenia sits on the Europe and Asia border, so both work.',
+  cy: 'Cyprus is close to Asia but counts as Europe.',
+  pa: 'Central America is part of North America.',
+  jm: 'Caribbean islands count as North America.',
+  gt: 'Central America is part of North America.',
+  sv: 'Central America is part of North America.',
+  ni: 'Central America is part of North America.',
+  ht: 'Caribbean islands count as North America.',
+  bz: 'Central America is part of North America.',
+  mv: 'Little islands south of India, so they count as Asia.',
+  st: 'Tiny islands just off Africa\'s west coast.',
+  km: 'Small islands in the sea next to Africa.',
+  mu: 'An island far east of Africa in the Indian Ocean.',
+  sc: 'Islands in the ocean far east of Africa.',
+  cv: 'Islands in the sea west of Africa.',
+  mg: 'A big island just off the east coast of Africa.',
+  bs: 'Islands near Florida, so they are in North America.',
+  bb: 'Caribbean islands count as North America.',
+  dm: 'Caribbean islands belong to North America.',
+  lc: 'Caribbean islands count as North America.',
+  gd: 'Caribbean islands count as North America.',
+  vc: 'Caribbean islands count as part of North America.',
+  ag: 'Caribbean islands belong to North America.',
+  kn: 'Caribbean islands count as North America.',
+  sb: 'Islands in the Pacific Ocean, so they are Oceania.',
+  ki: 'Islands in the Pacific Ocean, so they are Oceania.',
+  pw: 'Pacific islands near Asia, but they belong to Oceania.',
+  mh: 'Islands in the Pacific Ocean, so they are Oceania.',
+  fm: 'Tiny islands spread across the Pacific Ocean.',
+  tl: 'A tiny island country in Southeast Asia, near Indonesia.',
+  su: 'This huge old country stretched across Europe and Asia.',
+  yu: 'An old country that used to be in Europe.',
+  ddr: 'East Germany was half of Germany, in Europe.',
+  csk: 'An old country that split into Czechia and Slovakia.',
+  persia: 'Persia is the old name for Iran.',
+  zr: 'The old name for the country now called DR Congo.',
+  siam: 'Siam is the old name for Thailand.',
+};
+
+const CONT_NAMES = {EU:'Europe', AF:'Africa', AS:'Asia', NA:'North America', SA:'South America', OC:'Oceania'};
+const CONT_ORDER = ['NA','SA','EU','AF','AS','OC'];
+const CONT_SHORT = {NA:'N. America', SA:'S. America', EU:'Europe', AF:'Africa', AS:'Asia', OC:'Oceania'};
+const CONT_FILL  = {NA:'#7FC98A', SA:'#F2A65A', EU:'#C99BE0', AF:'#F4D06F', AS:'#EF8E7E', OC:'#8AD9C4'};
+const CONT_LABEL = {NA:[54,44], SA:[82,114], EU:[151,33], AF:[159,94], AS:[233,45], OC:[261,120]};
+// a friendly, chunky world — recognisable shapes, not a survey map
+const WORLD_SHAPES = {
+  NA: 'M14 32 Q24 15 50 13 Q82 12 99 25 Q97 38 85 43 Q91 53 81 60 Q72 57 69 66 Q75 73 67 78 Q59 74 56 66 Q50 58 40 53 Q23 46 14 32 Z',
+  SA: 'M68 86 Q84 78 96 88 Q101 102 91 113 Q89 130 79 147 Q71 137 71 121 Q62 106 68 96 Z',
+  EU: 'M133 25 Q150 17 170 22 Q179 29 174 38 Q163 47 150 44 Q138 48 131 39 Z',
+  AF: 'M136 59 Q158 51 182 59 Q189 72 182 86 Q173 103 165 121 Q154 132 146 120 Q139 101 135 85 Q130 71 136 59 Z',
+  AS: 'M177 21 Q212 11 252 17 Q282 23 288 38 Q279 53 260 57 Q241 63 226 76 Q211 85 201 76 Q190 63 182 51 Q174 37 177 21 Z',
+  OC: 'M243 106 Q262 99 279 108 Q286 120 275 129 Q258 135 248 126 Q239 116 243 106 Z',
+};
+const WORLD_DOTS = {                       // the little bits that make it click for a child
+  NA: [[52,10,7,4],[104,58,3,2]], SA: [], EU: [[128,28,4,3],[176,20,3,2]],
+  AF: [[188,104,4,6]], AS: [[296,44,4,5],[236,84,7,3],[262,74,3,2]],
+  OC: [[290,134,4,6],[262,96,2,2],[296,112,2,2]],
+};
+function worldSvg(){
+  // every continent is its own colour and carries its name: the map is the answer pad,
+  // not a shape-recognition test
+  const shapes = CONT_ORDER.map((c,i)=>{
+    const dots = (WORLD_DOTS[c]||[]).map(d=>
+      `<ellipse cx="${d[0]}" cy="${d[1]}" rx="${d[2]}" ry="${d[3]}" class="wland" fill="${CONT_FILL[c]}"/>`).join('');
+    const [lx,ly] = CONT_LABEL[c];
+    return `<g data-ans="${i}" class="wreg" role="button" tabindex="0" aria-label="${CONT_NAMES[c]}">
+      <path d="${WORLD_SHAPES[c]}" class="wland" fill="${CONT_FILL[c]}"/>${dots}
+      <text class="wlab" x="${lx}" y="${ly}">${CONT_SHORT[c]}</text></g>`;
+  }).join('');
+  return `<svg viewBox="0 0 300 152" class="worldmap" role="group" aria-label="World map">
+    <rect x="0" y="0" width="300" height="152" fill="#BFE6FF"/>${shapes}</svg>`;
+}
+function buildWorld(level, rnd){
+  rnd = rnd || Math.random;
+  const pool = FLAGS.filter(f=>f.level===level && CONTINENTS[f.id]);
+  return shuffle(pool, rnd).slice(0,10).map(flag=>{
+    const c = CONTINENTS[flag.id], alt = CONT_ALT[flag.id];
+    const answer = CONT_ORDER.indexOf(c);
+    return {kind:'world', flag, options: CONT_ORDER.slice(), answer,
+      alsoOk: alt ? [CONT_ORDER.indexOf(alt)] : [],
+      prompt: `Where in the world is ${flag.name}?`,
+      fact: CONT_NOTE[flag.id] || `${flag.name} is in ${CONT_NAMES[c]}.`};
+  });
+}
+
+/* ── Sticker packs: the bit every football kid already knows ─────────── */
+const PACK_SIZE = 3, STICKER_MAX_PACKS = 30;
+const SPECIAL_STICKERS = [
+  {id:'m:maple',  name:'Maple'},
+  {id:'m:zayu',   name:'Zayu'},
+  {id:'m:clutch', name:'Clutch'},
+  {id:'t:cup',    name:'The Cup',     emoji:'🏆'},
+  {id:'t:boot',   name:'Golden Boot', emoji:'👟'},
+  {id:'t:ball',   name:'Match Ball',  emoji:'⚽'},
+];
+function stickerArt(id){
+  if(id.startsWith('m:')) return buddySvg(id.slice(2), 'cheer', []);
+  if(id.startsWith('t:')){
+    const sp = SPECIAL_STICKERS.find(x=>x.id===id);
+    return `<span style="font-size:40px;line-height:1.1">${sp?sp.emoji:'⚽'}</span>`;
+  }
+  const f = flagById[id.replace(/^s:/,'')];
+  return f ? wrap(f.svg) : '';
+}
+function stickerName(id){
+  if(id.startsWith('m:') || id.startsWith('t:'))
+    return (SPECIAL_STICKERS.find(x=>x.id===id)||{}).name || '?';
+  const f = flagById[id.replace(/^s:/,'')];
+  return (f ? f.name : '?') + (id.startsWith('s:') ? ' ✨' : '');
+}
+function stickerRarity(id){
+  return id.startsWith('m:') || id.startsWith('t:') ? 'special' : id.startsWith('s:') ? 'shiny' : 'common';
+}
+function earnPacks(n){
+  const st = P().stickers || (P().stickers = {});
+  st.packs = Math.min(STICKER_MAX_PACKS, (st.packs||0) + n);
+  saveState();
+}
+function rollSticker(){
+  const pool = FLAGS.filter(f=>f.level<9);
+  const r = Math.random();
+  if(r < 0.07) return SPECIAL_STICKERS[Math.floor(Math.random()*SPECIAL_STICKERS.length)].id;
+  const f = pool[Math.floor(Math.random()*pool.length)];
+  return (r < 0.28 ? 's:' : '') + f.id;
+}
+let pack = null;
+function goStickers(){
+  const st = P().stickers || {};
+  const have = st.have || {};
+  const owned = Object.keys(have).length;
+  const total = FLAGS.filter(f=>f.level<9).length * 2 + SPECIAL_STICKERS.length;
+  const packs = st.packs || 0;
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Sticker Album 📒</h1>
+      <span class="pill" style="margin-left:auto">⭐ ${owned}/${total}</span>
+    </div>
+    <div class="card results" style="padding:18px">
+      <div style="font-size:52px">${packs ? '🎁' : '📒'}</div>
+      <p class="scoreline">${packs ? `${packs} ${packs===1?'pack':'packs'} to open!` : 'No packs waiting'}</p>
+      <p class="cheer">${packs ? 'Three stickers in every pack — shinies are rare!'
+                              : 'Finish any match to earn a pack. Win big for more!'}</p>
+      ${packs ? `<div class="btnrow"><button class="go-btn" data-act="openpack">Open a pack! 🎁</button></div>` : ''}
+    </div>
+    ${owned ? renderAlbum(have) : ''}`;
+  wire();
+}
+function renderAlbum(have){
+  const sections = LEVELS.filter(l=>!l.bonus).map(l=>{
+    const cards = FLAGS.filter(f=>f.level===l.n).map(f=>{
+      const n = have[f.id]||0, sn = have['s:'+f.id]||0;
+      if(!n && !sn) return `<div class="sticker gap"><span class="flg dim">${wrap(f.svg)}</span>
+        <span class="nm">?</span></div>`;
+      const id = sn ? 's:'+f.id : f.id, count = n + sn;
+      return `<button class="sticker ${sn?'shiny':''}" data-sticker="${id}">
+        ${count>1?`<span class="medal">×${count}</span>`:''}
+        <span class="flg ${f.square?'sq':''}">${wrap(f.svg)}</span>
+        <span class="nm">${esc(f.name)}</span></button>`;
+    }).join('');
+    return `<h2 class="booksec">${l.icon} ${l.name}</h2><div class="bookgrid">${cards}</div>`;
+  }).join('');
+  const specials = SPECIAL_STICKERS.map(sp=>{
+    const n = have[sp.id]||0;
+    if(!n) return `<div class="sticker gap"><span class="flg dim" style="display:grid;place-items:center;min-height:56px">${stickerArt(sp.id)}</span><span class="nm">?</span></div>`;
+    return `<button class="sticker shiny" data-sticker="${sp.id}">
+      ${n>1?`<span class="medal">×${n}</span>`:''}
+      <span class="flg" style="display:grid;place-items:center;min-height:56px;border:0;background:none">${stickerArt(sp.id)}</span>
+      <span class="nm">${esc(sp.name)}</span></button>`;
+  }).join('');
+  return `<h2 class="booksec">🌟 Superstars</h2><div class="bookgrid">${specials}</div>` + sections;
+}
+function openPack(){
+  const st = P().stickers || (P().stickers = {});
+  if(!(st.packs > 0)) return goStickers();
+  st.packs--;
+  const have = st.have || (st.have = {});
+  const got = Array.from({length:PACK_SIZE}, ()=>rollSticker());
+  const fresh = got.map(id=>{
+    const isNew = !have[id];
+    have[id] = (have[id]||0) + 1;
+    return {id, isNew};
+  });
+  saveState();
+  pack = {got:fresh, shown:0};
+  renderPack();
+}
+function renderPack(){
+  const anyNew = pack.got.some(g=>g.isNew);
+  const anySpecial = pack.got.some(g=>stickerRarity(g.id)!=='common');
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>🎁 PACK OPENED!</h2>
+      <div class="packrow">
+        ${pack.got.map((g,i)=>`<div class="pkcard ${stickerRarity(g.id)}" style="animation-delay:${i*0.22}s">
+          ${g.isNew?'<span class="newtag">NEW!</span>':''}
+          <span class="pkart">${stickerArt(g.id)}</span>
+          <span class="pknm">${esc(stickerName(g.id))}</span></div>`).join('')}
+      </div>
+      <p class="cheer">${esc(anySpecial ? 'A rare one! Look at that shine!' :
+        anyNew ? 'New stickers for your album!' : 'All doubles — swap them with someone!')}</p>
+      <div class="btnrow">
+        ${(P().stickers.packs>0) ? `<button class="go-btn" data-act="openpack">Open another (${P().stickers.packs}) 🎁</button>` : ''}
+        <button class="go-btn quiet" data-go="stickers">My album 📒</button>
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  wire();
+  sfx.fanfare();
+  if(anySpecial) confetti(true);
+  say(anyNew ? 'New stickers!' : 'Doubles!');
+}
+function peekSticker(id){
+  const have = (P().stickers||{}).have || {};
+  const count = have[id] || 0;
+  const others = Object.keys(state.players).filter(n=>n!==state.current);
+  const div = document.createElement('div');
+  div.className = 'peek';
+  div.innerHTML = `
+    <div class="card" style="text-align:center">
+      <div style="display:grid;place-items:center;min-height:90px">${stickerArt(id)}</div>
+      <h3>${esc(stickerName(id))}</h3>
+      <p class="learn">You have ${count}</p>
+      ${count>1 && others.length ? `<div class="btnrow">
+        ${others.slice(0,3).map(n=>`<button class="go-btn" data-give="${esc(n)}">Give one to ${esc(n)} 🎁</button>`).join('')}
+      </div>` : count>1 ? '<p class="fact">Add another player to swap your doubles!</p>' : ''}
+      <div class="btnrow" style="margin-top:10px">
+        <button class="go-btn quiet" data-act="peekclose">Close ✕</button>
+      </div>
+    </div>`;
+  div.addEventListener('click', e=>{
+    const give = e.target.closest('[data-give]');
+    if(e.target===div || e.target.closest('[data-act="peekclose"]')) div.remove();
+    else if(give){
+      giveSticker(id, give.dataset.give);
+      div.remove();
+    }
+  });
+  document.body.appendChild(div);
+}
+function giveSticker(id, to){
+  const mine = (P().stickers||{}).have || {};
+  if((mine[id]||0) < 2) return;
+  mine[id]--;
+  const theirs = playerProg(to);
+  const ts = theirs.stickers || (theirs.stickers = {});
+  const th = ts.have || (ts.have = {});
+  th[id] = (th[id]||0) + 1;
+  saveState();
+  sfx.fanfare(); confetti(false);
+  say(`One ${stickerName(id)} for ${to}!`);
+  goStickers();
+}
+
+/* ── Mascot Buddy: one of the real 2026 mascots, living on your screen ─ */
+const BUDDIES = [
+  {id:'maple',  name:'Maple',  kind:'the moose',      line:'Maple the moose kept goal for Canada!'},
+  {id:'zayu',   name:'Zayu',   kind:'the jaguar',     line:'Zayu the jaguar was Mexico’s striker!'},
+  {id:'clutch', name:'Clutch', kind:'the bald eagle', line:'Clutch the eagle played in midfield for the USA!'},
+];
+const BUDDY_GEAR = [
+  {at:20,  k:'scarf',  name:'a team scarf'},
+  {at:60,  k:'hat',    name:'a bobble hat'},
+  {at:120, k:'medal',  name:'a gold medal'},
+];
+function buddyGear(stars){ return BUDDY_GEAR.filter(g=>stars >= g.at).map(g=>g.k); }
+function buddySvg(id, mood, gear){
+  gear = gear || [];
+  const sleepy = mood === 'sleepy';
+  const eyes = sleepy
+    ? `<path d="M-11 -4 q5 5 10 0 M1 -4 q5 5 10 0" stroke="#202A5C" stroke-width="3" fill="none" stroke-linecap="round"/>`
+    : `<circle cx="-6" cy="-5" r="4.2" fill="#202A5C"/><circle cx="6" cy="-5" r="4.2" fill="#202A5C"/>
+       <circle cx="-4.6" cy="-6.4" r="1.5" fill="#fff"/><circle cx="7.4" cy="-6.4" r="1.5" fill="#fff"/>`;
+  const mouth = id === 'clutch' ? ''
+    : mood === 'cheer'
+    ? `<path d="M-9 6 q9 11 18 0 z" fill="#B23A48" stroke="#202A5C" stroke-width="2.5" stroke-linejoin="round"/>`
+    : sleepy ? `<path d="M-5 8 q5 3 10 0" stroke="#202A5C" stroke-width="2.5" fill="none" stroke-linecap="round"/>`
+    : `<path d="M-8 5 q8 8 16 0" stroke="#202A5C" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  let head = '', ears = '';
+  if(id === 'maple'){
+    ears = `<path d="M-16 -22 l-13 -12 -9 3 8 7 -10 1 12 9 Z" fill="#C68A3E" stroke="#202A5C" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M16 -22 l13 -12 9 3 -8 7 10 1 -12 9 Z" fill="#C68A3E" stroke="#202A5C" stroke-width="3" stroke-linejoin="round"/>`;
+    head = `<ellipse cx="0" cy="0" rx="22" ry="21" fill="#8B5E34" stroke="#202A5C" stroke-width="3.5"/>
+      <ellipse cx="0" cy="9" rx="12" ry="9" fill="#C79B72" stroke="#202A5C" stroke-width="3"/>
+      <circle cx="-4" cy="8" r="1.8" fill="#202A5C"/><circle cx="4" cy="8" r="1.8" fill="#202A5C"/>`;
+  } else if(id === 'zayu'){
+    ears = `<path d="M-19 -14 l-5 -13 13 6 Z" fill="#E6A33A" stroke="#202A5C" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M19 -14 l5 -13 -13 6 Z" fill="#E6A33A" stroke="#202A5C" stroke-width="3" stroke-linejoin="round"/>`;
+    head = `<circle cx="0" cy="0" r="22" fill="#E6A33A" stroke="#202A5C" stroke-width="3.5"/>
+      <circle cx="-14" cy="-12" r="2.6" fill="#6B4A1F"/><circle cx="13" cy="-13" r="2.2" fill="#6B4A1F"/>
+      <circle cx="-17" cy="3" r="2.2" fill="#6B4A1F"/><circle cx="16" cy="4" r="2.6" fill="#6B4A1F"/>
+      <ellipse cx="0" cy="6" rx="9" ry="7" fill="#FBE2B6" stroke="#202A5C" stroke-width="2.5"/>
+      <path d="M-4 3 h8 l-4 4 z" fill="#202A5C"/>`;
+  } else {
+    ears = `<path d="M-20 14 q20 15 40 0 l0 17 q-20 9 -40 0 z" fill="#6B4A2A"
+      stroke="#202A5C" stroke-width="3" stroke-linejoin="round"/>`;
+    head = `<circle cx="0" cy="0" r="22" fill="#FFFFFF" stroke="#202A5C" stroke-width="3.5"/>
+      <path d="M-19 -11 q7 -8 14 -5 M19 -11 q-7 -8 -14 -5" stroke="#202A5C"
+        stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M-7 5 L0 21 L7 5 Z" fill="#F4C724" stroke="#202A5C" stroke-width="3" stroke-linejoin="round"/>`;
+  }
+  const scarf = gear.includes('scarf')
+    ? `<path d="M-20 22 q20 10 40 0 l0 9 q-20 9 -40 0 z" fill="#D8262C" stroke="#202A5C" stroke-width="3" stroke-linejoin="round"/>
+       <rect x="12" y="29" width="9" height="15" rx="3" fill="#D8262C" stroke="#202A5C" stroke-width="3"/>` : '';
+  const hat = gear.includes('hat')
+    ? `<path d="M-21 -14 q21 -16 42 0 z" fill="#0B4EA2" stroke="#202A5C" stroke-width="3" stroke-linejoin="round"/>
+       <circle cx="0" cy="-27" r="5" fill="#F4C724" stroke="#202A5C" stroke-width="2.5"/>` : '';
+  const medal = gear.includes('medal')
+    ? `<circle cx="24" cy="30" r="8" fill="#F4C724" stroke="#202A5C" stroke-width="2.5"/>
+       <text x="24" y="34" font-size="9" text-anchor="middle" fill="#202A5C">★</text>` : '';
+  return `<svg viewBox="-46 -50 92 96" role="img" aria-label="${esc(id)} mascot">
+    ${ears}${head}${eyes}${mouth}${scarf}${hat}${medal}</svg>`;
+}
+function goBuddy(){
+  const b = P().buddy || {};
+  const stars = totalStars();
+  const gear = buddyGear(stars);
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Your Buddy</h1>
+    </div>
+    ${b.id ? `<div class="card results">
+      <div style="width:130px;margin:0 auto">${buddySvg(b.id,'cheer',gear)}</div>
+      <h2 style="font-size:28px">${esc(buddyName(b.id))}</h2>
+      <p class="cheer">${esc((BUDDIES.find(x=>x.id===b.id)||{}).line||'')}</p>
+      <p class="mode-sub">${gear.length ? 'Wearing: ' + gear.map(k=>(BUDDY_GEAR.find(g=>g.k===k)||{}).name).join(', ')
+                                        : 'Earn ⭐ to unlock kit for your buddy!'}</p>
+      <div class="levels" style="margin-top:12px">
+        ${BUDDY_GEAR.map(g=>`<div class="trophyrow">
+          <span style="font-size:26px">${gear.includes(g.k)?'✅':'🔒'}</span>
+          <span class="tname" style="font-size:16px">${g.name}</span>
+          <span class="tstars">${stars}/${g.at} ⭐</span></div>`).join('')}
+      </div>
+    </div>` : ''}
+    <h2 class="homesec">${b.id ? 'Swap buddy' : 'Pick your buddy'}</h2>
+    <div class="levels">
+      ${BUDDIES.map(m=>`<button class="level-btn" data-buddy="${m.id}">
+        <span style="width:62px;flex:none">${buddySvg(m.id, m.id===b.id?'cheer':'happy', m.id===b.id?gear:[])}</span>
+        <span><span class="level-name">${m.name}</span><br><span class="mode-sub">${m.kind}</span></span>
+        ${m.id===b.id?'<span class="mode-stars">⭐ yours</span>':''}
+      </button>`).join('')}
+    </div>`;
+  wire();
+}
+function buddyName(id){ return (BUDDIES.find(b=>b.id===id)||{}).name || ''; }
+function pickBuddy(id){
+  const b = P().buddy || (P().buddy = {});
+  b.id = id;
+  saveState();
+  sfx.fanfare(); confetti(false);
+  const m = BUDDIES.find(x=>x.id===id);
+  say(`${m.name} ${m.kind} is your buddy!`);
+  goBuddy();
+}
+function buddyMood(){
+  const d = P().daily || {};
+  if(d.last === todayStr()) return 'cheer';
+  if(d.streak && d.last === yesterdayStr()) return 'sleepy';   // the streak is still alive, but only today
+  return 'happy';
+}
+function buddyBubble(mood){
+  const who = state.current;
+  if(mood === 'sleepy') return 'Play today to keep our streak! 🔥';
+  if(mood === 'cheer') return `Great playing, ${who}!`;
+  return `Ready when you are, ${who}!`;
+}
+
+/* ── Flag Factory: build the flag yourself ───────────────────────────── */
+const FAC_PAINTS = [
+  {k:'red',    c:'#D8262C'}, {k:'blue',   c:'#0B4EA2'}, {k:'green',  c:'#1B7F3B'},
+  {k:'yellow', c:'#F4C724'}, {k:'white',  c:'#FFFFFF'}, {k:'black',  c:'#111111'},
+  {k:'orange', c:'#FF7A1A'}, {k:'sky',    c:'#74ACDF'},
+];
+const FAC_LAYOUTS = [
+  {k:'vs3', name:'Three standing stripes', slots:3},
+  {k:'hs3', name:'Three lying stripes',    slots:3},
+  {k:'hs2', name:'Two lying stripes',      slots:2},
+  {k:'nordic', name:'A cross',             slots:2},
+];
+// every recipe below is the flag as this game already draws it
+const FAC_RECIPES = [
+  {id:'fr', layout:'vs3', paints:['blue','white','red']},
+  {id:'it', layout:'vs3', paints:['green','white','red']},
+  {id:'ie', layout:'vs3', paints:['green','white','orange']},
+  {id:'be', layout:'vs3', paints:['black','yellow','red']},
+  {id:'ro', layout:'vs3', paints:['blue','yellow','red']},
+  {id:'ml', layout:'vs3', paints:['green','yellow','red']},
+  {id:'gn', layout:'vs3', paints:['red','yellow','green']},
+  {id:'ng', layout:'vs3', paints:['green','white','green']},
+  {id:'pe', layout:'vs3', paints:['red','white','red']},
+  {id:'at', layout:'hs3', paints:['red','white','red']},
+  {id:'de', layout:'hs3', paints:['black','red','yellow']},
+  {id:'nl', layout:'hs3', paints:['red','white','blue']},
+  {id:'ru', layout:'hs3', paints:['white','blue','red']},
+  {id:'hu', layout:'hs3', paints:['red','white','green']},
+  {id:'bg', layout:'hs3', paints:['white','green','red']},
+  {id:'lt', layout:'hs3', paints:['yellow','green','red']},
+  {id:'ee', layout:'hs3', paints:['blue','black','white']},
+  {id:'pl', layout:'hs2', paints:['white','red']},
+  {id:'ua', layout:'hs2', paints:['blue','yellow']},
+  {id:'id', layout:'hs2', paints:['red','white']},
+  {id:'se', layout:'nordic', paints:['blue','yellow']},
+  {id:'dk', layout:'nordic', paints:['red','white']},
+  {id:'fi', layout:'nordic', paints:['white','blue']},
+];
+const facPaint = k => (FAC_PAINTS.find(p=>p.k===k)||FAC_PAINTS[0]).c;
+function facSvg(layout, paints){
+  const c = paints.map(facPaint);
+  if(layout==='vs3') return wrap(vs([c[0],c[1],c[2]]));
+  if(layout==='hs3') return wrap(hs([c[0],c[1],c[2]]));
+  if(layout==='hs2') return wrap(hs([c[0],c[1]]));
+  if(layout==='nordic') return wrap(nordic(c[0], c[1]));
+  return wrap(rect(0,0,W,H,c[0]));
+}
+let factory = null;
+function goFactory(){
+  const made = ((P().factory||{}).made||[]).length;
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Flag Factory 🎨</h1>
+    </div>
+    <div class="card results">
+      <h2>Make a flag!</h2>
+      <p class="cheer">Pick the shape, then paint each stripe. Can you build the real flag from memory?</p>
+      <div class="btnrow">
+        <button class="go-btn" data-act="facorder">Build a real flag 🏭</button>
+        <button class="go-btn quiet" data-act="facfree">Invent your own 🌈</button>
+      </div>
+    </div>
+    ${made ? `<h2 class="homesec">🌈 Your inventions</h2>
+      <div class="bookgrid">
+        ${((P().factory||{}).made||[]).map((m,i)=>`<div class="sticker">
+          <span class="flg">${facSvg(m.layout, m.paints)}</span>
+          <span class="nm">${esc(m.name||'My flag')}</span></div>`).join('')}
+      </div>` : ''}`;
+  wire();
+}
+function startFactory(free){
+  const order = free ? null : FAC_RECIPES[Math.floor(Math.random()*FAC_RECIPES.length)];
+  factory = {free:!!free, order, layout:'vs3', paints:['red','white','blue'], tries:0, solved:false};
+  renderFactory();
+}
+function renderFactory(){
+  const f = factory;
+  const lay = FAC_LAYOUTS.find(l=>l.k===f.layout);
+  const target = f.order ? flagById[f.order.id] : null;
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="factory" aria-label="Back">←</button>
+      <h1 class="screen-title">${f.free ? 'Your own flag' : 'Build it!'}</h1>
+    </div>
+    <div class="qcard">
+      ${target ? `<p class="qprompt">Build the flag of ${esc(target.name)}!</p>`
+               : `<p class="qprompt">Make any flag you like 🌈</p>`}
+      <div class="bigflag" style="width:min(70%,260px)">${facSvg(f.layout, f.paints)}</div>
+    </div>
+    <p class="homesec" style="margin:10px 0 6px">Shape</p>
+    <div class="faclay">
+      ${FAC_LAYOUTS.map(l=>`<button class="chip ${l.k===f.layout?'on':''}" data-faclay="${l.k}">
+        <span class="facmini">${facSvg(l.k, ['blue','white','red'])}</span>${l.name}</button>`).join('')}
+    </div>
+    <p class="homesec" style="margin:14px 0 6px">Paint</p>
+    ${Array.from({length:lay.slots}, (_,i)=>`
+      <div class="facslot">
+        <span class="facnum">${f.layout==='nordic' ? (i===0?'Back':'Cross') : i+1}</span>
+        ${FAC_PAINTS.map(pt=>`<button class="pot ${f.paints[i]===pt.k?'on':''}"
+          style="background:${pt.c}" data-facpaint="${i}:${pt.k}" aria-label="${pt.k}"></button>`).join('')}
+      </div>`).join('')}
+    <div class="btnrow" style="margin-top:16px">
+      ${f.free ? `<button class="go-btn" data-act="facsave">Save it! 💾</button>`
+               : `<button class="go-btn" data-act="faccheck">Check it! ✅</button>`}
+    </div>
+    <div id="fb"></div>`;
+  wire();
+  f.renderedAt = performance.now();
+}
+function setFacLayout(k){
+  factory.layout = k;
+  const need = (FAC_LAYOUTS.find(l=>l.k===k)||{}).slots || 3;
+  while(factory.paints.length < need) factory.paints.push('white');
+  sfx.tap();
+  renderFactory();
+}
+function setFacPaint(spec){
+  const [i,k] = spec.split(':');
+  factory.paints[+i] = k;
+  sfx.pop();
+  renderFactory();
+}
+function checkFactory(){
+  const f = factory, r = f.order;
+  if(!r || f.solved) return;
+  f.tries++;
+  const need = (FAC_LAYOUTS.find(l=>l.k===r.layout)||{}).slots || 3;
+  const ok = f.layout === r.layout && r.paints.every((p,i)=>f.paints[i]===p) && f.paints.length >= need;
+  const fb = document.getElementById('fb');
+  if(ok){
+    f.solved = true;
+    const fp = P().factory || (P().factory = {});
+    fp.built = (fp.built||0) + 1;
+    const flag = flagById[r.id];
+    P().mastery[r.id] = (P().mastery[r.id]||0) + 1;
+    saveState();
+    sfx.fanfare(); confetti(f.tries===1);
+    stage.innerHTML = `
+      <div class="card results">
+        <h2>🏭 PERFECT!</h2>
+        <div class="bigflag" style="width:min(62%,220px);margin:8px auto">${wrap(flag.svg)}</div>
+        <p class="scoreline">You built ${esc(flag.name)}!</p>
+        <p class="cheer">${esc(f.tries===1 ? `First time, ${state.current}! You built it from memory!`
+                                           : `You got there in ${f.tries} goes. Flag builder!`)}</p>
+        <p class="mode-sub" style="text-align:center">${esc(flag.fact)}</p>
+        <div class="btnrow" style="margin-top:14px">
+          <button class="go-btn" data-act="facorder">Another one 🏭</button>
+          <button class="go-btn quiet" data-go="factory">Factory 🎨</button>
+          <button class="go-btn quiet" data-go="home">Home 🏠</button>
+        </div>
+      </div>`;
+    wire();
+    say(`Perfect! That's ${flag.name}!`);
+    return;
+  }
+  sfx.wrong();
+  const wrongShape = f.layout !== r.layout;
+  const hint = wrongShape ? 'Try a different shape!' : 'The shape is right — check your colours!';
+  if(fb) fb.innerHTML = `<div class="feedback try">Not quite. ${hint}</div>`;
+}
+function saveFactory(){
+  const f = factory;
+  const fp = P().factory || (P().factory = {});
+  const made = fp.made || (fp.made = []);
+  made.unshift({layout:f.layout, paints:f.paints.slice(), name:`${state.current}’s flag`});
+  fp.made = made.slice(0, 12);
+  saveState();
+  sfx.fanfare(); confetti(false);
+  say('Saved!');
+  goFactory();
+}
+
+/* ── Flag Pairs: a memory game with no reading at all ────────────────── */
+const PAIR_SIZES = [
+  {n:6,  name:'Easy',   cols:4, icon:'🙂'},
+  {n:8,  name:'Tricky', cols:4, icon:'😃'},
+  {n:12, name:'Expert', cols:4, icon:'🤯'},
+];
+// called per card: kitSvg mints a fresh clipPath id each time, so the board
+// never ends up with two dozen elements sharing one id
+const pairBack = () => kitSvg({body:'#FFC626', alt:'#202A5C', pattern:'stripes'});
+let pairs = null, pairTimer = null;
+function stopPairs(){ clearTimeout(pairTimer); pairTimer = null; pairs = null; }
+function goPairs(){
+  const best = (P().pairs||{});
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Flag Pairs 🃏</h1>
+    </div>
+    <div class="card" style="text-align:center">
+      <p class="mode-sub" style="margin:0 0 8px">Who’s playing?</p>
+      <div class="teamrow">
+        ${Object.keys(state.players).map(n=>
+          `<button class="chip ${pairTeam().includes(n)?'on':''}" data-pairteam="${esc(n)}">${esc(n)}</button>`).join('')}
+      </div>
+      <p class="mode-sub" style="margin:10px 0 0">${pairTeam().length===2
+        ? 'Taking turns — find a pair and you go again!'
+        : 'Turn over two shirts and find the matching flags.'}</p>
+    </div>
+    <div class="levels" style="margin-top:14px">
+      ${PAIR_SIZES.map(sz=>{
+        const b = best[sz.n];
+        return `<button class="level-btn" data-pairplay="${sz.n}">
+          <span class="level-num">${sz.icon}</span>
+          <span><span class="level-name">${sz.name}</span><br>
+            <span class="mode-sub">${sz.n} pairs${b?` · best ${b} turns`:''}</span></span>
+        </button>`;
+      }).join('')}
+    </div>`;
+  wire();
+}
+let pairPick = [];
+function pairTeam(){
+  const all = Object.keys(state.players);
+  pairPick = pairPick.filter(n=>all.includes(n));
+  if(!pairPick.length) pairPick = [state.current];
+  return pairPick;
+}
+function togglePairTeam(name){
+  if(pairPick.includes(name)) pairPick = pairPick.filter(n=>n!==name);
+  else if(pairPick.length < 2) pairPick = pairPick.concat(name);
+  else pairPick = [pairPick[1], name];
+  if(!pairPick.length) pairPick = [name];
+  goPairs();
+}
+function startPairs(n){
+  stopPairs();
+  const sz = PAIR_SIZES.find(s=>s.n===n) || PAIR_SIZES[0];
+  // easy rounds use the flags they meet first; the big board roams the whole world
+  const pool = FLAGS.filter(f=> n<=6 ? f.level<=3 : n<=8 ? f.level<=5 : f.level<9);
+  const picks = shuffle(pool).slice(0, sz.n);
+  const cards = shuffle(picks.concat(picks).map((f,i)=>({flag:f, key:i})));
+  pairs = {sz, cards, up:[], found:[], turns:0, team:pairTeam().slice(), turn:0,
+           scores:[0,0], busy:false};
+  sfx.whistle();
+  renderPairs();
+}
+function renderPairs(){
+  const p = pairs, two = p.team.length===2;
+  const board = p.cards.map((c,i)=>{
+    const shown = p.up.includes(i) || p.found.includes(c.flag.id);
+    return `<button class="pcard ${shown?'up':''} ${p.found.includes(c.flag.id)?'got':''}"
+      data-pcard="${i}" aria-label="${shown ? esc(c.flag.name) : 'Face down card'}">
+      <span class="pfront ${c.flag.square?'sq':''}">${wrap(c.flag.svg)}</span>
+      <span class="pback">${pairBack()}</span></button>`;
+  }).join('');
+  const score = two
+    ? `<span class="ballcount">${esc(p.team[0].slice(0,6))} ${p.scores[0]} – ${p.scores[1]} ${esc(p.team[1].slice(0,6))}</span>`
+    : `<span class="ballcount">🔄 ${p.turns}</span>`;
+  stage.innerHTML = `
+    <div class="quizbar">
+      <button class="back-btn" data-go="pairs" aria-label="Quit">✕</button>
+      <div class="dots" style="flex:1;justify-content:center">
+        <span class="mode-sub">${p.found.length/1} of ${p.sz.n} found</span></div>
+      ${score}
+    </div>
+    ${two ? `<div class="turnbanner">⚽ ${esc(p.team[p.turn])}’s turn!</div>` : ''}
+    <div class="pgrid" style="grid-template-columns:repeat(${p.sz.cols},1fr)">${board}</div>`;
+  wire();
+  p.renderedAt = performance.now();
+}
+function flipPair(i){
+  const p = pairs;
+  if(!p || p.busy) return;
+  if(performance.now() - (p.renderedAt||0) < 250) return;
+  const c = p.cards[i];
+  if(p.up.includes(i) || p.found.includes(c.flag.id)) return;
+  p.up.push(i);
+  sfx.tap();
+  if(p.up.length === 1){ renderPairs(); say(c.flag.name); return; }
+  p.turns++;
+  const [a,b] = p.up.map(k=>p.cards[k]);
+  const hit = a.flag.id === b.flag.id;
+  p.busy = true;
+  renderPairs();
+  say(c.flag.name);
+  if(hit){
+    p.found.push(a.flag.id);
+    if(p.team.length===2) p.scores[p.turn]++;
+    const prog = P();
+    prog.mastery[a.flag.id] = (prog.mastery[a.flag.id]||0) + 1;   // they looked at it twice and matched it
+    saveState();
+    sfx.correct();
+    pairTimer = setTimeout(()=>{
+      if(!pairs) return;
+      pairs.up = []; pairs.busy = false;
+      if(pairs.found.length >= pairs.sz.n) finishPairs();
+      else renderPairs();
+    }, 700);
+  } else {
+    sfx.wrong();
+    pairTimer = setTimeout(()=>{
+      if(!pairs) return;
+      pairs.up = []; pairs.busy = false;
+      if(pairs.team.length===2) pairs.turn = 1 - pairs.turn;
+      renderPairs();
+    }, 1100);
+  }
+}
+function finishPairs(){
+  const p = pairs, two = p.team.length===2;
+  const turns = p.turns, n = p.sz.n;
+  const bestMap = P().pairs || (P().pairs = {});
+  const prev = bestMap[n] || 0;
+  const isBest = !two && (!prev || turns < prev);
+  if(isBest){ bestMap[n] = turns; saveState(); }
+  earnPacks(1);
+  let head, cheer;
+  if(two){
+    const [a,b] = p.scores;
+    const winner = a>b ? p.team[0] : b>a ? p.team[1] : null;
+    head = winner ? `🏆 ${esc(winner.toUpperCase())} WINS!` : '🤝 IT’S A DRAW!';
+    cheer = winner ? `${winner} found ${Math.max(a,b)} pairs. What a memory!`
+                   : 'Both of you found the same number — brilliant memories!';
+  } else {
+    head = '🃏 ALL FOUND!';
+    cheer = isBest ? `A new record — ${turns} turns, ${state.current}!`
+                   : `${turns} turns. Your best is ${bestMap[n]}. Go again!`;
+  }
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>${head}</h2>
+      <p class="scoreline">${two ? `${esc(p.team[0])} ${p.scores[0]} – ${p.scores[1]} ${esc(p.team[1])}`
+                                 : `${n} pairs in ${turns} turns`}</p>
+      <div class="starrow"><span style="font-size:52px">🃏</span></div>
+      <p class="cheer">${esc(cheer)}</p>
+      <div class="btnrow">
+        <button class="go-btn" data-pairplay="${n}">Play again ↻</button>
+        <button class="go-btn quiet" data-go="pairs">Change size 🃏</button>
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  stopPairs();
+  wire();
+  sfx.fanfare(); confetti(isBest);
+  say(cheer);
+}
+
+/* ── Flag Detective: three sneaky fakes, one real flag ───────────────── */
+const SPY_SUBS = ['#1B7F3B','#0B4EA2','#D8262C','#F4C724','#7B3FA0','#FF7A1A','#111111','#FFFFFF'];
+function flagPalette(svg){
+  return [...new Set((svg.match(/#[0-9A-Fa-f]{6}/g)||[]).map(h=>h.toUpperCase()))];
+}
+function recolour(svg, map){
+  return svg.replace(/#[0-9A-Fa-f]{6}/g, m => map[m.toUpperCase()] || m);
+}
+function tamperFlag(svg, n, level, rnd){
+  rnd = rnd || Math.random;
+  const pal = flagPalette(svg);
+  const out = [], seen = new Set([svg]);
+  const push = map => {
+    const v = recolour(svg, map);
+    if(!seen.has(v)){ seen.add(v); out.push(v); }
+  };
+  // swapping two of the flag's own colours always shows, and never invents a new palette
+  const swaps = [];
+  for(let i=0;i<pal.length;i++) for(let j=i+1;j<pal.length;j++) swaps.push([i,j]);
+  const shuffled = shuffle(swaps, rnd);
+  // early levels get the big obvious swaps (the first colours drawn are the background ones)
+  if(level <= 3) shuffled.sort((a,b)=> (a[0]+a[1]) - (b[0]+b[1]));
+  for(const [i,j] of shuffled){
+    if(out.length >= n) break;
+    const m = {}; m[pal[i]] = pal[j]; m[pal[j]] = pal[i];
+    push(m);
+  }
+  // two-colour flags run out of swaps, so borrow a colour that doesn't belong
+  for(const c of shuffle(SPY_SUBS, rnd)){
+    if(out.length >= n) break;
+    for(const from of shuffle(pal, rnd)){
+      if(from === c) continue;
+      const m = {}; m[from] = c;
+      push(m);
+      if(out.length >= n) break;
+    }
+  }
+  return out.slice(0, n);
+}
+function buildSpy(level, rnd){
+  rnd = rnd || Math.random;
+  const pool = FLAGS.filter(f=>f.level===level);
+  return shuffle(pool, rnd).slice(0,10).map(flag=>{
+    const fakes = tamperFlag(flag.svg, 3, level, rnd);
+    const opts = shuffle([flag.svg].concat(fakes), rnd);
+    return {kind:'spy', flag, options:opts, answer:opts.indexOf(flag.svg),
+      prompt: `Which is the REAL flag of ${flag.name}?`,
+      fact: flag.fact};
+  });
+}
+
+/* ── Robot Rivals: both of you against a cartoon robot XI ────────────── */
+const ROBOT_TEAMS = [
+  {n:1, name:'Rusty Rovers',   acc:0.30, colour:'#B0752F', eye:'#FFC626'},
+  {n:2, name:'Tin Town',       acc:0.42, colour:'#8C97A8', eye:'#4AA8FF'},
+  {n:3, name:'Circuit City',   acc:0.54, colour:'#3F8F6B', eye:'#B7FF5A'},
+  {n:4, name:'Data United',    acc:0.66, colour:'#5B4AC4', eye:'#FF7AE0'},
+  {n:5, name:'Galactic United',acc:0.78, colour:'#202A5C', eye:'#FF3B3B'},
+];
+const ROBOT_QS = 8;
+let robots = null;
+function robotSvg(t, mood){
+  const eye = mood==='sad' ? `<path d="M-9 -3 q4 4 8 0" stroke="${t.eye}" stroke-width="3" fill="none"/>
+      <path d="M1 -3 q4 4 8 0" stroke="${t.eye}" stroke-width="3" fill="none"/>`
+    : `<circle cx="-5" cy="-2" r="4" fill="${t.eye}"/><circle cx="5" cy="-2" r="4" fill="${t.eye}"/>`;
+  return `<svg viewBox="-30 -40 60 66" role="img" aria-label="${esc(t.name)} robot">
+    <line x1="0" y1="-26" x2="0" y2="-34" stroke="#202A5C" stroke-width="3"/>
+    <circle cx="0" cy="-36" r="4" fill="${t.eye}" stroke="#202A5C" stroke-width="2.5"/>
+    <rect x="-17" y="-26" width="34" height="28" rx="8" fill="${t.colour}" stroke="#202A5C" stroke-width="3.5"/>
+    ${eye}
+    <rect x="-7" y="6" width="14" height="4" rx="2" fill="#202A5C"/>
+    <rect x="-14" y="2" width="28" height="18" rx="6" fill="${t.colour}" stroke="#202A5C" stroke-width="3.5"/>
+    <rect x="-22" y="4" width="7" height="13" rx="3" fill="${t.colour}" stroke="#202A5C" stroke-width="3"/>
+    <rect x="15" y="4" width="7" height="13" rx="3" fill="${t.colour}" stroke="#202A5C" stroke-width="3"/>
+  </svg>`;
+}
+function goRobots(){
+  const beaten = (P().robots||{}).beaten || 0;
+  const team = robotTeam();
+  stage.innerHTML = `
+    <div class="topbar">
+      <button class="back-btn" data-go="home" aria-label="Back">←</button>
+      <h1 class="screen-title">Robot Rivals 🤖</h1>
+    </div>
+    <div class="card" style="text-align:center">
+      <p class="mode-sub" style="margin:0 0 8px">Your team — tap a name to add or drop them</p>
+      <div class="teamrow">
+        ${Object.keys(state.players).map(n=>
+          `<button class="chip ${team.includes(n)?'on':''}" data-robteam="${esc(n)}">${esc(n)}</button>`).join('')}
+      </div>
+      <p class="mode-sub" style="margin:10px 0 0">
+        ${team.length===2 ? esc(team[0])+' and '+esc(team[1])+' take turns — every goal counts for the SAME team!'
+                          : 'Playing solo. Tap another name to team up!'}</p>
+    </div>
+    <div class="levels" style="margin-top:14px">
+      ${ROBOT_TEAMS.map(t=>{
+        const locked = t.n > beaten + 1;
+        const done = t.n <= beaten;
+        return `<button class="level-btn" ${locked?'disabled style="opacity:.5"':`data-robplay="${t.n}"`}>
+          <span style="width:54px;flex:none">${robotSvg(t, done?'sad':'happy')}</span>
+          <span><span class="level-name">${t.name}</span><br>
+            <span class="mode-sub">${locked ? '🔒 Beat the team above first' : done ? '✅ Beaten!' : 'Best of '+ROBOT_QS+' — can you stop them?'}</span></span>
+          ${done?'<span class="mode-stars">🏅</span>':''}
+        </button>`;
+      }).join('')}
+    </div>`;
+  wire();
+}
+function robotTeam(){
+  const all = Object.keys(state.players);
+  if(!robotPick.length) robotPick = [state.current];
+  robotPick = robotPick.filter(n=>all.includes(n));
+  if(!robotPick.length) robotPick = [state.current];
+  return robotPick;
+}
+let robotPick = [];
+function toggleRobotTeam(name){
+  if(robotPick.includes(name)) robotPick = robotPick.filter(n=>n!==name);
+  else if(robotPick.length < 2) robotPick = robotPick.concat(name);
+  else robotPick = [robotPick[1], name];
+  if(!robotPick.length) robotPick = [name];
+  goRobots();
+}
+function startRobots(tier){
+  clearTimeout(advanceTimer);
+  const t = ROBOT_TEAMS.find(x=>x.n===tier) || ROBOT_TEAMS[0];
+  robots = {t, team: robotTeam().slice()};
+  match = {mode:'robots', robots:true, qs: buildMixedQs(ROBOT_QS), i:0,
+           firstTry:0, laterTry:0, tries:0, done:[], goals:0, conceded:0};
+  sfx.whistle();
+  say(`${robots.team.join(' and ')} against ${t.name}. Kick off!`);
+  renderQuestion();
+}
+function robotScoreLine(){
+  return `${esc(robots.team.map(n=>n.slice(0,5)).join(' & '))} ${match.goals} – ${match.conceded} 🤖`;
+}
+function refreshRobotScore(){
+  const sb = document.getElementById('sb');
+  if(sb && match && match.robots) sb.innerHTML = robotScoreLine();
+}
+function robotShot(){
+  // the robots take a shot of their own after every question
+  const hit = Math.random() < robots.t.acc;
+  if(hit) match.conceded++;
+  refreshRobotScore();
+  return hit ? `🤖 ${robots.t.name} score too!` : `🤖 ${robots.t.name} shoot… and MISS!`;
+}
+function finishRobots(){
+  const g = match.goals, c = match.conceded, t = robots.t;
+  const won = g > c;
+  if(won){
+    const rp = P().robots || (P().robots = {});
+    if(t.n > (rp.beaten||0)){ rp.beaten = t.n; saveState(); }
+    earnPacks(2);
+  }
+  const who = robots.team.join(' and ');
+  const last = t.n === ROBOT_TEAMS.length;
+  const cheer = won
+    ? (last ? `${who} beat GALACTIC UNITED! You have beaten every robot team on Earth!`
+            : `${who} beat ${t.name}! The next robots are warming up…`)
+    : `${t.name} edged it — but ${who} were close. Go again!`;
+  stage.innerHTML = `
+    <div class="card results">
+      <h2>${won ? '🏅 ROBOTS BEATEN! 🏅' : '🤖 Robots win'}</h2>
+      <div style="width:96px;margin:6px auto">${robotSvg(t, won?'sad':'happy')}</div>
+      <p class="scoreline">${esc(robots.team.map(n=>n.slice(0,8)).join(' & '))} ${g} – ${c} ${esc(t.name)}</p>
+      <p class="cheer">${esc(cheer)}</p>
+      <div class="btnrow">
+        <button class="go-btn" data-act="robagain" data-tier="${t.n}">Play again ↻</button>
+        <button class="go-btn quiet" data-go="robots">The ladder 🪜</button>
+        <button class="go-btn quiet" data-go="home">Home 🏠</button>
+      </div>
+    </div>`;
+  wire();
+  if(won){ sfx.fanfare(); confetti(last); } else sfx.groan();
   say(cheer);
 }
 
@@ -3567,7 +4614,8 @@ function modeStars(mode, n){ let s=0; for(let l=1;l<=n;l++) s += bestFor(mode+'-
 function goTrophies(){
   const rows = [
     ['⚽','Flag Quiz','flags',9], ['🔍','Find the Flag','find',9],
-    ['🏛️','Capitals Quiz','caps',9], ['🏆','Footy Quiz','wc',6],
+    ['🏛️','Capitals Quiz','caps',9], ['🕵️','Flag Detective','spy',9],
+    ['🗺️','Where in the World?','world',9], ['🏆','Footy Quiz','wc',6],
   ];
   const total = totalStars();
   const cups = (P().cup||{}).wins || [];
@@ -3593,6 +4641,8 @@ function goTrophies(){
         <span class="tstars">${cups.length} ${cups.length===1?'cup':'cups'}</span></div>
       <div class="trophyrow"><span style="font-size:30px">🔎</span><span class="tname">Mystery Flags</span>
         <span class="tstars">${(P().mystery||{}).solved||0} solved</span></div>
+      <div class="trophyrow"><span style="font-size:30px">🤖</span><span class="tname">Robot teams beaten</span>
+        <span class="tstars">${(P().robots||{}).beaten||0}/${ROBOT_TEAMS.length}</span></div>
       ${cups.length ? `<div class="card">
         <p class="mode-sub" style="text-align:center;margin:0 0 10px">🏆 Your honours board</p>
         <div class="honours">
@@ -3715,6 +4765,7 @@ function wire(){
     match = null; clearTimeout(advanceTimer);   // leaving a match cancels its pending advance
     stopLightning();
     stopPens();                                  // …and its sweep loop, which would outlive the screen
+    stopPairs();
     hushVoice();
     const go = b.dataset.go;
     if(go==='home') goHome();
@@ -3727,7 +4778,27 @@ function wire(){
     else if(go==='penalty') goPenalty();
     else if(go==='cup') goCupRun();
     else if(go==='mystery') goMystery();
+    else if(go==='robots') goRobots();
+    else if(go==='pairs') goPairs();
+    else if(go==='factory') goFactory();
+    else if(go==='buddy') goBuddy();
+    else if(go==='stickers') goStickers();
   }));
+  stage.querySelectorAll('[data-act="openpack"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); openPack(); }));
+  stage.querySelectorAll('[data-sticker]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); peekSticker(b.dataset.sticker); }));
+  stage.querySelectorAll('[data-buddy]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); pickBuddy(b.dataset.buddy); }));
+  stage.querySelectorAll('[data-faclay]').forEach(b=> b.addEventListener('click', ()=> setFacLayout(b.dataset.faclay)));
+  stage.querySelectorAll('[data-facpaint]').forEach(b=> b.addEventListener('click', ()=> setFacPaint(b.dataset.facpaint)));
+  stage.querySelectorAll('[data-act="facorder"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); startFactory(false); }));
+  stage.querySelectorAll('[data-act="facfree"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); startFactory(true); }));
+  stage.querySelectorAll('[data-act="faccheck"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); checkFactory(); }));
+  stage.querySelectorAll('[data-act="facsave"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); saveFactory(); }));
+  stage.querySelectorAll('[data-pairteam]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); togglePairTeam(b.dataset.pairteam); }));
+  stage.querySelectorAll('[data-pairplay]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); startPairs(parseInt(b.dataset.pairplay,10)); }));
+  stage.querySelectorAll('[data-pcard]').forEach(b=> b.addEventListener('click', ()=> flipPair(parseInt(b.dataset.pcard,10))));
+  stage.querySelectorAll('[data-robteam]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); toggleRobotTeam(b.dataset.robteam); }));
+  stage.querySelectorAll('[data-robplay]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); startRobots(parseInt(b.dataset.robplay,10)); }));
+  stage.querySelectorAll('[data-act="robagain"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); startRobots(parseInt(b.dataset.tier,10)); }));
   stage.querySelectorAll('[data-act="gopens"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); startPens(); }));
   stage.querySelectorAll('[data-act="penshoot"]').forEach(b=> b.addEventListener('click', ()=> penShoot()));
   stage.querySelectorAll('[data-act="cuppick"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); renderCupPick(); }));
@@ -3771,7 +4842,16 @@ window.__game = {startMatch, goHome, goBook, goPlayers, savePlayer, FLAGS, CONFU
   goLightning, startLightning, goTrophies, lightning:()=>lightning, duelPickList:()=>duelPick, setDuelPick:(a)=>{duelPick=a;},
   goPenalty, startPens, penShoot, pens:()=>pens, PEN_SHOTS, startDuelShootout,
   goCupRun, renderCupPick, startCupRun, startFixture, renderBracket, cup:()=>cup, CUP_ROUNDS, CUP_QS,
-  goMystery, answerMystery, mystery:()=>mystery, mysteryPoints};
+  goMystery, answerMystery, mystery:()=>mystery, mysteryPoints,
+  buildSpy, tamperFlag, flagPalette,
+  goRobots, startRobots, robots:()=>robots, ROBOT_TEAMS, toggleRobotTeam, robotTeam,
+  buildWorld, CONTINENTS, CONT_ALT, CONT_ORDER, CONT_NAMES,
+  goPairs, startPairs, flipPair, pairs:()=>pairs, togglePairTeam, PAIR_SIZES,
+  goFactory, startFactory, setFacLayout, setFacPaint, checkFactory, saveFactory,
+  factory:()=>factory, FAC_RECIPES, FAC_LAYOUTS,
+  goBuddy, pickBuddy, buddySvg, BUDDIES, buddyGear, buddyMood,
+  goStickers, openPack, earnPacks, rollSticker, peekSticker, giveSticker,
+  stickerName, stickerRarity, SPECIAL_STICKERS, pack:()=>pack};
 
 const params = new URLSearchParams(location.search);
 if(params.has('book')) goBook();
