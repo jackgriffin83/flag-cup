@@ -2326,13 +2326,21 @@ function saveState(){
         else md.best = Math.max(md.best||0, d.daily.best||0);
       }
       if(d.buddy && !(mine.buddy||{}).id) mine.buddy = d.buddy;
-      if(d.stickers){
-        if(!mine.stickers) mine.stickers = d.stickers;
-        else {
-          // stickers already stuck in the album can only go up, so max-merge them —
-          // but unopened packs get SPENT, and max-merging a spendable thing hands them back
-          const mh = mine.stickers.have || (mine.stickers.have = {});
-          for(const k in (d.stickers.have||{})) mh[k] = Math.max(mh[k]||0, d.stickers.have[k]);
+      // stickers are the one thing here that can go DOWN as well as up: packs get
+      // opened and doubles get given away. Max-merging either would conjure them
+      // back, so this tab's copy simply wins — only a player with no album at all
+      // takes the one from disk.
+      if(d.stickers && !mine.stickers) mine.stickers = d.stickers;
+      if(d.pairs){
+        const mp = mine.pairs || (mine.pairs = {});
+        for(const k in d.pairs) mp[k] = mp[k] ? Math.min(mp[k], d.pairs[k]) : d.pairs[k];  // fewer turns wins
+      }
+      if(d.factory){
+        const mf = mine.factory || (mine.factory = {});
+        mf.built = Math.max(mf.built||0, d.factory.built||0);
+        if(d.factory.made && d.factory.made.length){
+          const seen = new Set((mf.made||[]).map(m=>JSON.stringify(m)));
+          mf.made = (mf.made||[]).concat(d.factory.made.filter(m=>!seen.has(JSON.stringify(m)))).slice(0,12);
         }
       }
       if(d.robots) (mine.robots = mine.robots || {}).beaten =
@@ -2809,6 +2817,8 @@ function sayCurrent(){
   if(q.kind==='flags') say(q.prompt);
   else if(q.kind==='find') say(q.prompt);
   else if(q.kind==='caps') say(q.prompt + '. ' + q.options.map(f=>CAPITALS[f.id]).join('. Or, '));
+  else if(q.kind==='spy') say(q.prompt.replace('REAL','real'));     // the options are pictures
+  else if(q.kind==='world') say(q.prompt + '. ' + q.options.map(c=>CONT_NAMES[c]).join('. Or, '));
   else say(q.prompt + '. ' + q.options.join('. Or, '));
 }
 function playerProg(name){
@@ -3781,7 +3791,7 @@ function renderAlbum(have){
       const n = have[f.id]||0, sn = have['s:'+f.id]||0;
       if(!n && !sn) return `<div class="sticker gap"><span class="flg dim">${wrap(f.svg)}</span>
         <span class="nm">?</span></div>`;
-      const id = sn ? 's:'+f.id : f.id, count = n + sn;
+      const id = sn ? 's:'+f.id : f.id, count = sn || n;   // the badge counts the one you tap
       return `<button class="sticker ${sn?'shiny':''}" data-sticker="${id}">
         ${count>1?`<span class="medal">×${count}</span>`:''}
         <span class="flg ${f.square?'sq':''}">${wrap(f.svg)}</span>
@@ -3799,9 +3809,13 @@ function renderAlbum(have){
   }).join('');
   return `<h2 class="booksec">🌟 Superstars</h2><div class="bookgrid">${specials}</div>` + sections;
 }
+let packBusy = false;
 function openPack(){
   const st = P().stickers || (P().stickers = {});
+  if(packBusy) return;                       // an excited double-tap must not cost two packs
   if(!(st.packs > 0)) return goStickers();
+  packBusy = true;
+  setTimeout(()=>{ packBusy = false; }, 500);
   st.packs--;
   const have = st.have || (st.have = {});
   const got = Array.from({length:PACK_SIZE}, ()=>rollSticker());
@@ -4518,6 +4532,7 @@ const MYSTERY_TILES = 12, MYSTERY_OPTS = 6, MYSTERY_FREE = 2, MYSTERY_PEEL = 3;
 let mystery = null;
 function goMystery(){
   const day = todayStr();
+  if(mystery && mystery.day === day && !mystery.solved) return renderMystery();   // no second first-guess
   const rng = mulberry32(dateSeed('mystery-' + day));      // its own seed, so it never echoes the daily match
   const pool = FLAGS.filter(f=>f.level<9);
   const flag = pool[Math.floor(rng() * pool.length)];
@@ -4829,7 +4844,9 @@ function wire(){
   }));
   stage.querySelectorAll('[data-peek]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); peekFlag(b.dataset.peek); }));
   stage.querySelectorAll('[data-player]').forEach(b=> b.addEventListener('click', ()=>{
-    sfx.tap(); state.current = b.dataset.player; saveState(); goHome();
+    sfx.tap(); state.current = b.dataset.player;
+    robotPick = []; pairPick = []; duelPick = [];    // teams belong to whoever picked them
+    saveState(); goHome();
   }));
   stage.querySelectorAll('[data-act="players"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); goPlayers(); }));
   stage.querySelectorAll('[data-act="newplayer"]').forEach(b=> b.addEventListener('click', ()=>{ sfx.tap(); goNewPlayer(); }));
