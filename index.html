@@ -251,7 +251,7 @@
   .pot.on{box-shadow:0 0 0 3px var(--sun-deep); transform:scale(1.08)}
 
   /* flag pairs */
-  .pgrid{display:grid; gap:9px; margin-top:6px}
+  .pgrid{display:grid; gap:9px; margin-top:6px; margin-inline:auto}
   .pcard{position:relative; aspect-ratio:3/4; padding:0; border:0; background:none; perspective:600px}
   .pcard > span{position:absolute; inset:0; display:grid; place-items:center; overflow:hidden;
     border:4px solid var(--ink); border-radius:14px; box-shadow:0 4px 0 rgba(18,58,35,.25);
@@ -4277,23 +4277,38 @@ function renderPairs(){
       <span class="pback">${pairBack()}</span></button>`;
   }).join('');
   const score = two
-    ? `<span class="ballcount">${esc(p.team[0].slice(0,6))} ${p.scores[0]} – ${p.scores[1]} ${esc(p.team[1].slice(0,6))}</span>`
+    ? `<span class="ballcount" style="flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis">${esc(p.team[0].slice(0,6))} ${p.scores[0]} – ${p.scores[1]} ${esc(p.team[1].slice(0,6))}</span>`
     : `<span class="ballcount">🔄 ${p.turns}</span>`;
+  const rows = Math.ceil(p.cards.length / p.sz.cols), gap = 9;
+  const fitWidth = avail => {
+    // shrink the cards to fit the screen, but never below a size small fingers
+    // can hit — past that point a little scrolling is the lesser evil
+    const cardW = Math.max(48, Math.floor((avail - (rows - 1) * gap) * 3 / (4 * rows)));
+    return cardW * p.sz.cols + (p.sz.cols - 1) * gap;
+  };
+  const gridMax = fitWidth(Math.max(240, (window.innerHeight || 640) - (two ? 170 : 126)));
   stage.innerHTML = `
     <div class="quizbar">
       <button class="back-btn" data-go="pairs" aria-label="Quit">✕</button>
-      <div class="dots" style="flex:1;justify-content:center">
-        <span class="mode-sub">${p.found.length/1} of ${p.sz.n} found</span></div>
+      ${two ? '' : `<div class="dots" style="flex:1;justify-content:center">
+        <span class="mode-sub">${p.found.length} of ${p.sz.n} found</span></div>`}
       ${score}
     </div>
     ${two ? `<div class="turnbanner">⚽ ${esc(p.team[p.turn])}’s turn!</div>` : ''}
-    <div class="pgrid" style="grid-template-columns:repeat(${p.sz.cols},1fr)">${board}</div>`;
+    <div class="pgrid" style="grid-template-columns:repeat(${p.sz.cols},1fr); max-width:${gridMax}px">${board}</div>`;
   wire();
+  // the estimate above avoids a flash; now measure the real gap and settle it exactly
+  const grid = stage.querySelector('.pgrid');
+  if(grid){
+    const top = grid.getBoundingClientRect().top;
+    const pad = parseFloat(getComputedStyle(stage).paddingBottom) || 40;
+    grid.style.maxWidth = fitWidth(Math.max(200, window.innerHeight - top - pad - 6)) + 'px';
+  }
   p.renderedAt = performance.now();
 }
 function flipPair(i){
   const p = pairs;
-  if(!p || p.busy) return;
+  if(!p || p.busy || !p.cards[i]) return;
   if(performance.now() - (p.renderedAt||0) < 250) return;
   const c = p.cards[i];
   if(p.up.includes(i) || p.found.includes(c.flag.id)) return;
